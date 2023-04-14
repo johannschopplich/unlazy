@@ -1,3 +1,4 @@
+export const isLazyLoadingSupported = 'loading' in HTMLImageElement.prototype
 export const isCrawler = !('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent)
 
 export function lazyLoadImages(
@@ -10,7 +11,7 @@ export function lazyLoadImages(
   /**
    * A callback function to run when an image is loaded.
    */
-  onLoad?: (image: HTMLImageElement) => void,
+  onLoaded?: (image: HTMLImageElement) => void,
 ) {
   for (const image of [...document.querySelectorAll<HTMLImageElement>(selectors)]) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
@@ -20,22 +21,22 @@ export function lazyLoadImages(
     if (!image.dataset.srcset)
       continue
 
-    if (isCrawler) {
-      // Let the crawler load the image
+    // Use the same logic as for crawlers when native lazy-loading is not supported
+    if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
       updateImageSrcset(image)
-      onLoad?.(image)
+      onLoaded?.(image)
       continue
     }
 
     if (image.complete && image.naturalWidth > 0) {
       // Load the image if it's already in the viewport
-      loadImage(image, onLoad)
+      loadImage(image, onLoaded)
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    image.addEventListener('load', () => loadImage(image, onLoad), { once: true })
+    image.addEventListener('load', () => loadImage(image, onLoaded), { once: true })
   }
 }
 
@@ -53,7 +54,7 @@ export function autoSizes(
 
 export function loadImage(
   image: HTMLImageElement,
-  onLoad?: (image: HTMLImageElement) => void,
+  onLoaded?: (image: HTMLImageElement) => void,
 ) {
   const imageLoader = new Image()
   imageLoader.srcset = image.dataset.srcset!
@@ -62,12 +63,11 @@ export function loadImage(
   imageLoader.addEventListener('load', () => {
     updatePictureSources(image)
     updateImageSrcset(image)
-    onLoad?.(image)
+    onLoaded?.(image)
   })
 }
 
 export default Object.freeze({
-  isCrawler,
   lazyLoadImages,
   autoSizes,
   loadImage,

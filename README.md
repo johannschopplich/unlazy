@@ -185,7 +185,7 @@ Keep in mind that manually loading images might negatively affect the perceived 
 
 ## API
 
-### `lazyLoadImages(selectors: string)`
+### `lazyLoadImages(selectors)`
 
 The main method of the library. It works as follows:
 
@@ -194,15 +194,62 @@ The main method of the library. It works as follows:
 3. If the image has a blurry placeholder and is already in the viewport or the visitor is a crawler, it immediately loads the full-quality image.
 4. If the image is not yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
 
+**Type Declaration**
+
+```ts
+function lazyLoadImages(
+  /**
+   * A CSS selector or a list of CSS selectors to match images to lazy load.
+   *
+   * @default 'img[loading="lazy"]'
+   */
+  selectors?: string,
+  /**
+   * A callback function to run when an image is loaded.
+   */
+  onLoaded?: (image: HTMLImageElement) => void
+): void
+```
+
 #### `selectors`
 
 Defaults to `img[loading="lazy"]`. Allowed types are a valid CSS selector string.
 
-### `autoSizes(selectors: string)`
+#### `onLoaded`
+
+An optional callback function to run when an image is loaded. It accepts an `HTMLImageElement` as a parameter.
+
+### `autoSizes(selectors)`
+
+**Type Declaration**
+
+```ts
+function autoSizes(
+  /**
+   * A CSS selector or a list of CSS selectors to calculate the `sizes` attribute for.
+   *
+   * @default 'img[data-sizes="auto"], source[data-sizes="auto"]'
+   */
+  selectors?: string
+): void
+```
+
+#### `selectors`
 
 Defaults to `img[data-sizes="auto"], source[data-sizes="auto"]`. Allowed types are a valid CSS selector string.
 
-### `loadImage(element: HTMLImageElement)`
+### `loadImage(element)`
+
+**Type Declaration**
+
+```ts
+function loadImage(
+  image: HTMLImageElement,
+  onLoaded?: (image: HTMLImageElement) => void
+): void
+```
+
+#### `element`
 
 An instance of `HTMLImageElement` representing the image you want to load manually.
 
