@@ -1,0 +1,69 @@
+{
+  "name": "unlazy",
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.2.0",
+  "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
+  "author": {
+    "name": "Johann Schopplich",
+    "email": "pkg@johannschopplich.com",
+    "url": "https://johannschopplich.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/johannschopplich/unlazy#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johannschopplich/unlazy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johannschopplich/unlazy/issues"
+  },
+  "keywords": [
+    "async",
+    "image",
+    "intersection",
+    "lazy",
+    "loading",
+    "lozad",
+    "native",
+    "observer",
+    "responsive"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/unlazy.umd.js",
+      "import": "./dist/unlazy.mjs"
+    }
+  },
+  "main": "./dist/unlazy.umd.js",
+  "module": "./dist/unlazy.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsc --emitDeclarationOnly",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "release": "tsc --noEmit && bumpp --all --commit --push --tag"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.38.4",
+    "@types/node": "^18.15.11",
+    "bumpp": "^9.1.0",
+    "eslint": "^8.38.0",
+    "lint-staged": "^13.2.1",
+    "simple-git-hooks": "^2.8.1",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint"
+    ]
+  }
+}
