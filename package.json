@@ -46,24 +46,15 @@
     "build": "vite build && tsc --emitDeclarationOnly",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "release": "tsc --noEmit && bumpp --all --commit --push --tag"
+    "test:types": "tsc --noEmit",
+    "release": "bumpp --all --commit --push --tag"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.4",
     "@types/node": "^18.15.11",
     "bumpp": "^9.1.0",
     "eslint": "^8.38.0",
-    "lint-staged": "^13.2.1",
-    "simple-git-hooks": "^2.8.1",
     "typescript": "^5.0.4",
     "vite": "^4.2.1"
-  },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
-  "lint-staged": {
-    "src/**/*.ts": [
-      "eslint"
-    ]
   }
 }
