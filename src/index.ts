@@ -7,6 +7,10 @@ export function lazyLoadImages(
    * @default 'img[loading="lazy"]'
    */
   selectors = 'img[loading="lazy"]',
+  /**
+   * A callback function to run when an image is loaded.
+   */
+  onLoad?: (image: HTMLImageElement) => void,
 ) {
   for (const image of [...document.querySelectorAll<HTMLImageElement>(selectors)]) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
@@ -20,17 +24,18 @@ export function lazyLoadImages(
       // Let the crawler load the image
       updatePictureSources(image)
       updateImageSrcset(image)
+      onLoad?.(image)
       continue
     }
 
     if (image.complete && image.naturalWidth > 0) {
       // Load the image if it's already in the viewport
-      loadImage(image)
+      loadImage(image, onLoad)
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    image.addEventListener('load', () => loadImage(image), { once: true })
+    image.addEventListener('load', () => loadImage(image, onLoad), { once: true })
   }
 }
 
@@ -46,7 +51,10 @@ export function autoSizes(
     updateSizesAttribute(image)
 }
 
-export function loadImage(image: HTMLImageElement) {
+export function loadImage(
+  image: HTMLImageElement,
+  onLoad?: (image: HTMLImageElement) => void,
+) {
   const imageLoader = new Image()
   imageLoader.srcset = image.dataset.srcset!
   imageLoader.sizes = image.sizes
@@ -54,6 +62,7 @@ export function loadImage(image: HTMLImageElement) {
   imageLoader.addEventListener('load', () => {
     updatePictureSources(image)
     updateImageSrcset(image)
+    onLoad?.(image)
   })
 }
 
