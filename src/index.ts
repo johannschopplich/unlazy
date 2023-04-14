@@ -1,6 +1,6 @@
 export const isCrawler = !('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent)
 
-export function lazyLoad(
+export function lazyLoadImages(
   /**
    * A CSS selector or a list of CSS selectors to match images to lazy load.
    *
@@ -8,12 +8,7 @@ export function lazyLoad(
    */
   selectors = 'img[loading="lazy"]',
 ) {
-  const elements = [...document.querySelectorAll<HTMLImageElement>(selectors)]
-
-  if (elements.length === 0)
-    return
-
-  for (const image of elements) {
+  for (const image of [...document.querySelectorAll<HTMLImageElement>(selectors)]) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
@@ -23,20 +18,15 @@ export function lazyLoad(
 
     if (isCrawler) {
       // Let the crawler load the image
-      image.srcset = image.dataset.srcset!
-      image.removeAttribute('data-srcset')
-
-      const picture = image.parentElement as HTMLPictureElement
-      if (picture?.tagName.toLowerCase() === 'picture')
-        updateSourceElements(picture)
-
-      return
+      updatePictureSources(image)
+      updateImageSrcset(image)
+      continue
     }
 
     if (image.complete && image.naturalWidth > 0) {
       // Load the image if it's already in the viewport
       loadImage(image)
-      return
+      continue
     }
 
     // Otherwise, load the image when it enters the viewport
@@ -52,22 +42,33 @@ export function autoSizes(
    */
   selectors = 'img[data-sizes="auto"], source[data-sizes="auto"]',
 ) {
-  const elements = [...document.querySelectorAll<HTMLImageElement | HTMLSourceElement>(selectors)]
-
-  if (elements.length === 0)
-    return
-
-  for (const image of elements)
+  for (const image of [...document.querySelectorAll<HTMLImageElement | HTMLSourceElement>(selectors)])
     updateSizesAttribute(image)
 }
 
-export default lazyLoad
+export function loadImage(image: HTMLImageElement) {
+  const imageLoader = new Image()
+  imageLoader.srcset = image.dataset.srcset!
+  imageLoader.sizes = image.sizes
+
+  imageLoader.addEventListener('load', () => {
+    updatePictureSources(image)
+    updateImageSrcset(image)
+  })
+}
+
+export default Object.freeze({
+  isCrawler,
+  lazyLoadImages,
+  autoSizes,
+  loadImage,
+})
 
 // Automatically initiate if `init` attribute is present
 let s
 // eslint-disable-next-line no-cond-assign
 if ((s = document.currentScript) && s.hasAttribute('init'))
-  lazyLoad()
+  lazyLoadImages()
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   const { sizes } = element.dataset
@@ -82,27 +83,14 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
     element.sizes = `${width}px`
 }
 
-function updateSourceElements(picture: HTMLPictureElement) {
-  const sources = picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')
-
-  for (const source of sources) {
-    source.srcset = source.dataset.srcset!
-    source.removeAttribute('data-srcset')
-  }
+function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
+  image.srcset = image.dataset.srcset!
+  image.removeAttribute('data-srcset')
 }
 
-function loadImage(element: HTMLImageElement) {
-  const imageLoader = new Image()
-  imageLoader.srcset = element.dataset.srcset!
-  imageLoader.sizes = element.sizes
+function updatePictureSources(image: HTMLImageElement) {
+  const picture = image.parentElement as HTMLPictureElement
 
-  imageLoader.addEventListener('load', () => {
-    const picture = element.parentElement as HTMLPictureElement
-
-    if (picture?.tagName.toLowerCase() === 'picture')
-      updateSourceElements(picture)
-
-    element.srcset = imageLoader.srcset
-    element.removeAttribute('data-srcset')
-  })
+  if (picture?.tagName.toLowerCase() === 'picture')
+    [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset)
 }

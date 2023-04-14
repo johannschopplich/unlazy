@@ -7,7 +7,7 @@ export default defineConfig({
     // target: 'esnext',
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'Unlazy',
+      name: 'unlazy',
       formats: ['es', 'umd', 'iife'],
     },
   },
