@@ -1,19 +1,25 @@
-export const isLazyLoadingSupported = 'loading' in HTMLImageElement.prototype
-export const isCrawler = !('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent)
+import {
+  isCrawler,
+  isLazyLoadingSupported,
+  toElementsArray,
+  updateImageSrcset,
+  updatePictureSources,
+  updateSizesAttribute,
+} from './utils'
 
-export function lazyLoadImages(
+export function lazyLoadImages<T extends HTMLImageElement>(
   /**
-   * A CSS selector or a list of CSS selectors to match images to lazy load.
+   * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
    *
    * @default 'img[loading="lazy"]'
    */
-  selectors = 'img[loading="lazy"]',
+  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"]',
   /**
    * A callback function to run when an image is loaded.
    */
   onLoaded?: (image: HTMLImageElement) => void,
 ) {
-  for (const image of [...document.querySelectorAll<HTMLImageElement>(selectors)]) {
+  for (const image of toElementsArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
@@ -40,15 +46,15 @@ export function lazyLoadImages(
   }
 }
 
-export function autoSizes(
+export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   /**
-   * A CSS selector or a list of CSS selectors to calculate the `sizes` attribute for.
+   * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to calculate the `sizes` attribute for.
    *
    * @default 'img[data-sizes="auto"], source[data-sizes="auto"]'
    */
-  selectors = 'img[data-sizes="auto"], source[data-sizes="auto"]',
+  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
 ) {
-  for (const image of [...document.querySelectorAll<HTMLImageElement | HTMLSourceElement>(selectors)])
+  for (const image of toElementsArray<T>(selectorsOrElements))
     updateSizesAttribute(image)
 }
 
@@ -67,6 +73,7 @@ export function loadImage(
   })
 }
 
+// Default export for IIFE bundle
 export default Object.freeze({
   lazyLoadImages,
   autoSizes,
@@ -78,28 +85,3 @@ let s
 // eslint-disable-next-line no-cond-assign
 if ((s = document.currentScript) && s.hasAttribute('init'))
   lazyLoadImages()
-
-function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
-  const { sizes } = element.dataset
-  if (sizes !== 'auto')
-    return
-
-  const width = element instanceof HTMLSourceElement
-    ? element.parentElement?.offsetWidth
-    : element.offsetWidth
-
-  if (width)
-    element.sizes = `${width}px`
-}
-
-function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
-  image.srcset = image.dataset.srcset!
-  image.removeAttribute('data-srcset')
-}
-
-function updatePictureSources(image: HTMLImageElement) {
-  const picture = image.parentElement as HTMLPictureElement
-
-  if (picture?.tagName.toLowerCase() === 'picture')
-    [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset)
-}
