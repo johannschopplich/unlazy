@@ -7,7 +7,7 @@ import {
   updateSizesAttribute,
 } from './utils'
 
-export function lazyLoadImages<T extends HTMLImageElement>(
+export function lazyLoad<T extends HTMLImageElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
    *
@@ -75,7 +75,7 @@ export function loadImage(
 
 // Default export for IIFE bundle
 export default Object.freeze({
-  lazyLoadImages,
+  lazyLoad,
   autoSizes,
   loadImage,
 })
@@ -84,4 +84,4 @@ export default Object.freeze({
 let s
 // eslint-disable-next-line no-cond-assign
 if ((s = document.currentScript) && s.hasAttribute('init'))
-  lazyLoadImages()
+  lazyLoad()

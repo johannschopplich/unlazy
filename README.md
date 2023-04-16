@@ -35,13 +35,13 @@ unlazy intends to offer a good balance between performance and user experience a
 Use the ES module build by installing the [`unlazy` npm package](https://www.npmjs.com/package/unlazy):
 
 ```js
-import { lazyLoadImages } from 'unlazy'
+import { lazyLoad } from 'unlazy'
 
 // Apply lazy loading for all `img[loading="lazy"]` images
-lazyLoadImages()
+lazyLoad()
 ```
 
-You can customize the CSS selectors to target specific images by passing a string or an array of strings to [`lazyLoadImages`](#lazyloadimagesselectors-string).
+You can customize the CSS selectors to target specific images by passing a string or an array of strings to [`lazyLoad`](#lazyloadselectors).
 
 The following example shows how to use the `loading="lazy"` attribute with a blurry placeholder image:
 
@@ -79,7 +79,7 @@ If you don't want the auto initialize, remove the `init` attribute and move the 
 ```html
 <script src="https://unpkg.com/unlazy"></script>
 <script>
-  unlazy.lazyLoadImages()
+  unlazy.lazyLoad()
 </script>
 ```
 
@@ -116,13 +116,13 @@ Add the `loading="lazy"` attribute to an `<img>` element or a `<source>` element
 </picture>
 ```
 
-In your JavaScript file, import the `lazyLoadImages` function from the library and call it:
+In your JavaScript file, import the `lazyLoad` function from the library and call it:
 
 ```ts
-import { lazyLoadImages } from 'unlazy'
+import { lazyLoad } from 'unlazy'
 
 // Lazily load all `img[loading="lazy"]` images
-lazyLoadImages()
+lazyLoad()
 ```
 
 ### Auto Calculation of the `sizes` Attribute
@@ -140,7 +140,7 @@ The automatic sizes calculation uses the display width of the image.
 >
 ```
 
-When calling `lazyLoadImages()`, the library will automatically calculate the `sizes` attribute for all images with `data-sizes="auto"`.
+When calling `lazyLoad()`, the library will automatically calculate the `sizes` attribute for all images with `data-sizes="auto"`.
 
 Alternatively, you can use the `autoSizes()` function to calculate the `sizes` attribute for all images with `data-sizes="auto"`, without lazy loading the images.
 To do so, import the `autoSizes` function from the library and call it:
@@ -154,14 +154,14 @@ autoSizes()
 
 ### Custom Selector
 
-You can customize the CSS selectors to target specific images by passing a string to `lazyLoadImages()` and `autoSizes()`.
+You can customize the CSS selectors to target specific images by passing a string to `lazyLoad()` and `autoSizes()`.
 
 For example, if you want to target images with a `data-custom-lazy` attribute, you can set the selector to `img[data-custom-lazy]`:
 
 ```ts
-import { lazyLoadImages } from 'unlazy'
+import { lazyLoad } from 'unlazy'
 
-lazyLoadImages('img[data-custom-lazy]')
+lazyLoad('img[data-custom-lazy]')
 ```
 
 > **Note**
@@ -185,7 +185,7 @@ Keep in mind that manually loading images might negatively affect the perceived 
 
 ## API
 
-### `lazyLoadImages(selectors)`
+### `lazyLoad(selectors)`
 
 The main method of the library. It works as follows:
 
@@ -197,7 +197,7 @@ The main method of the library. It works as follows:
 **Type Declaration**
 
 ```ts
-function lazyLoadImages(
+function lazyLoad(
   /**
    * A CSS selector or a list of CSS selectors to match images to lazy load.
    *
