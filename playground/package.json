@@ -6,7 +6,7 @@
     "build": "nuxi build",
     "generate": "nuxi generate",
     "preview": "nuxi preview",
-    "postinstall": "nuxi prepare"
+    "prepare": "nuxi prepare"
   },
   "dependencies": {
     "@unhead/vue": "^1.1.25",

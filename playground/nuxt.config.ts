@@ -8,6 +8,8 @@ export default defineNuxtConfig({
         paths: {
           '@unlazy/core': ['../packages/core/src/index.ts'],
           '@unlazy/core/*': ['../packages/core/src/*'],
+          'unlazy': ['../packages/unlazy/src/index.ts'],
+          'unlazy/*': ['../packages/unlazy/src/*'],
         },
       },
     },
