@@ -49,11 +49,11 @@
     "dev": "unbuild --stub",
     "build": "unbuild && vite build"
   },
-  "devDependencies": {
-    "@unlazy/core": "workspace:*",
+  "peerDependencies": {
     "fast-blurhash": "^1.1.2"
   },
-  "peerDependencies": {
+  "devDependencies": {
+    "@unlazy/core": "workspace:*",
     "fast-blurhash": "^1.1.2"
   }
 }
