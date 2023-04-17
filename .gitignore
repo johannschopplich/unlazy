@@ -1,3 +1,6 @@
+.nuxt
+.output
+*.log
 .DS_Store
-node_modules
 dist
+node_modules
