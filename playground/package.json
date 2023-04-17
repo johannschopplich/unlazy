@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "packageManager": "pnpm@8.2.0",
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "generate": "nuxi generate",
+    "preview": "nuxi preview",
+    "postinstall": "nuxi prepare"
+  },
+  "dependencies": {
+    "@unhead/vue": "^1.1.25",
+    "@vue/reactivity": "3.2.47",
+    "@vue/runtime-core": "3.2.47",
+    "@vue/runtime-dom": "3.2.47",
+    "@vue/shared": "3.2.47",
+    "defu": "6.1.2",
+    "ufo": "1.1.1",
+    "unctx": "2.2.0",
+    "unstorage": "1.5.0",
+    "vue": "3.2.47",
+    "vue-router": "4.1.6"
+  },
+  "devDependencies": {
+    "@unlazy/core": "workspace:*",
+    "@unocss/nuxt": "^0.51.4",
+    "@unocss/reset": "^0.51.4",
+    "@vueuse/nuxt": "^10.0.2",
+    "nuxt": "^3.4.1",
+    "unlazy": "workspace:*",
+    "unocss": "^0.51.4",
+    "vue-tsc": "^1.2.0"
+  }
+}
