@@ -30,7 +30,7 @@ export function encodeSvgAsDataUri(svg: string) {
   let optimizedSvg = svg.trim()
 
   // Optimizes the SVG string by deleting line breaks and removing unnecessary spaces
-  optimizedSvg = optimizedSvg.replace(/\n/g, '').replace(/>\s+</g, '><')
+  optimizedSvg = optimizedSvg.replace(/\s+/g, ' ').replace(/>\s+</g, '><')
 
   // URI-encode the SVG string
   let uri = encodeURIComponent(optimizedSvg)
