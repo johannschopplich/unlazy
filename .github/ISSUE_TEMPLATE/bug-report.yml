@@ -1,0 +1,32 @@
+name: 🐞 Bug report
+description: Create a report to help me improve unlazy
+labels: [pending triage]
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Please provide a link to a repo that can reproduce the problem you ran into or provide information that is easy to understand and reproduce.
+      placeholder: Reproduction
+    validations:
+      required: true
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is. If you intend to submit a PR for this issue, tell me in the description. Thanks!
+      placeholder: Bug description
+    validations:
+      required: true
+  - type: textarea
+    id: additonal
+    attributes:
+      label: Additional context
+      description: If applicable, add any other context about the problem here
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Optional if reproduction is provided. Please try not to insert an image but copy paste the log text.
+      render: shell-script
