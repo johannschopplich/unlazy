@@ -1,0 +1,15 @@
+{
+  "name": "docs",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "serve": "vitepress serve"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.1.16",
+    "unocss": "^0.51.4",
+    "vitepress": "1.0.0-alpha.72"
+  }
+}

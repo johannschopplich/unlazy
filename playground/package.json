@@ -1,6 +1,6 @@
 {
   "private": true,
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.3.0",
   "scripts": {
     "dev": "nuxi dev",
     "build": "nuxi build",
@@ -9,7 +9,7 @@
     "prepare": "nuxi prepare"
   },
   "dependencies": {
-    "@unhead/vue": "^1.1.25",
+    "@unhead/vue": "^1.1.26",
     "@vue/reactivity": "3.2.47",
     "@vue/runtime-core": "3.2.47",
     "@vue/runtime-dom": "3.2.47",

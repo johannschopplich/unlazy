@@ -1,6 +1,7 @@
 .nuxt
 .output
-*.log
+**/.vitepress/cache
+*.log*
 .DS_Store
 dist
 node_modules

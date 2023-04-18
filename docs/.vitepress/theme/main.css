@@ -1,0 +1,15 @@
+.dark [img-light] {
+  display: none;
+}
+
+html:not(.dark) [img-dark] {
+  display: none;
+}
+
+.VPHome .VPImage {
+  transition: filter 150ms ease-in;
+}
+
+.VPHome .VPImage:not(:active):hover {
+  filter: blur(2px) brightness(1.1);
+}

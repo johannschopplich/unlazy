@@ -4,6 +4,7 @@ import '@unocss/reset/tailwind.css'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
 const pngPlaceholder = createPngDataUriFromBlurHash(blurhash, { ratio: 2 })
+const logoUrl = new URL('../docs/public/logo.svg', import.meta.url).href
 
 function toKb(bytes: number) {
   return (bytes / 1024).toFixed(2)
@@ -13,7 +14,7 @@ function toKb(bytes: number) {
 <template>
   <Head>
     <Title>unlazy</Title>
-    <Link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>" />
+    <Link rel="icon" :href="logoUrl" type="image/svg+xml" />
   </Head>
 
   <main class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">
