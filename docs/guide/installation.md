@@ -83,5 +83,5 @@ Regardless of the installation method, the following example shows how to use th
 ```
 
 :::tip
-For more examples, head over to the [Cookbook](/guide/cookbook).
+For more examples, head over to the [Cookbook](/cookbook/).
 :::
