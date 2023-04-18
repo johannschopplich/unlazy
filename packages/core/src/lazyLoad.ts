@@ -27,8 +27,8 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (_blurhash)
       applyBlurhashPlaceholder(image, _blurhash, blurhashSize)
 
-    // Bail if the image doesn't contain a blurry placeholder
-    if (!image.dataset.srcset)
+    // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
+    if (!image.dataset.src && !image.dataset.srcset)
       continue
 
     // Use the same logic as for crawlers when native lazy-loading is not supported
@@ -78,11 +78,13 @@ export function loadImage(
 ) {
   const imageLoader = new Image()
   imageLoader.srcset = image.dataset.srcset!
+  imageLoader.src = image.dataset.src!
   imageLoader.sizes = image.sizes
 
   imageLoader.addEventListener('load', () => {
     updatePictureSources(image)
     updateImageSrcset(image)
+    updateImageSrc(image)
     onLoaded?.(image)
   })
 }
@@ -98,6 +100,11 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
 
   if (width)
     element.sizes = `${width}px`
+}
+
+function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
+  image.src = image.dataset.src!
+  image.removeAttribute('data-src')
 }
 
 function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
