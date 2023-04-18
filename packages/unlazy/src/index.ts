@@ -1,1 +1,1 @@
-export { autoSizes, lazyLoad } from '@unlazy/core'
+export { autoSizes, lazyLoad, loadImage } from '@unlazy/core'

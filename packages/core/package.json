@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@8.3.0",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -17,8 +17,7 @@
   },
   "scripts": {
     "test": "vitest",
-    "test:run": "vitest run",
-    "test:types": "tsc --noEmit"
+    "test:run": "vitest run"
   },
   "devDependencies": {
     "fast-blurhash": "^1.1.2"
