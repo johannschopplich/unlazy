@@ -20,7 +20,7 @@
     "@types/node": "^18.15.11",
     "bumpp": "^9.1.0",
     "eslint": "^8.38.0",
-    "happy-dom": "^9.8.1",
+    "happy-dom": "^9.8.3",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1",
     "vite": "^4.2.2",

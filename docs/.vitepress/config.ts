@@ -82,6 +82,10 @@ function nav(): DefaultTheme.NavItem[] {
       activeMatch: '^/integrations/',
       items: [
         {
+          text: 'How To',
+          link: '/integrations/',
+        },
+        {
           text: 'Integrations',
           items: [
             { text: 'Vue', link: '/integrations/vue' },
@@ -148,6 +152,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Integrations',
       items: [
+        { text: 'How To', link: '/integrations/' },
         { text: 'Vue', link: '/integrations/vue' },
         { text: 'Nuxt', link: '/integrations/nuxt' },
       ],

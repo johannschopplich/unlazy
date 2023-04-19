@@ -1,6 +1,10 @@
 # Usage
 
-Add the `loading="lazy"` attribute to a `<img>` element or a `<source>` element within a `<picture>` element that you want to lazily load. Set a `src` attribute with the blurry placeholder and a `data-srcset` attribute for the high-quality image.
+Add the `loading="lazy"` attribute to a `<img>` element or a `<source>` element within a `<picture>` element that you want to lazily load. This is the only requirement for unlazy to work.
+
+Set a `src` attribute with the blurry placeholder and a `data-srcset` attribute for the high-quality image, or use `data-blurhash` attribute to generate a blurry placeholder image from a BlurHash string.
+
+You can also set a `data-sizes` attribute to automatically calculate the `sizes` attribute when using `data-srcset`.
 
 ```html
 <!-- You can use the `<img>` tag -->

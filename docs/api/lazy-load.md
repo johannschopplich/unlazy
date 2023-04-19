@@ -2,8 +2,12 @@
 
 The main method of the library. It works as follows:
 
-1. Detects whether the visitor is a bot or a crawler. This ensures that the full-quality image is loaded and indexed by search engines. The `data-srcset` attribute will be converted to `srcset`.
-2. Processes all images with a `loading="lazy"` attribute: it calculates the image's `sizes` attribute if `data-sizes="auto"` is set and then checks if the image has a blurry placeholder (given the `data-srcset` attribute).
+1. Detects whether the visitor is a bot or a crawler. This ensures that the full-quality image is loaded and indexed by search engines.
+   - The `data-srcset` attribute will be converted to `srcset`.
+   - The `data-src` attribute will be converted to `src`.
+2. Processes all images with a `loading="lazy"` attribute.
+   - Calculates the image's `sizes` attribute if `data-sizes="auto"` is set.
+   - Checks if the image has a blurry placeholder (given a `data-srcset` or `data-src` attribute is present).
 3. If the image has a blurry placeholder and is already in the viewport or the visitor is a crawler, it immediately loads the full-quality image.
 4. If the image is not yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
 

@@ -8,8 +8,8 @@ unlazy provided includes an exported function called `isCrawler` that detects if
 
 The `isCrawler` function checks the user agent string for common bot and crawler identifiers and determines if the `onscroll` event is supported by the browser. This information is then used to decide whether to immediately load the full-quality image or to use the blurry placeholder approach for the specific visitor.
 
-## Use `src`, `data-srcset`, and `sizes` Attributes
+## Use `src`, `data-srcset` and `sizes`, or `data-src` Attributes
 
-When using blurry placeholders, it is important to set the `src` attribute with the blurry placeholder image and use the `data-srcset` attribute for the high-quality image. This ensures that the initial rendering of the page will display the blurry placeholders, while the full-quality images will be loaded later as they enter the viewport.
+When using blurry placeholders, it is important to set the `src` attribute with the blurry placeholder image and use the `data-srcset` (or `data-src`) attribute for the high-quality image. This ensures that the initial rendering of the page will display the blurry placeholders, while the full-quality images will be loaded later as they enter the viewport.
 
-Additionally, using the `sizes` attribute (or `data-sizes="auto"` for automatic calculation) helps provide the search engine with information about the intended display size of the image. This enables search engines to select the most appropriate image source from the `srcset` attribute when indexing your website's content.
+Additionally, using the `sizes` attribute (or [`data-sizes="auto"`](/guide/usage#auto-calculation-of-the-sizes-attribute) for automatic calculation) helps provide the search engine with information about the intended display size of the image. This enables search engines to select the most appropriate image source from the `srcset` attribute when indexing your website's content.

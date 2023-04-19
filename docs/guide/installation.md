@@ -1,6 +1,6 @@
 # Installation
 
-Use the ES module build by installing the [`unlazy` npm package](https://www.npmjs.com/package/unlazy):
+You can install unlazy using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
@@ -14,7 +14,7 @@ Use the ES module build by installing the [`unlazy` npm package](https://www.npm
   ```
 :::
 
-To apply lazy loading to all images with the `loading="lazy"` attribute, import the [`lazyLoad`](/api/lazy-load) function and call it without any arguments:
+To apply lazy loading to all images with the `loading="lazy"` attribute, import the [`lazyLoad`](/api/lazy-load) function and call it:
 
 ```ts
 import { lazyLoad } from 'unlazy'
@@ -25,9 +25,13 @@ lazyLoad()
 
 You can target specific images by passing a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load to [`lazyLoad`](/api/lazy-load).
 
+:::tip
+For more use cases, head over to the [Usage](/guide/usage) guide.
+:::
+
 ## Without a Build Step
 
-unlazy can be used without a build step. Simply load it from a CDN:
+unlazy can be used without a build step. Useful for prototyping or when you don't want to add a build step to your project. Simply load it from a CDN:
 
 - Global build: <CdnLink name="unlazy.iife.js" />
   - Exposes `UnLazy` global property, supports auto initializing
@@ -83,5 +87,5 @@ Regardless of the installation method, the following example shows how to use th
 ```
 
 :::tip
-For more examples, head over to the [Cookbook](/cookbook/).
+For more examples, head over to the [Usage](/guide/usage) guide.
 :::
