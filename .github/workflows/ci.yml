@@ -43,3 +43,20 @@ jobs:
 
       - name: Typecheck
         run: pnpm run test:types
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: corepack enable
+
+      - name: Install
+        run: pnpm i
+
+      - name: Test
+        run: pnpm run test:run
