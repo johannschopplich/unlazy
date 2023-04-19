@@ -10,6 +10,8 @@ unlazy supports lazy loading images in your framework of choice. To create a com
 
 ```ts
 import { lazyLoad } from 'unlazy'
+
+lazyLoad(target)
 ```
 
 4. If the component gets unmounted before the image is loaded, call the cleanup function returned by `lazyLoad`. Take the following example from the [Vue integration](/integrations/vue):
