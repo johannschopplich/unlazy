@@ -29,9 +29,9 @@ You can target specific images by passing a CSS selector, a DOM element, a list 
 
 unlazy can be used without a build step. Simply load it from a CDN:
 
-- Global build: [unpkg.com/unlazy@0.2.0/dist/browser/unlazy.iife.js](https://unpkg.com/unlazy@0.2.0/dist/browser/unlazy.iife.js)
+- Global build: [unpkg.com/unlazy@0.2.2/dist/unlazy.iife.js](https://unpkg.com/unlazy@0.2.2/dist/unlazy.iife.js)
   - Exposes `UnLazy` global property, supports auto initializing
-- ESM build: [unpkg.com/unlazy@0.2.0/dist/index.mjs](https://unpkg.com/unlazy@0.2.0/dist/index.mjs)
+- ESM build: [unpkg.com/unlazy@0.2.2/dist/index.mjs](https://unpkg.com/unlazy@0.2.2/dist/index.mjs)
   - Must be used with `<script type="module">`
 
 ### Auto-Initialization

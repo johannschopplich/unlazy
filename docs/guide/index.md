@@ -18,6 +18,6 @@ unlazy intends to offer a good balance between performance and user experience a
 
 ## Getting Started
 
-Head over to the [installation guide](/guide/installation) to learn how to install unlazy in your project. After that, you can check out the [usage guide](/guide/usage) and may take a look at the [API reference](/api).
+Head over to the [installation guide](/guide/installation) to learn how to install unlazy in your project. After that, you can check out the [usage guide](/guide/usage) and may take a look at the [API reference](/api/).
 
 If your project is using [BlurHash](https://blurha.sh), you can check out the [BlurHash guide](/guide/blurhash) to learn how to use it with unlazy.
