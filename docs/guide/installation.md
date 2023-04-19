@@ -1,6 +1,6 @@
 # Installation
 
-You can install unlazy using your favorite package manager:
+Install the `unlazy` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
