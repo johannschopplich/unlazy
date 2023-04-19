@@ -1,8 +1,13 @@
-import Theme from 'vitepress/theme'
+import DefaultTheme from 'vitepress/theme'
 import './main.css'
 import './vars.css'
 import 'uno.css'
 
+import CdnLink from './components/CdnLink.vue'
+
 export default {
-  ...Theme,
+  extends: DefaultTheme,
+  enhanceApp(ctx) {
+    ctx.app.component('CdnLink', CdnLink)
+  },
 }

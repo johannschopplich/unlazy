@@ -8,7 +8,7 @@ titleTemplate: Universal lazy loading library
 hero:
   name: unlazy
   text: Universal lazy loading library for placeholder images
-  tagline: Framework-agnostic, leveraging native browser APIs
+  tagline: Framework-agnostic, using native browser APIs
   image:
     src: /logo-shadow.svg
     alt: unlazy
