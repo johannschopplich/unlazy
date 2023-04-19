@@ -1,5 +1,6 @@
 {
   "name": "unlazy",
+  "type": "module",
   "version": "0.1.0",
   "packageManager": "pnpm@8.3.0",
   "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
@@ -28,19 +29,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
-    },
-    "./blurhash": {
-      "types": "./dist/blurhash.d.ts",
-      "require": "./dist/blurhash.cjs",
-      "import": "./dist/blurhash.mjs"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "unpkg": "./dist/browser/unlazy.iife.js",
-  "jsdelivr": "./dist/browser/unlazy.iife.js",
+  "unpkg": "./dist/unlazy.iife.js",
+  "jsdelivr": "./dist/unlazy.iife.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
@@ -52,8 +45,10 @@
   "peerDependencies": {
     "fast-blurhash": "^1.1.2"
   },
+  "dependencies": {
+    "@unlazy/core": "workspace:*"
+  },
   "devDependencies": {
-    "@unlazy/core": "workspace:*",
     "fast-blurhash": "^1.1.2"
   }
 }

@@ -2,24 +2,45 @@
   "name": "@unlazy/core",
   "type": "module",
   "version": "0.1.0",
-  "private": true,
   "packageManager": "pnpm@8.3.0",
+  "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
+  "author": "Johann Schopplich <pkg@johannschopplich.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/johannschopplich/unlazy#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johannschopplich/unlazy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johannschopplich/unlazy/issues"
+  },
+  "keywords": [
+    "async",
+    "image",
+    "intersection",
+    "lazy",
+    "loading",
+    "lozad",
+    "native",
+    "observer",
+    "responsive"
+  ],
+  "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
     },
-    "./blurhash": {
-      "types": "./src/blurhash/index.ts",
-      "import": "./src/blurhash/index.ts"
-    },
-    "./*": "./src/*"
+    "./*": "./*"
   },
+  "types": "./dist/index.d.ts",
   "scripts": {
+    "dev": "unbuild --stub",
+    "build": "unbuild",
     "test": "vitest",
     "test:run": "vitest run"
   },
-  "devDependencies": {
+  "dependencies": {
     "fast-blurhash": "^1.1.2"
   }
 }

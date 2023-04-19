@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { lazyLoad } from 'unlazy'
-import { createPngDataUriFromBlurHash } from 'unlazy/blurhash'
+import { createPngDataUriFromBlurHash, lazyLoad } from 'unlazy'
 
 const props = defineProps<{
   blurhash: string

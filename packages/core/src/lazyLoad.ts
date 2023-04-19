@@ -103,13 +103,17 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
 }
 
 function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
-  image.src = image.dataset.src!
-  image.removeAttribute('data-src')
+  if (image.dataset.src) {
+    image.src = image.dataset.src!
+    image.removeAttribute('data-src')
+  }
 }
 
 function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
-  image.srcset = image.dataset.srcset!
-  image.removeAttribute('data-srcset')
+  if (image.dataset.srcset) {
+    image.srcset = image.dataset.srcset!
+    image.removeAttribute('data-srcset')
+  }
 }
 
 function updatePictureSources(image: HTMLImageElement) {

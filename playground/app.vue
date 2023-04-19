@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createPngDataUriFromBlurHash } from 'unlazy/blurhash'
+import { createPngDataUriFromBlurHash } from 'unlazy'
 import '@unocss/reset/tailwind.css'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'

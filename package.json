@@ -13,7 +13,7 @@
     "lint:fix": "eslint . --fix",
     "test": "pnpm -r test:run",
     "test:types": "tsc --noEmit",
-    "release": "bumpp package.json packages/*/package.json --all"
+    "release": "bumpp -r"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.38.5",

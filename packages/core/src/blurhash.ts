@@ -1,8 +1,8 @@
 import { decodeBlurHash } from 'fast-blurhash'
-import { DEFAULT_BLURHASH_SIZE } from '../constants'
-import { getBlurhashDimensions, isSSR } from '../utils'
-import { encodeSvgAsDataUri, generateBlurredImageSvg } from '../svg'
-import type { UnLazyLoadOptions } from '../types'
+import { DEFAULT_BLURHASH_SIZE } from './constants'
+import { getBlurhashDimensions, isSSR } from './utils'
+import { encodeSvgAsDataUri, generateBlurredImageSvg } from './svg'
+import type { UnLazyLoadOptions } from './types'
 import { getPngFromRgbaArr } from './png'
 
 export type BlurhashOptions = {
