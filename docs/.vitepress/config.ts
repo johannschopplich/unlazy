@@ -174,6 +174,7 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
         { text: 'lazyLoad', link: '/api/lazy-load' },
         { text: 'autoSizes', link: '/api/auto-sizes' },
         { text: 'loadImage', link: '/api/load-image' },
+        { text: 'createPngDataUriFromBlurHash', link: '/api/create-png-data-uri-from-blur-hash' },
       ],
     },
   ]
