@@ -10,7 +10,7 @@ export default defineConfig({
     lib: {
       entry: resolve(currentDir, 'src/index.iife.ts'),
       name: 'UnLazy',
-      formats: ['iife'],
+      formats: ['es', 'iife'],
     },
   },
 })
