@@ -1,9 +1,9 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_BLURHASH_SIZE } from './constants'
-import { getBlurhashDimensions, isSSR } from './utils'
-import { encodeSvgAsDataUri, generateBlurredImageSvg } from './svg'
+import { calculateDimensions, isSSR } from './utils'
+import { createBlurryImageSvg, encodeSvgAsDataUri } from './utils/image/svg'
 import type { UnLazyLoadOptions } from './types'
-import { getPngFromRgbaArr } from './png'
+import { getPngFromRgbaArr } from './utils/image'
 
 export type BlurhashOptions = {
   /**
@@ -21,7 +21,7 @@ export function createPngDataUriFromBlurHash(
     blurhashSize = DEFAULT_BLURHASH_SIZE,
   }: BlurhashOptions = {},
 ) {
-  const { width, height } = getBlurhashDimensions(ratio, blurhashSize)
+  const { width, height } = calculateDimensions(ratio, blurhashSize)
   const rgba = decodeBlurHash(hash, width, height)
   const png = getPngFromRgbaArr(rgba, width, height)
   let base64: string
@@ -46,8 +46,8 @@ export function createSvgDataUriFromBlurHash(
   }: BlurhashOptions = {},
 ) {
   const pngDataUri = createPngDataUriFromBlurHash(hash, { ratio, blurhashSize })
-  const { width, height } = getBlurhashDimensions(ratio, blurhashSize)
-  const svg = generateBlurredImageSvg(pngDataUri, width, height)
+  const { width, height } = calculateDimensions(ratio, blurhashSize)
+  const svg = createBlurryImageSvg(pngDataUri, width, height)
 
   return encodeSvgAsDataUri(svg)
 }

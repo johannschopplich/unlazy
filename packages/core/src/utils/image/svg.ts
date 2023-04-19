@@ -1,4 +1,4 @@
-const encodedCharReplacements: Record<string, string> = {
+const uriCharReplacements: Record<string, string> = {
   '%2F': '/',
   '%3A': ':',
   '%3D': '=',
@@ -8,7 +8,7 @@ const encodedCharReplacements: Record<string, string> = {
  * Generates an SVG with a Gaussian blur filter applied to the given image URI.
  * The resulting SVG serves as a blurry placeholder for the image.
  */
-export function generateBlurredImageSvg(imageUri: string, width: number, height: number) {
+export function createBlurryImageSvg(imageUri: string, width: number, height: number) {
   // Wrap the blurred image in a SVG to avoid rasterizing the filter
   return `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width.toFixed(2)} ${height.toFixed(2)}">
@@ -37,7 +37,7 @@ export function encodeSvgAsDataUri(svg: string) {
 
   // Back-decode certain characters to improve compression,
   // except '%20' to be compliant with W3C guidelines
-  uri = uri.replace(/%2F|%3A|%3D/g, char => encodedCharReplacements[char])
+  uri = uri.replace(/%2F|%3A|%3D/g, char => uriCharReplacements[char])
 
   return `data:image/svg+xml,${uri}`
 }

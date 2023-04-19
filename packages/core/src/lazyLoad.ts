@@ -1,6 +1,6 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_BLURHASH_SIZE } from './constants'
-import { getBlurhashDimensions, getDataUriFromArr, isCrawler, isLazyLoadingSupported, toElementsArr } from './utils'
+import { calculateDimensions, getDataUriFromArr, isCrawler, isLazyLoadingSupported, toElementsArr } from './utils'
 import type { UnLazyLoadOptions } from './types'
 
 export function lazyLoad<T extends HTMLImageElement>(
@@ -131,7 +131,7 @@ function applyBlurhashPlaceholder(
   // Preserve the original image's aspect ratio
   const actualWidth = image.width || image.offsetWidth || blurhashSize
   const actualHeight = image.height || image.offsetHeight || blurhashSize
-  const { width, height } = getBlurhashDimensions(
+  const { width, height } = calculateDimensions(
     actualWidth / actualHeight,
     blurhashSize,
   )

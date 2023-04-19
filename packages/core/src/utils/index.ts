@@ -15,17 +15,17 @@ export function toElementsArr<T extends HTMLElement>(
   return [...target]
 }
 
-export function getBlurhashDimensions(aspectRatio: number, blurhashSize: number) {
+export function calculateDimensions(aspectRatio: number, referenceSize: number) {
   let width: number
   let height: number
 
   if (aspectRatio >= 1) {
-    width = blurhashSize
-    height = Math.round(blurhashSize / aspectRatio)
+    width = referenceSize
+    height = Math.round(referenceSize / aspectRatio)
   }
   else {
-    width = Math.round(blurhashSize * aspectRatio)
-    height = blurhashSize
+    width = Math.round(referenceSize * aspectRatio)
+    height = referenceSize
   }
 
   return { width, height }
