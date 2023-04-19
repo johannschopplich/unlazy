@@ -24,7 +24,7 @@ Import the `LazyImage` component in your Vue single file component and use it in
 
 ```vue
 <script setup lang="ts">
-import { LazyImage } from '@unlazy/vue'
+import { LazyImage } from '@unlazy/vue/components'
 </script>
 
 <template>
