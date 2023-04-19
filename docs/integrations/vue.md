@@ -21,6 +21,7 @@ Create a new Vue single file component, e.g. `LazyImage.vue`, and add the follow
 
 ```vue
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { lazyLoad } from 'unlazy'
 
 defineProps<{

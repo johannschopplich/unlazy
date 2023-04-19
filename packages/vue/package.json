@@ -1,5 +1,5 @@
 {
-  "name": "@unlazy/core",
+  "name": "@unlazy/vue",
   "type": "module",
   "version": "0.2.4",
   "packageManager": "pnpm@8.3.0",
@@ -23,7 +23,8 @@
     "lozad",
     "native",
     "observer",
-    "responsive"
+    "responsive",
+    "vue"
   ],
   "sideEffects": false,
   "exports": {
@@ -31,16 +32,28 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
-    "./*": "./*"
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.mjs"
+    }
   },
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "unbuild --stub",
-    "build": "unbuild",
-    "test": "vitest",
-    "test:run": "vitest run"
+    "build": "unbuild"
+  },
+  "peerDependencies": {
+    "fast-blurhash": "^1.1.2",
+    "vue": "^3.2.47"
   },
   "dependencies": {
-    "fast-blurhash": "^1.1.2"
+    "unlazy": "workspace:*"
+  },
+  "devDependencies": {
+    "fast-blurhash": "^1.1.2",
+    "vue": "^3.2.47"
   }
 }

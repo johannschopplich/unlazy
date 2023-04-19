@@ -6,7 +6,7 @@
   "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
-  "homepage": "https://github.com/johannschopplich/unlazy#readme",
+  "homepage": "https://unlazy.byjohann.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johannschopplich/unlazy.git"
