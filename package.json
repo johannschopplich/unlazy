@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "pnpm -r test:run",
-    "test:types": "tsc --noEmit",
+    "test:types": "vue-tsc --noEmit",
     "release": "bumpp -r"
   },
   "devDependencies": {
