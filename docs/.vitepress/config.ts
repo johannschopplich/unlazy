@@ -66,7 +66,8 @@ function nav(): DefaultTheme.NavItem[] {
           items: [
             { text: 'Getting Started', link: '/guide/' },
             { text: 'Installation', link: '/guide/installation' },
-            { text: 'How It Works', link: '/guide/how-it-works' },
+            { text: 'Usage', link: '/guide/usage' },
+            { text: 'BlurHash', link: '/guide/blurhash' },
             { text: 'SEO Considerations', link: '/guide/seo-considerations' },
           ],
         },
@@ -111,6 +112,7 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'lazyLoad', link: '/api/lazy-load' },
             { text: 'autoSizes', link: '/api/auto-sizes' },
             { text: 'loadImage', link: '/api/load-image' },
+            { text: 'createPngDataUriFromBlurHash', link: '/api/create-png-data-uri-from-blur-hash' },
           ],
         },
       ],
@@ -134,7 +136,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'Getting Started', link: '/guide/' },
         { text: 'Installation', link: '/guide/installation' },
-        { text: 'How It Works', link: '/guide/how-it-works' },
+        { text: 'Usage', link: '/guide/usage' },
+        { text: 'BlurHash', link: '/guide/blurhash' },
         { text: 'SEO Considerations', link: '/guide/seo-considerations' },
       ],
     },
