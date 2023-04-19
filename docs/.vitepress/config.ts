@@ -1,27 +1,31 @@
 import { defineConfig } from 'vitepress'
 import type { DefaultTheme } from 'vitepress'
-import { github, ogDescription, ogImage, ogShortDescription, ogTitle, ogUrl, releases, version } from './meta'
+import { github, ogDescription, ogImage, ogTitle, ogUrl, releases, version } from './meta'
 
 const url = new URL(ogUrl)
 
 export default defineConfig({
   lang: 'en-US',
   title: ogTitle,
-  description: ogShortDescription,
+  description: ogDescription,
   head: [
-    ['meta', { name: 'theme-color', content: '#ffffff' }],
     ['link', { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' }],
+    ['meta', { name: 'author', content: 'Johann Schopplich' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:url', content: ogUrl }],
     ['meta', { property: 'og:title', content: ogTitle }],
     ['meta', { property: 'og:description', content: ogDescription }],
-    ['meta', { property: 'og:url', content: ogUrl }],
     ['meta', { property: 'og:image', content: ogImage }],
     ['meta', { name: 'twitter:title', content: ogTitle }],
     ['meta', { name: 'twitter:description', content: ogDescription }],
     ['meta', { name: 'twitter:image', content: ogImage }],
+    ['meta', { name: 'twitter:site', content: '@jschopplich' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     // Plausible analytics
     ['script', { 'src': 'https://plausible.io/js/script.js', 'defer': '', 'data-domain': url.hostname }],
   ],
+
+  lastUpdated: true,
 
   themeConfig: {
     logo: '/logo.svg',

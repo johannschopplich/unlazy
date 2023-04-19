@@ -6,7 +6,6 @@ export { version }
 export const ogUrl = 'https://unlazy.byjohann.dev/'
 export const ogTitle = name
 export const ogDescription = description
-export const ogShortDescription = 'Universal lazy loading library'
 export const ogImage = `${ogUrl}og.jpg`
 
 /* GitHub and social links */
