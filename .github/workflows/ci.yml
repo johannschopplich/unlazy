@@ -59,4 +59,4 @@ jobs:
         run: pnpm i
 
       - name: Test
-        run: pnpm run test:run
+        run: pnpm run test
