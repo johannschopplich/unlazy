@@ -26,9 +26,9 @@ import { LazyImage } from '@unlazy/react'
 export default function MyComponent() {
   return (
     <LazyImage
+      autoSizes
       src="data:image/svg+xml, ..."
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-      auto-sizes
     />
   )
 }
@@ -52,18 +52,22 @@ The `LazyImage` component accepts the following props:
 
 In both examples, the `sizes` attribute is automatically calculated.
 
-```html
-<!-- BlurHash -->
-<LazyImage
-  :blurhash="blurhash"
-  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-  auto-sizes
-/>
+```tsx
+return (
+  <>
+    {/* Blurhash in `blurhash` attribute */}
+    <LazyImage
+      blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
+      autoSizes
+      data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    />
 
-<!-- Encoded image in `src` attribute -->
-<LazyImage
-  src="data:image/svg+xml, ..."
-  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-  auto-sizes
-/>
+    {/* Encoded image in `src` attribute */}
+    <LazyImage
+      autoSizes
+      src="data:image/svg+xml, ..."
+      data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    />
+  </>
+)
 ```
