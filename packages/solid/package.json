@@ -24,7 +24,7 @@
     "native",
     "observer",
     "responsive",
-    "react"
+    "solid"
   ],
   "sideEffects": false,
   "exports": {

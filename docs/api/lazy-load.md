@@ -16,7 +16,7 @@ The main method of the library. It works as follows:
 ```ts
 interface UnLazyLoadOptions {
   /**
-   * Whether to generate a blurry placeholder from a [Blurhash](https://blurha.sh/) string.
+   * Whether to generate a blurry placeholder from a [BlurHash](https://blurha.sh/) string.
    * The placeholder image will be inlined as a `data:` URI in the `src` attribute.
    *
    * @remarks
@@ -24,12 +24,15 @@ interface UnLazyLoadOptions {
    * For single elements you can also pass a string directly.
    */
   blurhash?: string | boolean
+
   /**
    * The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio.
-   * This value will be used to calculate the dimensions of the generated blurry placeholder from a Blurhash string.   *
+   * This value will be used to calculate the dimensions of the generated blurry placeholder from a BlurHash string.
+   *
    * @default 32
    */
   blurhashSize?: number
+
   /**
    * A callback function to run when an image is loaded.
    */

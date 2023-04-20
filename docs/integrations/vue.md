@@ -63,7 +63,7 @@ The `LazyImage` component accepts the following props:
 | --- | --- | --- |
 | `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
-| `blurhashSize` | Number | The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio. This value will be used to calculate the dimensions of the generated blurry placeholder from a Blurhash string. |
+| `blurhashSize` | Number | The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio. This value will be used to calculate the dimensions of the generated blurry placeholder from a BlurHash string. |
 
 ## Examples
 

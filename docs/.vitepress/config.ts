@@ -172,7 +172,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
       ],
     },
-    { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/playground' },
+    { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/packages/nuxt/playground' },
   ]
 }
 

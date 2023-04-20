@@ -27,6 +27,7 @@
   "include": ["packages"],
   "exclude": [
     "node_modules",
+    "packages/nuxt",
     "packages/react",
     "packages/solid",
     "packages/vue",
