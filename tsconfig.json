@@ -27,6 +27,8 @@
   "include": ["packages"],
   "exclude": [
     "node_modules",
+    "packages/react",
+    "packages/vue",
     "**/*.md",
     "**/dist"
   ]

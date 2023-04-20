@@ -40,7 +40,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "unbuild"
+    "build": "unbuild",
+    "test:types": "tsc --noEmit"
   },
   "peerDependencies": {
     "fast-blurhash": "^1.1.2"
@@ -49,6 +50,7 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "@types/react": "^18.0.37",
     "fast-blurhash": "^1.1.2",
     "react": "^18.2.0",

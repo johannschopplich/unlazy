@@ -59,6 +59,9 @@ importers:
         specifier: workspace:*
         version: link:../unlazy
     devDependencies:
+      '@types/node':
+        specifier: ^18.15.11
+        version: 18.15.11
       '@types/react':
         specifier: ^18.0.37
         version: 18.0.37
@@ -88,6 +91,9 @@ importers:
         specifier: workspace:*
         version: link:../unlazy
     devDependencies:
+      '@types/node':
+        specifier: ^18.15.11
+        version: 18.15.11
       fast-blurhash:
         specifier: ^1.1.2
         version: 1.1.2

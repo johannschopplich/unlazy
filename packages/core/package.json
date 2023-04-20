@@ -39,7 +39,8 @@
     "dev": "unbuild --stub && npm run jiti-fix",
     "build": "unbuild",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "test:types": "tsc --noEmit"
   },
   "dependencies": {
     "fast-blurhash": "^1.1.2"

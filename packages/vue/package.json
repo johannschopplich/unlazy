@@ -43,7 +43,8 @@
   ],
   "scripts": {
     "dev": "unbuild --stub",
-    "build": "unbuild"
+    "build": "unbuild",
+    "test:types": "vue-tsc --noEmit"
   },
   "peerDependencies": {
     "fast-blurhash": "^1.1.2"
@@ -52,6 +53,7 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
+    "@types/node": "^18.15.11",
     "fast-blurhash": "^1.1.2",
     "vue": "^3.2.47"
   }

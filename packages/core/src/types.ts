@@ -11,7 +11,7 @@ export interface UnLazyLoadOptions {
 
   /**
    * The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio.
-   * This value will be used to calculate the dimensions of the generated blurry placeholder from a Blurhash string.   *
+   * This value will be used to calculate the dimensions of the generated blurry placeholder from a Blurhash string.
    * @default 32
    */
   blurhashSize?: number
