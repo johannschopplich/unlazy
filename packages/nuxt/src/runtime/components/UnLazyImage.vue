@@ -10,7 +10,7 @@ const props = withDefaults(
     autoSizes?: boolean
     blurhash?: string
     blurhashSize?: number
-    /** Only applies to SSR-decoded placeholder images from BlurHash */
+    /** Only applies to SSR-decoded placeholder images from BlurHash. */
     blurhashRatio?: number
     /** Whether the BlurHash should be decoded on the server. Overrides the global module config if set. */
     ssr?: boolean

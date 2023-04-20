@@ -57,14 +57,14 @@ In both examples, the `sizes` attribute is automatically calculated.
 ```tsx
 return (
   <>
-    {/* BlurHash in `blurhash` attribute */}
+    {/* BlurHash in `blurhash` prop */}
     <LazyImage
       blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
       autoSizes
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
     />
 
-    {/* Encoded image in `src` attribute */}
+    {/* Your placeholder image in `src` attribute (provided by your backend for example) */}
     <LazyImage
       autoSizes
       src="data:image/svg+xml, ..."
