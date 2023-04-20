@@ -1,7 +1,9 @@
+// eslint-disable-next-line unused-imports/no-unused-imports
+import { template } from 'solid-js/web'
 import { createEffect, createSignal, onCleanup } from 'solid-js'
+import type { JSX } from 'solid-js'
 import { lazyLoad } from 'unlazy'
 import type { UnLazyLoadOptions } from 'unlazy'
-import type { JSX } from 'solid-js'
 
 interface Props
   extends JSX.ImgHTMLAttributes<HTMLImageElement>,
