@@ -1,16 +1,15 @@
 {
-  "name": "unlazy",
-  "type": "module",
+  "name": "@unlazy/solid",
   "version": "0.4.4",
   "packageManager": "pnpm@8.3.0",
-  "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
+  "description": "Solid lazy loading library for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johannschopplich/unlazy.git",
-    "directory": "packages/unlazy"
+    "directory": "packages/solid"
   },
   "bugs": {
     "url": "https://github.com/johannschopplich/unlazy/issues"
@@ -24,38 +23,40 @@
     "lozad",
     "native",
     "observer",
-    "responsive"
+    "responsive",
+    "react"
   ],
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
-    },
-    "./blurhash": {
-      "types": "./dist/blurhash.d.ts",
-      "import": "./dist/blurhash.mjs"
     }
   },
-  "unpkg": "./dist/unlazy.iife.js",
-  "jsdelivr": "./dist/unlazy.iife.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
-    "dev": "unbuild --stub && npm run jiti-fix",
-    "build": "unbuild && vite build",
+    "build": "unbuild",
+    "dev": "pnpm -C playground run dev",
+    "dev:build": "pnpm -C playground run build",
     "test:types": "tsc --noEmit"
   },
   "peerDependencies": {
-    "fast-blurhash": "^1.1.2"
+    "fast-blurhash": "^1.1.2",
+    "solid-js": "^1.7.3"
   },
   "dependencies": {
-    "@unlazy/core": "workspace:*"
+    "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "fast-blurhash": "^1.1.2"
+    "@types/node": "^18.15.12",
+    "fast-blurhash": "^1.1.2",
+    "solid-js": "^1.7.3",
+    "vite-plugin-solid": "^2.7.0"
   }
 }

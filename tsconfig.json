@@ -28,6 +28,7 @@
   "exclude": [
     "node_modules",
     "packages/react",
+    "packages/solid",
     "packages/vue",
     "**/*.md",
     "**/dist"

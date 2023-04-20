@@ -1,3 +1,4 @@
+/* @refresh granular */
 import { LazyImage } from '../src'
 
 function App() {
