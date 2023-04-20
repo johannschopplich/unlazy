@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { createPngDataUriFromBlurHash, lazyLoad } from 'unlazy'
+import { lazyLoad } from 'unlazy'
+import { createPngDataUri } from 'unlazy/blurhash'
 
 const props = defineProps<{
   blurhash: string
   ratio?: number
 }>()
 
-const pngPlaceholder = createPngDataUriFromBlurHash(props.blurhash, { ratio: props.ratio })
+const emit = defineEmits<{
+  (event: 'updateDataUri', value: string): void
+}>()
+
 const target = ref<HTMLImageElement | undefined>()
+
+// SSR-Generate a PNG data URI from the BlurHash
+const pngPlaceholder = createPngDataUri(props.blurhash, { ratio: props.ratio })
+emit('updateDataUri', pngPlaceholder)
 
 onMounted(() => {
   if (target.value) {
