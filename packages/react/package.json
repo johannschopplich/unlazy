@@ -1,9 +1,8 @@
 {
-  "name": "unlazy",
-  "type": "module",
+  "name": "@unlazy/react",
   "version": "0.3.1",
   "packageManager": "pnpm@8.3.0",
-  "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
+  "description": "React lazy loading library for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",
@@ -23,33 +22,36 @@
     "lozad",
     "native",
     "observer",
-    "responsive"
+    "responsive",
+    "react"
   ],
   "sideEffects": false,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
     }
   },
-  "unpkg": "./dist/unlazy.iife.js",
-  "jsdelivr": "./dist/unlazy.iife.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
-    "dev": "unbuild --stub && npm run jiti-fix",
-    "build": "unbuild && vite build"
+    "build": "unbuild"
   },
   "peerDependencies": {
     "fast-blurhash": "^1.1.2"
   },
   "dependencies": {
-    "@unlazy/core": "workspace:*"
+    "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "fast-blurhash": "^1.1.2"
+    "@types/react": "^18.0.37",
+    "fast-blurhash": "^1.1.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
