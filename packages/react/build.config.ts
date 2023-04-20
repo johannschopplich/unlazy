@@ -7,9 +7,11 @@ export default defineBuildConfig({
   externals: ['react', 'react-dom'],
   rollup: {
     emitCJS: true,
-    inlineDependencies: true,
     resolve: {
       extensions: ['.ts', '.tsx'],
+    },
+    esbuild: {
+      jsx: 'automatic',
     },
   },
 })
