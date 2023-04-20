@@ -12,7 +12,7 @@ interface Props
   blurhash?: string
 }
 
-export function LazyImage(props: Props) {
+export function UnLazyImage(props: Props) {
   const [target, setTarget] = createSignal<HTMLImageElement | null>(null)
 
   createEffect(() => {

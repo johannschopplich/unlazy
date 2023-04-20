@@ -18,14 +18,14 @@ Install the `@unlazy/react` package using your favorite package manager:
   ```
 :::
 
-Import the `LazyImage` component in your component file:
+Import the `UnLazyImage` component in your component file:
 
 ```tsx
-import { LazyImage } from '@unlazy/react'
+import { UnLazyImage } from '@unlazy/react'
 
 export default function MyComponent() {
   return (
-    <LazyImage
+    <UnLazyImage
       autoSizes
       src="data:image/svg+xml, ..."
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
@@ -34,15 +34,15 @@ export default function MyComponent() {
 }
 ```
 
-## `LazyImage` Component
+## `UnLazyImage` Component
 
-The `LazyImage` component allows you to easily implement unlazy in your React application, providing a smoother image loading experience.
+The `UnLazyImage` component allows you to easily implement unlazy in your React application, providing a smoother image loading experience.
 
 The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
 
 ### Props
 
-The `LazyImage` component accepts the following props:
+The `UnLazyImage` component accepts the following props:
 
 | Prop | Type | Description |
 | --- | --- | --- |
@@ -58,14 +58,14 @@ In both examples, the `sizes` attribute is automatically calculated.
 return (
   <>
     {/* BlurHash in `blurhash` prop */}
-    <LazyImage
+    <UnLazyImage
       blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
       autoSizes
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
     />
 
     {/* Your placeholder image in `src` attribute (provided by your backend for example) */}
-    <LazyImage
+    <UnLazyImage
       autoSizes
       src="data:image/svg+xml, ..."
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"

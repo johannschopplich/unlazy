@@ -71,6 +71,12 @@ importers:
         specifier: workspace:*
         version: link:../unlazy
     devDependencies:
+      '@nuxt/module-builder':
+        specifier: ^0.3.0
+        version: 0.3.0
+      '@nuxt/schema':
+        specifier: ^3.4.2
+        version: 3.4.2(rollup@3.20.6)
       '@types/node':
         specifier: ^18.15.12
         version: 18.15.12
@@ -1217,6 +1223,20 @@ packages:
     transitivePeerDependencies:
       - rollup
       - supports-color
+
+  /@nuxt/module-builder@0.3.0:
+    resolution: {integrity: sha512-ocXA3pY5T3YKBLNE/Epgnh5cIIrad6vGP31gT7RorpFa7mtIqMxIPX/Z7RSQ7xnTvZW9sA1AxadjfhwHMEBhKg==}
+    hasBin: true
+    dependencies:
+      consola: 3.1.0
+      mlly: 1.2.0
+      mri: 1.2.0
+      pathe: 1.1.0
+      unbuild: 1.2.1
+    transitivePeerDependencies:
+      - sass
+      - supports-color
+    dev: true
 
   /@nuxt/schema@3.4.2(rollup@3.20.6):
     resolution: {integrity: sha512-DXB/fyjrAssFt9KGXyS+ZSfm1A0NYKhEoc01wyz1lGo//oETzUh3MmwE6X3x65NPqDlYZ6Mnj+IdftRRophv5Q==}

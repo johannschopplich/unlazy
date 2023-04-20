@@ -1,5 +1,5 @@
-import LazyImage from './LazyImage.vue'
+import UnLazyImage from './UnLazyImage.vue'
 
 export {
-  LazyImage,
+  UnLazyImage,
 }

@@ -20,15 +20,15 @@ Install the `@unlazy/vue` package using your favorite package manager:
 
 ### Local Import
 
-Import the `LazyImage` component in your Vue single file component and use it in your template:
+Import the `UnLazyImage` component in your Vue single file component and use it in your template:
 
 ```vue
 <script setup lang="ts">
-import { LazyImage } from '@unlazy/vue/components'
+import { UnLazyImage } from '@unlazy/vue/components'
 </script>
 
 <template>
-  <LazyImage
+  <UnLazyImage
     src="data:image/svg+xml, ..."
     data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
@@ -51,13 +51,13 @@ app.use(Unlazy)
 app.mount('#app')
 ```
 
-## `LazyImage` Component
+## `UnLazyImage` Component
 
-The `LazyImage` component allows you to easily implement unlazy in your Vue application, providing a smoother image loading experience. The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
+The `UnLazyImage` component allows you to easily implement unlazy in your Vue application, providing a smoother image loading experience. The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
 
 ### Props
 
-The `LazyImage` component accepts the following props:
+The `UnLazyImage` component accepts the following props:
 
 | Prop | Type | Description |
 | --- | --- | --- |
@@ -71,14 +71,14 @@ In both examples, the `sizes` attribute is automatically calculated.
 
 ```html
 <!-- BlurHash -->
-<LazyImage
+<UnLazyImage
   :blurhash="blurhash"
   data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes
 />
 
 <!-- Your placeholder image in `src` attribute (provided by your backend for example) -->
-<LazyImage
+<UnLazyImage
   src="data:image/svg+xml, ..."
   data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes

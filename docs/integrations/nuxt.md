@@ -61,7 +61,7 @@ In both examples, the `sizes` attribute is automatically calculated.
 
 ```html
 <!-- Your placeholder image in `src` attribute (provided by your backend for example) -->
-<LazyImage
+<UnLazyImage
   src="data:image/svg+xml, ..."
   data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes

@@ -10,7 +10,7 @@ interface Props
   blurhash?: string
 }
 
-export function LazyImage({
+export function UnLazyImage({
   autoSizes,
   blurhash,
   blurhashSize,
