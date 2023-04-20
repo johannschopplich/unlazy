@@ -9,7 +9,8 @@
   "homepage": "https://unlazy.byjohann.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johannschopplich/unlazy.git"
+    "url": "git+https://github.com/johannschopplich/unlazy.git",
+    "directory": "packages/core"
   },
   "bugs": {
     "url": "https://github.com/johannschopplich/unlazy/issues"

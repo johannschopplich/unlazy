@@ -9,7 +9,8 @@
   "homepage": "https://unlazy.byjohann.dev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/johannschopplich/unlazy.git"
+    "url": "git+https://github.com/johannschopplich/unlazy.git",
+    "directory": "packages/vue"
   },
   "bugs": {
     "url": "https://github.com/johannschopplich/unlazy/issues"
@@ -54,6 +55,7 @@
   },
   "devDependencies": {
     "@types/node": "^18.15.12",
+    "@vitejs/plugin-vue": "^4.1.0",
     "fast-blurhash": "^1.1.2",
     "vue": "^3.2.47"
   }
