@@ -30,6 +30,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
+    },
+    "./blurhash": {
+      "types": "./dist/blurhash.d.ts",
+      "import": "./dist/blurhash.mjs"
     }
   },
   "unpkg": "./dist/unlazy.iife.js",

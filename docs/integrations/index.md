@@ -29,4 +29,4 @@ onMounted(() => {
 })
 ```
 
-That's it! Optionally, you can create a SSR-friendly component that uses the [`createPngDataUriFromBlurHash`](/api/create-png-data-uri-from-blur-hash) function to create a placeholder image from a [BlurHash](/guide/blurhash) string on the server.
+That's it! Optionally, you can create a SSR-friendly component that uses the [`createPngDataUri`](/api/blurhash-create-png-data-uri) function to create a placeholder image from a [BlurHash](/guide/blurhash) string on the server.

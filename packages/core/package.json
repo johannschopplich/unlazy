@@ -31,6 +31,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
+    "./blurhash": {
+      "types": "./dist/blurhash.d.ts",
+      "import": "./dist/blurhash.mjs"
+    },
     "./*": "./*"
   },
   "types": "./dist/index.d.ts",

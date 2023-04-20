@@ -45,13 +45,13 @@ lazyLoad('img[loading="lazy"]', {
 
 ## Server-Side BlurHash Decoding
 
-If you are using a server-side framework, you can use the [`createPngDataUriFromBlurHash`](/api/create-png-data-uri-from-blur-hash) function to create a PNG data URI from a BlurHash string. The resulting data URI can then be used as the `src` attribute of an image.
+If you are using a server-side framework, you can use the [`createPngDataUri`](/api/blurhash-create-png-data-uri) function to create a PNG data URI from a BlurHash string. The resulting data URI can then be used as the `src` attribute of an image.
 
 ```ts
-import { createPngDataUriFromBlurHash } from 'unlazy'
+import { createPngDataUri } from 'unlazy/blurhash'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
-const pngDataUri = createPngDataUriFromBlurHash(blurhash)
+const pngDataUri = createPngDataUri(blurhash)
 ```
 
-For a complete list of options, see the [`createPngDataUriFromBlurHash` API documentation](/api/create-png-data-uri-from-blur-hash).
+For a complete list of options, see the [`createPngDataUri` API documentation](/api/blurhash-create-png-data-uri).

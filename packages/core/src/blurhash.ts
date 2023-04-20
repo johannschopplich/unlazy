@@ -14,7 +14,7 @@ export type BlurhashOptions = {
   ratio?: number
 } & Pick<UnLazyLoadOptions, 'blurhashSize'>
 
-export function createPngDataUriFromBlurHash(
+export function createPngDataUri(
   hash: string,
   {
     ratio = 1,
@@ -38,14 +38,14 @@ export function createPngDataUriFromBlurHash(
   return `data:image/png;base64,${base64}`
 }
 
-export function createSvgDataUriFromBlurHash(
+export function createSvgDataUri(
   hash: string,
   {
     ratio = 1,
     blurhashSize = DEFAULT_BLURHASH_SIZE,
   }: BlurhashOptions = {},
 ) {
-  const pngDataUri = createPngDataUriFromBlurHash(hash, { ratio, blurhashSize })
+  const pngDataUri = createPngDataUri(hash, { ratio, blurhashSize })
   const { width, height } = calculateDimensions(ratio, blurhashSize)
   const svg = createBlurryImageSvg(pngDataUri, width, height)
 

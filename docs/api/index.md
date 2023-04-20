@@ -8,4 +8,4 @@ unlazy provides a number of methods to help you with lazy loading images. The fo
 
 ## Server-Side Rendering
 
-unlazy supports server-side rendering. You can use the [`createPngDataUriFromBlurHash`](/api/create-png-data-uri-from-blur-hash) function to generate the placeholder images for the `src` attribute with SSR.
+unlazy supports server-side rendering. You can use the [`createPngDataUri`](/api/blurhash-create-png-data-uri) function to generate the placeholder images for the `src` attribute with SSR.

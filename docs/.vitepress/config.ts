@@ -116,12 +116,17 @@ function nav(): DefaultTheme.NavItem[] {
           link: '/api/',
         },
         {
-          text: 'API',
+          text: 'Functions',
           items: [
             { text: 'lazyLoad', link: '/api/lazy-load' },
             { text: 'autoSizes', link: '/api/auto-sizes' },
             { text: 'loadImage', link: '/api/load-image' },
-            { text: 'createPngDataUriFromBlurHash', link: '/api/create-png-data-uri-from-blur-hash' },
+          ],
+        },
+        {
+          text: 'BlurHash',
+          items: [
+            { text: 'createPngDataUri', link: '/api/blurhash-create-png-data-uri' },
           ],
         },
       ],
@@ -181,7 +186,12 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
         { text: 'lazyLoad', link: '/api/lazy-load' },
         { text: 'autoSizes', link: '/api/auto-sizes' },
         { text: 'loadImage', link: '/api/load-image' },
-        { text: 'createPngDataUriFromBlurHash', link: '/api/create-png-data-uri-from-blur-hash' },
+      ],
+    },
+    {
+      text: 'BlurHash',
+      items: [
+        { text: 'createPngDataUri', link: '/api/blurhash-create-png-data-uri' },
       ],
     },
   ]
