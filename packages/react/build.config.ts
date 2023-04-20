@@ -4,7 +4,11 @@ export default defineBuildConfig({
   entries: ['src/index'],
   clean: true,
   declaration: true,
-  externals: ['react', 'react-dom'],
+  externals: [
+    'react',
+    'react/jsx-runtime',
+    'react-dom',
+  ],
   rollup: {
     emitCJS: true,
     resolve: {
