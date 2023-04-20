@@ -2,16 +2,20 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { lazyLoad } from 'unlazy'
 
-defineProps<{
-  blurhash?: string
+const props = defineProps<{
   autoSizes?: boolean
+  blurhash?: string
+  blurhashSize?: number
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
 
 onMounted(() => {
   if (target.value) {
-    const cleanup = lazyLoad(target.value)
+    const cleanup = lazyLoad(target.value, {
+      blurhash: props.blurhash,
+      blurhashSize: props.blurhashSize,
+    })
     onBeforeUnmount(cleanup)
   }
 })
@@ -20,7 +24,6 @@ onMounted(() => {
 <template>
   <img
     ref="target"
-    :data-blurhash="blurhash"
     :data-sizes="autoSizes ? 'auto' : undefined"
     loading="lazy"
   >

@@ -13,7 +13,10 @@ export function LazyImage({ autoSizes, blurhash, blurhashSize }: Props) {
 
   useEffect(() => {
     if (target.current) {
-      const cleanup = lazyLoad(target.current, { blurhashSize })
+      const cleanup = lazyLoad(target.current, {
+        blurhash,
+        blurhashSize,
+      })
       return () => {
         cleanup()
       }
@@ -23,7 +26,6 @@ export function LazyImage({ autoSizes, blurhash, blurhashSize }: Props) {
   return (
     <img
       ref={target}
-      data-blurhash={blurhash}
       data-sizes={autoSizes ? 'auto' : undefined}
       loading="lazy"
     />
