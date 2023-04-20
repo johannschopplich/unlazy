@@ -1,27 +1,27 @@
-# `@unlazy/react`
+# `@unlazy/solid`
 
-unlazy is not only framework-agnostic, but also provides a React component that you can use in your React application.
+unlazy is not only framework-agnostic, but also provides a Solid component that you can use in your Solid application.
 
 ## Installation
 
-Install the `@unlazy/react` package using your favorite package manager:
+Install the `@unlazy/solid` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
-  pnpm add -D @unlazy/react
+  pnpm add -D @unlazy/solid
   ```
   ```bash [yarn]
-  yarn add -D @unlazy/react
+  yarn add -D @unlazy/solid
   ```
   ```bash [npm]
-  npm install -D @unlazy/react
+  npm install -D @unlazy/solid
   ```
 :::
 
 Import the `LazyImage` component in your component file:
 
 ```tsx
-import { LazyImage } from '@unlazy/react'
+import { LazyImage } from '@unlazy/solid'
 
 export default function MyComponent() {
   return (
@@ -36,7 +36,7 @@ export default function MyComponent() {
 
 ## `LazyImage` Component
 
-The `LazyImage` component allows you to easily implement unlazy in your React application, providing a smoother image loading experience.
+The `LazyImage` component allows you to easily implement unlazy in your Solid application, providing a smoother image loading experience.
 
 The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
 
