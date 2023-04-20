@@ -1,6 +1,6 @@
 # `@unlazy/vue`
 
-Since unlazy is framework-agnostic, integrating it into your Vue app is fairly easy.
+unlazy is not only framework-agnostic, but also provides a Vue component that you can use in your Vue application.
 
 ## Installation
 
@@ -28,7 +28,11 @@ import { LazyImage } from '@unlazy/vue/components'
 </script>
 
 <template>
-  <LazyImage data-srcset="image.jpg" blurhash="..." />
+  <LazyImage
+    src="data:image/svg+xml, ..."
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
+  />
 </template>
 ```
 
@@ -49,7 +53,7 @@ app.mount('#app')
 
 ## `LazyImage` Component
 
-The `LazyImage` component allows you to easily implement unlazy in your Vue application, providing a smoother image loading experience. The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop and the usage of custom `sizes`. It also enables you to specify a `blurhash` for the blurry placeholder image.
+The `LazyImage` component allows you to easily implement unlazy in your Vue application, providing a smoother image loading experience. The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
 
 ### Props
 
@@ -57,8 +61,9 @@ The `LazyImage` component accepts the following props:
 
 | Prop | Type | Description |
 | --- | --- | --- |
-| `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
 | `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
+| `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
+| `blurhashSize` | Number | The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio. This value will be used to calculate the dimensions of the generated blurry placeholder from a Blurhash string. |
 
 ## Examples
 
@@ -68,14 +73,14 @@ In both examples, the `sizes` attribute is automatically calculated.
 <!-- BlurHash -->
 <LazyImage
   :blurhash="blurhash"
-  srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes
 />
 
 <!-- Encoded image in `src` attribute -->
 <LazyImage
   src="data:image/svg+xml, ..."
-  srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes
 />
 ```

@@ -90,6 +90,7 @@ function nav(): DefaultTheme.NavItem[] {
           items: [
             { text: 'Vue', link: '/integrations/vue' },
             { text: 'Nuxt', link: '/integrations/nuxt' },
+            { text: 'React', link: '/integrations/react' },
           ],
         },
       ],
@@ -155,6 +156,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'How To', link: '/integrations/' },
         { text: 'Vue', link: '/integrations/vue' },
         { text: 'Nuxt', link: '/integrations/nuxt' },
+        { text: 'React', link: '/integrations/react' },
       ],
     },
     {
