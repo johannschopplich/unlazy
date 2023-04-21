@@ -10,7 +10,7 @@ You can also set a `data-sizes` attribute to automatically calculate the `sizes`
 <!-- You can use the `<img>` tag -->
 <img
   loading="lazy"
-  src="data:image/svg+xml, ..."
+  src="blurry placeholder ..."
   data-srcset="image.png"
   data-sizes="auto"
 >
@@ -18,11 +18,17 @@ You can also set a `data-sizes` attribute to automatically calculate the `sizes`
 <!-- … or the `<picture>` element -->
 <picture>
   <source
+    type="image/webp"
+    data-srcset="image-320w.webp 320w, image-640w.webp 640w"
+    data-sizes="100w"
+  />
+  <img
     loading="lazy"
-    src="data:image/svg+xml, ..."
-    data-srcset="/foo.jpg"
-    media="(min-width: 800px)"
-  >
+    src="blurry placeholder ..."
+    data-src="lazy.jpg"
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    data-sizes="auto"
+  />
 </picture>
 ```
 
