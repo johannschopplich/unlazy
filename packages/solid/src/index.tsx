@@ -1,6 +1,6 @@
 // eslint-disable-next-line unused-imports/no-unused-imports
 import { template } from 'solid-js/web'
-import { createEffect, createSignal, onCleanup } from 'solid-js'
+import { createEffect, onCleanup, onMount } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { lazyLoad } from 'unlazy'
 import type { UnLazyLoadOptions } from 'unlazy'
@@ -13,12 +13,14 @@ interface Props
 }
 
 export function UnLazyImage(props: Props) {
-  const [target, setTarget] = createSignal<HTMLImageElement | null>(null)
+  let target: HTMLImageElement
 
-  createEffect(() => {
-    const currentTarget = target()
-    if (currentTarget) {
-      const cleanup = lazyLoad(currentTarget, {
+  onMount(() => {
+    if (!target)
+      return
+
+    createEffect(() => {
+      const cleanup = lazyLoad(target, {
         blurhash: props.blurhash,
         blurhashSize: props.blurhashSize,
       })
@@ -26,12 +28,12 @@ export function UnLazyImage(props: Props) {
       onCleanup(() => {
         cleanup()
       })
-    }
+    })
   })
 
   return (
     <img
-      ref={setTarget}
+      ref={el => (target = el)}
       data-sizes={props.autoSizes ? 'auto' : undefined}
       loading="lazy"
       {...props}

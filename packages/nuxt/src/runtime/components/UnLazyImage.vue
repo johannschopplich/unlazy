@@ -2,7 +2,7 @@
 import { lazyLoad } from 'unlazy'
 import { createPngDataUri } from 'unlazy/blurhash'
 import type { ImgHTMLAttributes } from 'vue'
-import { onBeforeUnmount, onMounted, ref, useRuntimeConfig } from '#imports'
+import { onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 const props = withDefaults(
   defineProps<{
@@ -27,21 +27,34 @@ const props = withDefaults(
 
 const { unlazy } = useRuntimeConfig().public
 const target = ref<HTMLImageElement | undefined>()
+let cleanup: () => void
 
-// SSR-Generate a PNG data URI from the BlurHash
+// SSR-decoded BlurHash as PNG data URI placeholder image
 const isSSR = props.ssr ?? unlazy.blurhash?.ssr
+// const now = performance.now()
 const pngPlaceholder = (process.server && props.blurhash && isSSR)
   ? createPngDataUri(props.blurhash, { ratio: props.blurhashRatio })
   : undefined
 
+// if (isSSR)
+//   console.log(`[unlazy] BlurHash decoded in ${performance.now() - now}ms`)
+
 onMounted(() => {
-  if (target.value) {
-    const cleanup = lazyLoad(target.value, {
+  watchEffect(() => {
+    cleanup?.()
+
+    if (!target.value)
+      return
+
+    cleanup = lazyLoad(target.value, {
       blurhash: props.blurhash,
       blurhashSize: props.blurhashSize || unlazy.blurhash?.size,
     })
-    onBeforeUnmount(cleanup)
-  }
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanup?.()
 })
 </script>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { lazyLoad } from 'unlazy'
 
 const props = defineProps<{
@@ -9,15 +9,24 @@ const props = defineProps<{
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
+let cleanup: () => void
 
 onMounted(() => {
-  if (target.value) {
-    const cleanup = lazyLoad(target.value, {
+  watchEffect(() => {
+    cleanup?.()
+
+    if (!target.value)
+      return
+
+    cleanup = lazyLoad(target.value, {
       blurhash: props.blurhash,
       blurhashSize: props.blurhashSize,
     })
-    onBeforeUnmount(cleanup)
-  }
+  })
+})
+
+onBeforeUnmount(() => {
+  cleanup?.()
 })
 </script>
 
