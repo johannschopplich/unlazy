@@ -2,7 +2,7 @@ export const isSSR = typeof window === 'undefined'
 export const isLazyLoadingSupported = !isSSR && 'loading' in HTMLImageElement.prototype
 export const isCrawler = !isSSR && (!('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
 
-export function toElementsArr<T extends HTMLElement>(
+export function toElementArray<T extends HTMLElement>(
   target: string | T | NodeListOf<T> | T[],
   parentElement: Element | Document = document,
 ): T[] {
@@ -15,7 +15,7 @@ export function toElementsArr<T extends HTMLElement>(
   return [...target]
 }
 
-export function calculateDimensions(aspectRatio: number, referenceSize: number) {
+export function getScaledDimensions(aspectRatio: number, referenceSize: number) {
   let width: number
   let height: number
 
@@ -29,18 +29,4 @@ export function calculateDimensions(aspectRatio: number, referenceSize: number) 
   }
 
   return { width, height }
-}
-
-export function getDataUriFromArr(arr: Uint8ClampedArray, w: number, h: number) {
-  const canvas = document.createElement('canvas')
-  const ctx = canvas.getContext('2d')!
-
-  canvas.width = w
-  canvas.height = h
-
-  const imgData = ctx.createImageData(w, h)
-  imgData.data.set(arr)
-  ctx.putImageData(imgData, 0, 0)
-
-  return canvas.toDataURL()
 }

@@ -1,5 +1,5 @@
 import { DEFAULT_BLURHASH_SIZE } from './constants'
-import { isCrawler, isLazyLoadingSupported, toElementsArr } from './utils'
+import { isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 import { applyBlurhashPlaceholder } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
 
@@ -21,7 +21,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 ) {
   const cleanupFns = new Set<() => void>()
 
-  for (const image of toElementsArr<T>(selectorsOrElements)) {
+  for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
@@ -73,7 +73,7 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
    */
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
 ) {
-  for (const image of toElementsArr<T>(selectorsOrElements))
+  for (const image of toElementArray<T>(selectorsOrElements))
     updateSizesAttribute(image)
 }
 

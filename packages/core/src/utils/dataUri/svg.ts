@@ -26,7 +26,7 @@ export function createBlurryImageSvg(imageUri: string, width: number, height: nu
  * Optimizes the input SVG string and encodes it as a URI-encoded data URI.
  * This function is useful for creating optimized and compliant SVG data URIs.
  */
-export function encodeSvgAsDataUri(svg: string) {
+export function svgToDataUri(svg: string) {
   let optimizedSvg = svg.trim()
 
   // Optimizes the SVG string by deleting line breaks and removing unnecessary spaces
