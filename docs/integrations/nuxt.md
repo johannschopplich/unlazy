@@ -25,14 +25,16 @@ Add the `@unlazy/nuxt` module to your Nuxt configuration:
 export default defineNuxtConfig({
   modules: ['@unlazy/nuxt'],
 
-  // Module optoins
+  // Module options
   unlazy: {
     blurhash: {
       // Whether the BlurHash should be decoded on the server
+      // @default true
       ssr: true,
 
       // The size of the longer edge (width or height) of the
       // decoded BlurHash image, depending on the aspect ratio
+      // @default 32
       size: 32
     }
   }
