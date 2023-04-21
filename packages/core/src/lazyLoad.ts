@@ -100,7 +100,7 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
     return
 
   const width = element instanceof HTMLSourceElement
-    ? element.parentElement?.offsetWidth
+    ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
     : element.offsetWidth
 
   if (width)
