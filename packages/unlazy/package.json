@@ -46,7 +46,7 @@
   "scripts": {
     "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
     "dev": "unbuild --stub && npm run jiti-fix",
-    "build": "unbuild && vite build",
+    "build": "unbuild && vite build -c vite.config.bundle.ts && vite build -c vite.config.bundle.blurhash.ts",
     "test:types": "tsc --noEmit"
   },
   "peerDependencies": {

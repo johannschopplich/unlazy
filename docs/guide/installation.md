@@ -38,6 +38,13 @@ unlazy can be used without a build step. Useful for prototyping or when you don'
 - ESM build: <CdnLink name="unlazy.js" />
   - Must be used with `<script type="module">`
 
+:::info
+To keep the size of the bundle small, the global build does not include BlurHash decoding. If you want to use BlurHash, you must import the `unlazy.blurhash.iife.js` or `unlazy.blurhash.js` files instead:
+
+- Global build: <CdnLink name="unlazy.blurhash.iife.js" />
+- ESM build: <CdnLink name="unlazy.blurhash.js" />
+:::
+
 ### Auto-Initialization
 
 When using the global build, you can use the `init` attribute to automatically initialize and watch all elements that have a `loading="lazy"` attribute:

@@ -58,7 +58,7 @@
   "devDependencies": {
     "@nuxt/module-builder": "^0.3.0",
     "@nuxt/schema": "^3.4.2",
-    "@types/node": "^18.15.12",
+    "@types/node": "^18.15.13",
     "@unhead/vue": "^1.1.26",
     "@unocss/nuxt": "^0.51.5",
     "@unocss/reset": "^0.51.5",

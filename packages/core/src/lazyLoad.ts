@@ -1,7 +1,10 @@
-import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_BLURHASH_SIZE } from './constants'
-import { calculateDimensions, getDataUriFromArr, isCrawler, isLazyLoadingSupported, toElementsArr } from './utils'
+import { isCrawler, isLazyLoadingSupported, isSSR, toElementsArr } from './utils'
+import { applyBlurhashPlaceholder } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
+
+// Compile-time flag to exclude blurhash from IIFE bundle
+const __ENABLE_BLURHASH__ = true
 
 export function lazyLoad<T extends HTMLImageElement>(
   /**
@@ -23,9 +26,11 @@ export function lazyLoad<T extends HTMLImageElement>(
     updateSizesAttribute(image)
 
     // Generate the blurry placeholder from a Blurhash string if applicable
-    const _blurhash = blurhash === true ? image.dataset.blurhash : blurhash
-    if (_blurhash)
-      applyBlurhashPlaceholder(image, _blurhash, blurhashSize)
+    if (__ENABLE_BLURHASH__) {
+      const _blurhash = blurhash === true ? image.dataset.blurhash : blurhash
+      if (_blurhash && !isSSR)
+        applyBlurhashPlaceholder(image, _blurhash, blurhashSize)
+    }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset)
@@ -121,28 +126,4 @@ function updatePictureSources(image: HTMLImageElement) {
 
   if (picture?.tagName.toLowerCase() === 'picture')
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset)
-}
-
-function applyBlurhashPlaceholder(
-  image: HTMLImageElement,
-  blurhash: string,
-  blurhashSize: number,
-) {
-  // Preserve the original image's aspect ratio
-  const actualWidth = image.width || image.offsetWidth || blurhashSize
-  const actualHeight = image.height || image.offsetHeight || blurhashSize
-  const { width, height } = calculateDimensions(
-    actualWidth / actualHeight,
-    blurhashSize,
-  )
-
-  // Generate the blurry placeholder
-  try {
-    const pixels = decodeBlurHash(blurhash, width, height)
-    const placeholder = getDataUriFromArr(pixels, width, height)
-    image.src = placeholder
-  }
-  catch (error) {
-    console.error('Error generating blurry placeholder:', error)
-  }
 }

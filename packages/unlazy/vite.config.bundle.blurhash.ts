@@ -3,13 +3,13 @@ import { defineConfig } from 'vite'
 
 const currentDir = new URL('.', import.meta.url).pathname
 
-// Only build the IIFE format for the browser
 export default defineConfig({
   build: {
     emptyOutDir: false,
     lib: {
-      entry: resolve(currentDir, 'src/index.iife.ts'),
+      entry: resolve(currentDir, 'src/bundle/index.iife.ts'),
       name: 'UnLazy',
+      fileName: 'unlazy.blurhash',
       formats: ['es', 'iife'],
     },
   },

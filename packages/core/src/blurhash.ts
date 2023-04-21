@@ -1,6 +1,6 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_BLURHASH_SIZE } from './constants'
-import { calculateDimensions, isSSR } from './utils'
+import { calculateDimensions, getDataUriFromArr, isSSR } from './utils'
 import { createBlurryImageSvg, encodeSvgAsDataUri } from './utils/image/svg'
 import type { UnLazyLoadOptions } from './types'
 import { getPngFromRgbaArr } from './utils/image'
@@ -50,4 +50,28 @@ export function createSvgDataUri(
   const svg = createBlurryImageSvg(pngDataUri, width, height)
 
   return encodeSvgAsDataUri(svg)
+}
+
+export function applyBlurhashPlaceholder(
+  image: HTMLImageElement,
+  blurhash: string,
+  blurhashSize: number,
+) {
+  // Preserve the original image's aspect ratio
+  const actualWidth = image.width || image.offsetWidth || blurhashSize
+  const actualHeight = image.height || image.offsetHeight || blurhashSize
+  const { width, height } = calculateDimensions(
+    actualWidth / actualHeight,
+    blurhashSize,
+  )
+
+  // Generate the blurry placeholder
+  try {
+    const pixels = decodeBlurHash(blurhash, width, height)
+    const placeholder = getDataUriFromArr(pixels, width, height)
+    image.src = placeholder
+  }
+  catch (error) {
+    console.error('Error generating blurry placeholder:', error)
+  }
 }

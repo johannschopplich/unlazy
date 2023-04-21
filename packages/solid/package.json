@@ -54,7 +54,7 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^18.15.12",
+    "@types/node": "^18.15.13",
     "fast-blurhash": "^1.1.2",
     "solid-js": "^1.7.3",
     "vite-plugin-solid": "^2.7.0"

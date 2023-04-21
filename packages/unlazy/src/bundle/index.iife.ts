@@ -1,6 +1,6 @@
-import { autoSizes, lazyLoad, loadImage } from '@unlazy/core'
+import { autoSizes, lazyLoad, loadImage } from '../../../core/src'
 
-export { autoSizes, lazyLoad, loadImage } from '@unlazy/core'
+export { autoSizes, lazyLoad, loadImage } from '../../../core/src'
 
 // Default export for IIFE bundle
 export default Object.freeze({
