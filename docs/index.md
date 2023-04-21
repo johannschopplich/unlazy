@@ -31,7 +31,7 @@ features:
     linkText: How it works
   - title: Framework-Agnostic
     icon: <span class="i-carbon:layers"></span>
-    details: Works with any framework or no framework at all.
+    details: Works with any framework or no framework at all. Ready for Vue, Solid, React and Nuxt.
     link: /integrations/
     linkText: Build your own integration
   - title: SSR & Client-Side BlurHash Decoding
