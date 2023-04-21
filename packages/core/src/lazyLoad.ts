@@ -124,6 +124,8 @@ function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
 function updatePictureSources(image: HTMLImageElement) {
   const picture = image.parentElement as HTMLPictureElement
 
-  if (picture?.tagName.toLowerCase() === 'picture')
-    [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset)
+  if (picture?.tagName.toLowerCase() === 'picture') {
+    [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
+    [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
+  }
 }
