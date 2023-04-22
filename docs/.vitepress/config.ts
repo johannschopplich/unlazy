@@ -39,6 +39,7 @@ export default defineConfig({
 
     sidebar: {
       '/guide/': sidebarGuide(),
+      '/placeholders/': sidebarGuide(),
       '/integrations/': sidebarGuide(),
       '/cookbook/': sidebarGuide(),
       '/api/': sidebarApi(),
