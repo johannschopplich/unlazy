@@ -4,17 +4,17 @@ import { UnLazyImage } from '../src/components'
 
 <template>
   <UnLazyImage
-    thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
+    blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
     auto-sizes
     data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
     width="640"
     height="640"
   />
   <UnLazyImage
-    blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
+    thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
     auto-sizes
     data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-    width="640"
+    width="480"
     height="640"
   />
 </template>

@@ -52,8 +52,8 @@ const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
         <UnLazyImage
           :thumbhash="thumbhash"
           data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-          width="320"
-          height="1280"
+          width="480"
+          height="640"
         />
       </div>
 
@@ -63,8 +63,8 @@ const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
           :ssr="false"
           :thumbhash="thumbhash"
           data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-          width="320"
-          height="1280"
+          width="480"
+          height="640"
         />
       </div>
     </div>
