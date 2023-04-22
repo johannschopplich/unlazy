@@ -112,7 +112,7 @@ In each example, the `sizes` attribute is automatically calculated given the `au
     height="320"
   />
   ```
-  ```html [Client-side decoded ThumbHash]
+  ```html [Client-side decoded BlurHash]
   <UnLazyImage
     :blurhash="blurhash"
     :ssr="false"
