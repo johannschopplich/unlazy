@@ -3,22 +3,24 @@ import { addComponent, createResolver, defineNuxtModule } from '@nuxt/kit'
 import { name, version } from '../package.json'
 
 export interface ModuleOptions {
-  blurhash?: {
-    /**
-     * Whether to generate the blurry placeholder on the server-side if the `blurhash` prop is set.
-     *
-     * @default true
-     */
-    ssr?: boolean
+  /**
+   * Whether to generate the blurry placeholder on the server-side if a BlurHash
+   * or ThumbHash is provided via the `blurhash`, respectively `thumbhash` prop.
+   *
+   * @default true
+   */
+  ssr?: boolean
 
-    /**
-     * The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio.
-     * This value will be used to calculate the dimensions of the generated blurry placeholder from a BlurHash string.
-     *
-     * @default 32
-     */
-    size?: number
-  }
+  /**
+   * The size of the longer edge (width or height) of the BlurHash image to be
+   * decoded, depending on the aspect ratio.
+   *
+   * @remarks
+   * This option is ignored if the a ThumbHash is used.
+   *
+   * @default 32
+   */
+  placeholderSize?: number
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -31,10 +33,8 @@ export default defineNuxtModule<ModuleOptions>({
     },
   },
   defaults: {
-    blurhash: {
-      ssr: true,
-      size: 32,
-    },
+    ssr: true,
+    placeholderSize: 32,
   },
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)

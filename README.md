@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/unlazy?color=a1b858&label=)](https://www.npmjs.com/package/unlazy)
 
-Universal lazy loading library leveraging native browser APIs. It's intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images or with a [BlurHash](https://blurha.sh).
+Universal lazy loading library leveraging native browser APIs. It's intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images and with a [BlurHash](https://unlazy.byjohann.dev/placeholders/blurhash) or [ThumbHash](https://unlazy.byjohann.dev/placeholders/thumbhash)string.
 
 It's the modernized and now framework-agnostic rewrite of my [Loadeer.js](https://github.com/johannschopplich/loadeer) library, which uses an Intersection Observer to detect when an image enters the viewport.
 
@@ -12,7 +12,7 @@ It's the modernized and now framework-agnostic rewrite of my [Loadeer.js](https:
 
 - 🎀 **Native**: Utilizes the `loading="lazy"` attribute
 - 🎛️ **Framework-agnostic**: Works with any framework or no framework at all
-- 🌊 **BlurHash support**: SSR & Client-Side [BlurHash](https://blurha.sh) Decoding
+- 🌊 **BlurHash & ThumbHash support**: SSR & client-side [BlurHash](https://blurha.sh) and [ThumbHash](https://github.com/evanw/thumbhash) decoding
 - 🪄 **Sizing**: Automatically calculates the `sizes` attribute
 - 🔍 **SEO-friendly**: Detects search engine bots and preloads all images
 - 🎟 **`<picture>`**: Supports multiple image tags

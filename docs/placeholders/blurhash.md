@@ -1,6 +1,6 @@
 # BlurHash
 
-unlazy supports client-side [BlurHash](https://blurha.sh/) and server-side (SSR) decoding. This allows you to use BlurHash placeholders for images that are not yet loaded.
+unlazy supports client-side and server-side (SSR) decoding of [BlurHash](https://blurha.sh) strings. This allows you to use BlurHash placeholders for images that are not yet loaded.
 
 A BlurHash placeholder is a low-resolution, low-quality representation of the image, encoded as a string and decodable to a PNG image.
 
@@ -17,9 +17,9 @@ By default, unlazy will decode BlurHash strings on the client-side automatically
 >
 ```
 
-### `blurhash` Option
+### `hash` Option
 
-If you are initializing unlazy for single images, i.e. in a frontend framework component of your choice, you can pass a custom `blurhash` string to the [`lazyLoad`](/api/lazy-load) function. It has higher priority than the `data-blurhash` attribute.
+If you are initializing unlazy for single images, i.e. in a frontend framework component of your choice, you can pass a custom `hash` string to the [`lazyLoad`](/api/lazy-load) function. It has higher priority than the `data-blurhash` attribute.
 
 ```ts
 import { lazyLoad } from 'unlazy'
@@ -27,21 +27,30 @@ import { lazyLoad } from 'unlazy'
 const image = document.querySelector('#image')
 
 lazyLoad(image, {
-  blurhash: 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH',
+  hash: 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH',
+  hashType: 'blurhash'
 })
 ```
 
+::: info
+The `hashType` is optional and defaults to `blurhash`.
+:::
+
 ### Disabling BlurHash Decoding
 
-To disable blurhash decoding, pass `false` to the `blurhash` option.
+To disable BlurHash decoding altogether, pass `false` to the `hash` option.
 
 ```ts
 import { lazyLoad } from 'unlazy'
 
 lazyLoad('img[loading="lazy"]', {
-  blurhash: false,
+  hash: false
 })
 ```
+
+::: info
+This will also disable [ThumbHash](/placeholders/thumbhash) decoding.
+:::
 
 ## Server-Side BlurHash Decoding
 

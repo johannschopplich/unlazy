@@ -1,12 +1,12 @@
-export function arrayToDataUri(arr: Uint8ClampedArray, w: number, h: number) {
+export function arrayToDataUri(array: Uint8ClampedArray, width: number, height: number) {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')!
 
-  canvas.width = w
-  canvas.height = h
+  canvas.width = width
+  canvas.height = height
 
-  const imgData = ctx.createImageData(w, h)
-  imgData.data.set(arr)
+  const imgData = ctx.createImageData(width, height)
+  imgData.data.set(array)
   ctx.putImageData(imgData, 0, 0)
 
   return canvas.toDataURL()

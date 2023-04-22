@@ -3,13 +3,18 @@ import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
 import { lazyLoad } from 'unlazy'
 
 const props = defineProps<{
+  /** A flag to indicate whether the sizes attribute should be automatically calculated. */
   autoSizes?: boolean
+  /** A BlurHash string representing the blurry placeholder image. */
   blurhash?: string
-  blurhashSize?: number
+  /** A ThumbHash string representing the blurry placeholder image. */
+  thumbhash?: string
+  /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
+  placeholderSize?: number
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
-let cleanup: () => void
+let cleanup: () => void | undefined
 
 onMounted(() => {
   watchEffect(() => {
@@ -19,8 +24,9 @@ onMounted(() => {
       return
 
     cleanup = lazyLoad(target.value, {
-      blurhash: props.blurhash,
-      blurhashSize: props.blurhashSize,
+      hash: props.thumbhash || props.blurhash,
+      hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize: props.placeholderSize,
     })
   })
 })

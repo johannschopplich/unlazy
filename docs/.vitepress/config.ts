@@ -71,8 +71,20 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'Getting Started', link: '/guide/' },
             { text: 'Installation', link: '/guide/installation' },
             { text: 'Usage', link: '/guide/usage' },
-            { text: 'BlurHash', link: '/guide/blurhash' },
             { text: 'SEO Considerations', link: '/guide/seo-considerations' },
+          ],
+        },
+      ],
+    },
+    {
+      text: 'Placeholders',
+      activeMatch: '^/placeholders/',
+      items: [
+        {
+          text: 'Placeholders',
+          items: [
+            { text: 'BlurHash', link: '/placeholders/blurhash' },
+            { text: 'ThumbHash', link: '/placeholders/thumbhash' },
           ],
         },
       ],
@@ -130,6 +142,12 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'createPngDataUri', link: '/api/blurhash-create-png-data-uri' },
           ],
         },
+        {
+          text: 'ThumbHash',
+          items: [
+            { text: 'createPngDataUri', link: '/api/thumbhash-create-png-data-uri' },
+          ],
+        },
       ],
     },
     {
@@ -152,8 +170,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Getting Started', link: '/guide/' },
         { text: 'Installation', link: '/guide/installation' },
         { text: 'Usage', link: '/guide/usage' },
-        { text: 'BlurHash', link: '/guide/blurhash' },
         { text: 'SEO Considerations', link: '/guide/seo-considerations' },
+      ],
+    },
+    {
+      text: 'Placeholders',
+      items: [
+        { text: 'BlurHash', link: '/placeholders/blurhash' },
+        { text: 'ThumbHash', link: '/placeholders/thumbhash' },
       ],
     },
     {
@@ -194,6 +218,12 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
       text: 'BlurHash',
       items: [
         { text: 'createPngDataUri', link: '/api/blurhash-create-png-data-uri' },
+      ],
+    },
+    {
+      text: 'ThumbHash',
+      items: [
+        { text: 'createPngDataUri', link: '/api/thumbhash-create-png-data-uri' },
       ],
     },
   ]

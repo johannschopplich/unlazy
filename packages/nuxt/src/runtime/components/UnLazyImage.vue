@@ -1,39 +1,49 @@
 <script setup lang="ts">
 import { lazyLoad } from 'unlazy'
-import { createPngDataUri } from 'unlazy/blurhash'
+import { createPngDataUri as createPngDataUriFromThumbHash } from 'unlazy/thumbhash'
+import { createPngDataUri as createPngDataUriFromBlurHash } from 'unlazy/blurhash'
 import type { ImgHTMLAttributes } from 'vue'
 import { onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 const props = withDefaults(
   defineProps<{
     src?: ImgHTMLAttributes['src']
+    /** A flag to indicate whether the sizes attribute should be automatically calculated. */
     autoSizes?: boolean
+    /** A BlurHash string representing the blurry placeholder image. */
     blurhash?: string
-    blurhashSize?: number
-    /** Only applies to SSR-decoded placeholder images from BlurHash. */
-    blurhashRatio?: number
-    /** Whether the BlurHash should be decoded on the server. Overrides the global module config if set. */
+    /** A ThumbHash string representing the blurry placeholder image. */
+    thumbhash?: string
+    /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
+    placeholderSize?: number
+    /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
+    placeholderRatio?: number
+    /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */
     ssr?: boolean
   }>(),
   {
     src: undefined,
     autoSizes: false,
     blurhash: undefined,
-    blurhashSize: undefined,
-    blurhashRatio: undefined,
+    thumbhash: undefined,
+    placeholderSize: undefined,
+    placeholderRatio: undefined,
     ssr: undefined,
   },
 )
 
 const { unlazy } = useRuntimeConfig().public
 const target = ref<HTMLImageElement | undefined>()
-let cleanup: () => void
+let cleanup: () => void | undefined
 
 // SSR-decoded BlurHash as PNG data URI placeholder image
-const isSSR = props.ssr ?? unlazy.blurhash?.ssr
+const isSSR = process.server && (props.ssr ?? unlazy.ssr)
+
 // const now = performance.now()
-const pngPlaceholder = (process.server && props.blurhash && isSSR)
-  ? createPngDataUri(props.blurhash, { ratio: props.blurhashRatio })
+const pngPlaceholder = (isSSR && (props.thumbhash || props.blurhash))
+  ? props.thumbhash
+    ? createPngDataUriFromThumbHash(props.thumbhash)
+    : createPngDataUriFromBlurHash(props.blurhash, { ratio: props.placeholderRatio })
   : undefined
 
 // if (isSSR)
@@ -47,8 +57,9 @@ onMounted(() => {
       return
 
     cleanup = lazyLoad(target.value, {
-      blurhash: props.blurhash,
-      blurhashSize: props.blurhashSize || unlazy.blurhash?.size,
+      hash: props.thumbhash || props.blurhash,
+      hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize: props.placeholderSize || unlazy.placeholderSize,
     })
   })
 })

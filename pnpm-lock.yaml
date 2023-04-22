@@ -55,6 +55,9 @@ importers:
       fast-blurhash:
         specifier: ^1.1.2
         version: 1.1.2
+      thumbhash:
+        specifier: ^0.1.1
+        version: 0.1.1
 
   packages/nuxt:
     dependencies:
@@ -176,6 +179,9 @@ importers:
       fast-blurhash:
         specifier: ^1.1.2
         version: 1.1.2
+      thumbhash:
+        specifier: ^0.1.1
+        version: 0.1.1
 
   packages/vue:
     dependencies:
@@ -7282,6 +7288,9 @@ packages:
   /through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
+
+  /thumbhash@0.1.1:
+    resolution: {integrity: sha512-kH5pKeIIBPQXAOni2AiY/Cu/NKdkFREdpH+TLdM0g6WA7RriCv0kPLgP731ady67MhTAqrVG/4mnEeibVuCJcg==}
 
   /time-zone@1.0.0:
     resolution: {integrity: sha512-TIsDdtKo6+XrPtiTm1ssmMngN1sAhyKnTO2kunQWqNPWIVvCm15Wmw4SWInwTVgJ5u/Tr04+8Ei9TNcw4x4ONA==}

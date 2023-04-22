@@ -1,1 +1,1 @@
-export { createPngDataUri, createSvgDataUri } from '@unlazy/core/blurhash'
+export { createPngDataUri } from '@unlazy/core/blurhash'

@@ -9,7 +9,7 @@ export default defineConfig({
     lib: {
       entry: resolve(currentDir, 'src/bundle/index.iife.ts'),
       name: 'UnLazy',
-      fileName: 'unlazy.blurhash',
+      fileName: 'unlazy.with-hashing',
       formats: ['es', 'iife'],
     },
   },

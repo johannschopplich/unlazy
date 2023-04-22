@@ -25,7 +25,7 @@ lazyLoad()
 
 You can target specific images by passing a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load to [`lazyLoad`](/api/lazy-load).
 
-:::tip
+::: tip
 For more use cases, head over to the [Usage](/guide/usage) guide.
 :::
 
@@ -39,10 +39,10 @@ unlazy can be used without a build step. Useful for prototyping or when you don'
   - Must be used with `<script type="module">`
 
 :::info
-To keep the size of the bundle small, the global build does not include BlurHash decoding. If you want to use BlurHash, you must import the `unlazy.blurhash.iife.js` or `unlazy.blurhash.js` files instead:
+To keep the size of the bundle small, the global build does neither include BlurHash, nor ThumbHash decoding. If you want to use either of those, you must import the `unlazy.with-hashing.iife.js` or `unlazy.with-hashing.js` files instead:
 
-- Global build: <CdnLink name="unlazy.blurhash.iife.js" />
-- ESM build: <CdnLink name="unlazy.blurhash.js" />
+- Global build: <CdnLink name="unlazy.with-hashing.iife.js" />
+- ESM build: <CdnLink name="unlazy.with-hashing.js" />
 :::
 
 ### Auto-Initialization

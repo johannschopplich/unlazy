@@ -32,6 +32,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs"
     },
+    "./thumbhash": {
+      "types": "./dist/thumbhash.d.ts",
+      "import": "./dist/thumbhash.mjs"
+    },
     "./blurhash": {
       "types": "./dist/blurhash.d.ts",
       "import": "./dist/blurhash.mjs"
@@ -48,6 +52,7 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
-    "fast-blurhash": "^1.1.2"
+    "fast-blurhash": "^1.1.2",
+    "thumbhash": "^0.1.1"
   }
 }

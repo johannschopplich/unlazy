@@ -1,6 +1,6 @@
 # `autoSizes`
 
-Automatically calculate the `sizes` attribute if the `data-sizes` attribute is set to `auto`.
+The `autoSizes` function calculates the sizes attribute for a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements if the `data-sizes` attribute is set to `auto`.
 
 To lazy load images, refer to the [`lazyLoad`](/api/lazy-load) method.
 

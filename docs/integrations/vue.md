@@ -63,24 +63,35 @@ The `UnLazyImage` component accepts the following props:
 | --- | --- | --- |
 | `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
-| `blurhashSize` | Number | The size of the longer edge (width or height) of the decoded BlurHash image, depending on the aspect ratio. This value will be used to calculate the dimensions of the generated blurry placeholder from a BlurHash string. |
+| `thumbhash` | String | A ThumbHash string representing the blurry placeholder image. |
+| `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
 
 ## Examples
 
-In both examples, the `sizes` attribute is automatically calculated.
+::: info
+In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
+:::
 
-```html
-<!-- BlurHash -->
-<UnLazyImage
-  :blurhash="blurhash"
-  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-  auto-sizes
-/>
-
-<!-- Your placeholder image in `src` attribute (provided by your backend for example) -->
-<UnLazyImage
-  src="data:image/svg+xml, ..."
-  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
-  auto-sizes
-/>
-```
+::: code-group
+  ```vue [BlurHash]
+  <UnLazyImage
+    :blurhash="blurhash"
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
+  />
+  ```
+  ```vue [ThumbHash]
+  <UnLazyImage
+    :thumbhash="thumbhash"
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
+  />
+  ```
+  ```vue [Inlined placeholder image]
+  <UnLazyImage
+    src="data:image/svg+xml, ..."
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
+  />
+  ```
+:::

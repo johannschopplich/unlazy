@@ -1,10 +1,11 @@
-import { DEFAULT_BLURHASH_SIZE } from './constants'
+import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
-import { applyBlurhashPlaceholder } from './blurhash'
+import { createPngDataUri as createPngDataUriFromThumbHash } from './formats/thumbhash'
+import { createPngDataUri as createPngDataUriFromBlurHash } from './formats/blurhash'
 import type { UnLazyLoadOptions } from './types'
 
-// Compile-time flag to exclude blurhash from IIFE bundle
-const __ENABLE_BLURHASH__ = true
+// Compile-time flag to exclude BlurHash and ThumbHash from IIFE bundle
+const __ENABLE_HASH_DECODING__ = true
 
 export function lazyLoad<T extends HTMLImageElement>(
   /**
@@ -14,9 +15,10 @@ export function lazyLoad<T extends HTMLImageElement>(
    */
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"]',
   {
-    blurhash = true,
-    blurhashSize = DEFAULT_BLURHASH_SIZE,
-    onLoaded,
+    hash = true,
+    hashType = 'blurhash',
+    placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
+    onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
   const cleanupFns = new Set<() => void>()
@@ -25,11 +27,19 @@ export function lazyLoad<T extends HTMLImageElement>(
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
-    // Generate the blurry placeholder from a Blurhash string if applicable
-    if (__ENABLE_BLURHASH__) {
-      const _blurhash = blurhash === true ? image.dataset.blurhash : blurhash
-      if (_blurhash)
-        applyBlurhashPlaceholder(image, _blurhash, blurhashSize)
+    // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
+    if (__ENABLE_HASH_DECODING__ && hash) {
+      const { blurhash, thumbhash } = image.dataset
+      const hasOptsHash = typeof hash === 'string'
+      const _hash = hasOptsHash ? hash : (thumbhash || blurhash)
+
+      if (_hash) {
+        applyPlaceholder(image, {
+          hash: _hash,
+          type: hasOptsHash ? hashType : thumbhash ? 'thumbhash' : 'blurhash',
+          size: placeholderSize,
+        })
+      }
     }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
@@ -40,18 +50,18 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
       updateImageSrcset(image)
-      onLoaded?.(image)
+      onImageLoad?.(image)
       continue
     }
 
     if (image.complete && image.naturalWidth > 0) {
       // Load the image if it's already in the viewport
-      loadImage(image, onLoaded)
+      loadImage(image, onImageLoad)
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    const loadHandler = () => loadImage(image, onLoaded)
+    const loadHandler = () => loadImage(image, onImageLoad)
     image.addEventListener('load', loadHandler, { once: true })
 
     cleanupFns.add(
@@ -79,7 +89,7 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 
 export function loadImage(
   image: HTMLImageElement,
-  onLoaded?: (image: HTMLImageElement) => void,
+  onImageLoad?: (image: HTMLImageElement) => void,
 ) {
   const imageLoader = new Image()
   imageLoader.srcset = image.dataset.srcset!
@@ -90,7 +100,7 @@ export function loadImage(
     updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
-    onLoaded?.(image)
+    onImageLoad?.(image)
   })
 }
 
@@ -127,5 +137,35 @@ function updatePictureSources(image: HTMLImageElement) {
   if (picture?.tagName.toLowerCase() === 'picture') {
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
+  }
+}
+
+function applyPlaceholder(
+  image: HTMLImageElement,
+  { hash, type, size }: {
+    hash: string
+    type: 'blurhash' | 'thumbhash'
+    size: number
+  },
+) {
+  try {
+    // Generate the blurry placeholder for either a ThumbHash or a BlurHash string
+    let placeholder: string
+
+    if (type === 'thumbhash') {
+      placeholder = createPngDataUriFromThumbHash(hash)
+    }
+    else {
+      // Preserve the original image's aspect ratio
+      const actualWidth = image.width || image.offsetWidth || size
+      const actualHeight = image.height || image.offsetHeight || size
+      const ratio = actualWidth / actualHeight
+      placeholder = createPngDataUriFromBlurHash(hash, { ratio, size })
+    }
+
+    image.src = placeholder
+  }
+  catch (error) {
+    console.error(`Error generating ${type} placeholder:`, error)
   }
 }

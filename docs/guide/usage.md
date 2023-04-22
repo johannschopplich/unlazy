@@ -1,38 +1,45 @@
 # Usage
 
-Add the `loading="lazy"` attribute to a `<img>` element or a `<source>` element within a `<picture>` element that you want to lazily load. This is the only requirement for unlazy to work.
+1. Add the `loading="lazy"` attribute to a `<img>` element that you want to lazily load. You can also use the `<picture>` element to lazily load images in different formats.
 
-Set a `src` attribute with the blurry placeholder and a `data-srcset` attribute for the high-quality image, or use `data-blurhash` attribute to generate a blurry placeholder image from a BlurHash string.
+2. Use the `data-src` or `data-srcset` attribute to specify the high-quality image.
 
-You can also set a `data-sizes` attribute to automatically calculate the `sizes` attribute when using `data-srcset`.
+3. If you have a pre-generated blurry placeholder image, use the `src` attribute to specify it. Otherwise, you can use a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) to generate a placeholder image on the fly.
 
-```html
-<!-- You can use the `<img>` tag -->
-<img
-  loading="lazy"
-  src="blurry placeholder ..."
-  data-srcset="image.png"
-  data-sizes="auto"
->
-
-<!-- … or the `<picture>` element -->
-<picture>
-  <source
-    type="image/webp"
-    data-srcset="image-320w.webp 320w, image-640w.webp 640w"
-    data-sizes="100w"
-  />
+::: code-group
+  ```html [Image tag]
+  <!-- You can use the `<img>` tag -->
   <img
     loading="lazy"
     src="blurry placeholder ..."
-    data-src="lazy.jpg"
-    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    data-srcset="image.png"
     data-sizes="auto"
-  />
-</picture>
-```
+  >
+  ```
+  ```html [Picture tag]
+  <!-- … or the `<picture>` tag -->
+  <picture>
+    <source
+      type="image/webp"
+      data-srcset="image-320w.webp 320w, image-640w.webp 640w"
+      data-sizes="100w"
+    />
+    <img
+      loading="lazy"
+      src="blurry placeholder ..."
+      data-src="lazy.jpg"
+      data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+      data-sizes="auto"
+    />
+  </picture>
+  ```
+:::
 
-In your JavaScript file, import the `lazyLoad` function from the library and call it:
+::: tip
+Set `data-sizes="auto"` to automatically calculate the `sizes` attribute when using `data-srcset`.
+:::
+
+4. In your JavaScript file, import the `lazyLoad` function from the library and call it:
 
 ```ts
 import { lazyLoad } from 'unlazy'

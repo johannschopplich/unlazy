@@ -13,6 +13,6 @@ export default defineConfig({
     },
   },
   define: {
-    __ENABLE_BLURHASH__: false,
+    __ENABLE_HASH_DECODING__: false,
   },
 })

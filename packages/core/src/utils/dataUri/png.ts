@@ -1,5 +1,4 @@
-import { isSSR } from '..'
-
+/* eslint-disable n/prefer-global/buffer */
 /**
  * Encodes an RGBA image to a PNG data URI. RGB should not be premultiplied by A.
  *
@@ -65,8 +64,7 @@ export function rgbaToDataUri(
     bytes[end++] = c & 255
   }
 
-  const base64 = isSSR
-    // eslint-disable-next-line n/prefer-global/buffer
+  const base64 = typeof Buffer !== 'undefined'
     ? Buffer.from(new Uint8Array(bytes)).toString('base64')
     : btoa(String.fromCharCode(...bytes))
 

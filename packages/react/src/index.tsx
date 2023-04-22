@@ -5,15 +5,20 @@ import type { UnLazyLoadOptions } from 'unlazy'
 
 interface Props
   extends ImgHTMLAttributes<HTMLImageElement>,
-  Pick<UnLazyLoadOptions, 'blurhashSize'> {
+  Pick<UnLazyLoadOptions, 'placeholderSize'> {
+  /** A flag to indicate whether the sizes attribute should be automatically calculated. */
   autoSizes?: boolean
+  /** A BlurHash string representing the blurry placeholder image. */
   blurhash?: string
+  /** A ThumbHash string representing the blurry placeholder image. */
+  thumbhash?: string
 }
 
 export function UnLazyImage({
   autoSizes,
   blurhash,
-  blurhashSize,
+  thumbhash,
+  placeholderSize,
   ...rest
 }: Props) {
   const target = useRef<HTMLImageElement | null>(null)
@@ -21,14 +26,15 @@ export function UnLazyImage({
   useEffect(() => {
     if (target.current) {
       const cleanup = lazyLoad(target.current, {
-        blurhash,
-        blurhashSize,
+        hash: thumbhash || blurhash,
+        hashType: thumbhash ? 'thumbhash' : 'blurhash',
+        placeholderSize,
       })
       return () => {
         cleanup()
       }
     }
-  }, [blurhash, blurhashSize])
+  }, [thumbhash, blurhash, placeholderSize])
 
   return (
     <img

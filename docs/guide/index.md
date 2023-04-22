@@ -1,6 +1,6 @@
 # What Is unlazy?
 
-unlazy is a universal lazy loading library leveraging native browser APIs. It's intended to be used with the (blurry) placeholder images or a [BlurHash](https://blurha.sh) alongside the native `loading="lazy"` attribute.
+unlazy is a universal lazy loading library leveraging native browser APIs. It's intended to be used with the (blurry) placeholder images or a [BlurHash](/placeholders/blurhash) alongside the native `loading="lazy"` attribute.
 
 Images are initially rendered with blurry placeholders, giving the user an impression of the page layout and content. As the images enter the viewport, they are replaced with the full-quality versions, providing a smoother experience. This approach prioritizes the initial rendering of the page and improves the perceived performance for users, especially when the connection is slow or unstable.
 
@@ -22,4 +22,6 @@ unlazy ensures that search engines can index the full-quality images by detectin
 
 Head over to the [installation guide](/guide/installation) to learn how to install unlazy in your project. After that, you can check out the [usage guide](/guide/usage) and may take a look at the [API reference](/api/).
 
-If your project is using [BlurHash](https://blurha.sh), you can check out the [BlurHash guide](/guide/blurhash) to learn how to use it with unlazy.
+If your project is using [BlurHash](https://blurha.sh), you can check out the [BlurHash guide](/placeholders/blurhash) to learn how to use it with unlazy.
+
+The shiny new [ThumbHash](https://github.com/evanw/thumbhash) by Evan Wallace is also supported. You can check out the [ThumbHash guide](/placeholders/thumbhash) to learn how to use it with unlazy.

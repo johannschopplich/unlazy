@@ -1,1 +1,1 @@
-export const DEFAULT_BLURHASH_SIZE = 32
+export const DEFAULT_PLACEHOLDER_SIZE = 32
