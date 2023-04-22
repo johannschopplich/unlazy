@@ -1,12 +1,6 @@
 export default defineNuxtConfig({
   modules: ['@unocss/nuxt', '../src/module'],
 
-  unlazy: {
-    blurhash: {
-      ssr: true,
-    },
-  },
-
   typescript: {
     shim: false,
     tsConfig: {

@@ -41,9 +41,9 @@ const isSSR = process.server && (props.ssr ?? unlazy.ssr)
 
 // const now = performance.now()
 const pngPlaceholder = (isSSR && (props.thumbhash || props.blurhash))
-  ? props.thumbhash
-    ? createPngDataUriFromThumbHash(props.thumbhash)
-    : createPngDataUriFromBlurHash(props.blurhash, { ratio: props.placeholderRatio })
+  ? props.blurhash
+    ? createPngDataUriFromBlurHash(props.blurhash, { ratio: props.placeholderRatio })
+    : createPngDataUriFromThumbHash(props.thumbhash!)
   : undefined
 
 // if (isSSR)

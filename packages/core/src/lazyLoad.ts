@@ -1,7 +1,7 @@
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
-import { createPngDataUri as createPngDataUriFromThumbHash } from './formats/thumbhash'
-import { createPngDataUri as createPngDataUriFromBlurHash } from './formats/blurhash'
+import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
+import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
 
 // Compile-time flag to exclude BlurHash and ThumbHash from IIFE bundle

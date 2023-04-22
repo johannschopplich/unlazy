@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
-import { createPngDataUri as createPngDataUriBlurHash } from '../src/formats/blurhash'
-import { createPngDataUri as createPngDataUriThumbHash } from '../src/formats/thumbhash'
+import { createPngDataUri as createPngDataUriBlurHash } from '../src/blurhash'
+import { createPngDataUri as createPngDataUriThumbHash } from '../src/thumbhash'
 
 describe('Blurhash to PNG Data URI', () => {
   test('generates a valid PNG data URL from a Blurhash', () => {

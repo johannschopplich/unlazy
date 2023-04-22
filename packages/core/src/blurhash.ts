@@ -1,7 +1,7 @@
 import { decodeBlurHash } from 'fast-blurhash'
-import { DEFAULT_PLACEHOLDER_SIZE } from '../constants'
-import { getScaledDimensions } from '../utils'
-import { rgbaToDataUri } from '../utils/dataUri'
+import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { getScaledDimensions } from './utils'
+import { rgbaToDataUri } from './utils/dataUri'
 
 export interface BlurHashOptions {
   /**
