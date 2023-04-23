@@ -44,9 +44,8 @@
   },
   "types": "./dist/index.d.ts",
   "scripts": {
-    "jiti-fix": "find ./dist -type f -exec sed -i '' 's|file://||g' {} \\;",
-    "dev": "unbuild --stub && npm run jiti-fix",
     "build": "unbuild",
+    "dev:prepare": "unbuild --stub",
     "test": "vitest",
     "test:run": "vitest run",
     "test:types": "tsc --noEmit"

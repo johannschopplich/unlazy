@@ -58,10 +58,10 @@
   "devDependencies": {
     "@nuxt/module-builder": "^0.3.0",
     "@nuxt/schema": "^3.4.2",
-    "@types/node": "^18.15.13",
+    "@types/node": "^18.16.0",
     "@unhead/vue": "^1.1.26",
-    "@unocss/nuxt": "^0.51.5",
-    "@unocss/reset": "^0.51.5",
+    "@unocss/nuxt": "^0.51.6",
+    "@unocss/reset": "^0.51.6",
     "@vue/reactivity": "3.2.47",
     "@vue/runtime-core": "3.2.47",
     "@vue/runtime-dom": "3.2.47",
