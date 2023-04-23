@@ -47,9 +47,6 @@
     "test:types": "vue-tsc --noEmit",
     "prepare": "nuxi prepare playground"
   },
-  "peerDependencies": {
-    "fast-blurhash": "^1.1.2"
-  },
   "dependencies": {
     "@nuxt/kit": "^3.4.2",
     "defu": "^6.1.2",

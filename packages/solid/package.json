@@ -47,7 +47,6 @@
     "test:types": "tsc --noEmit"
   },
   "peerDependencies": {
-    "fast-blurhash": "^1.1.2",
     "solid-js": "^1.7.3"
   },
   "dependencies": {
@@ -55,7 +54,6 @@
   },
   "devDependencies": {
     "@types/node": "^18.16.0",
-    "fast-blurhash": "^1.1.2",
     "solid-js": "^1.7.3",
     "vite-plugin-solid": "^2.7.0"
   }

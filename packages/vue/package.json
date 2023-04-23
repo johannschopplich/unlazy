@@ -48,16 +48,12 @@
     "dev:build": "pnpm -C playground run build",
     "test:types": "vue-tsc --noEmit"
   },
-  "peerDependencies": {
-    "fast-blurhash": "^1.1.2"
-  },
   "dependencies": {
     "unlazy": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^18.16.0",
     "@vitejs/plugin-vue": "^4.1.0",
-    "fast-blurhash": "^1.1.2",
     "vue": "^3.2.47"
   }
 }
