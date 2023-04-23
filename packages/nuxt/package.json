@@ -59,18 +59,8 @@
     "@nuxt/module-builder": "^0.3.0",
     "@nuxt/schema": "^3.4.2",
     "@types/node": "^18.16.0",
-    "@unhead/vue": "^1.1.26",
     "@unocss/nuxt": "^0.51.6",
     "@unocss/reset": "^0.51.6",
-    "@vue/reactivity": "3.2.47",
-    "@vue/runtime-core": "3.2.47",
-    "@vue/runtime-dom": "3.2.47",
-    "@vue/shared": "3.2.47",
-    "nuxt": "^3.4.2",
-    "ufo": "1.1.1",
-    "unctx": "2.3.0",
-    "unstorage": "1.5.0",
-    "vue": "3.2.47",
-    "vue-router": "4.1.6"
+    "nuxt": "^3.4.2"
   }
 }
