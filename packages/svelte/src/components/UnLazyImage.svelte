@@ -14,14 +14,18 @@
   let target:HTMLImageElement
 
   function initLazyLoad() {
-    lazyLoad(target, {
-      hash: thumbhash || blurhash,
-      hashType: thumbhash ? 'thumbhash' : 'blurhash',
-      placeholderSize: placeholderSize,
-    })
+    if(!!target) {
+      lazyLoad(target, {
+        hash: thumbhash ? thumbhash : blurhash,
+        hashType: thumbhash ? 'thumbhash' : 'blurhash',
+        placeholderSize: placeholderSize,
+      })
+    }
   }
 
-  onMount(initLazyLoad)
+  $: [blurhash, thumbhash, placeholderSize], initLazyLoad();
+
+  onMount(initLazyLoad);
 </script>
 
 <img
