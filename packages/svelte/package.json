@@ -1,0 +1,60 @@
+{
+  "name": "@unlazy/svelte",
+  "type": "module",
+  "version": "0.0.1",
+  "packageManager": "pnpm@8.3.1",
+  "description": "Svelte lazy loading library for placeholder images",
+  "author": "stordahl",
+  "license": "MIT",
+  "homepage": "https://unlazy.byjohann.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johannschopplich/unlazy.git",
+    "directory": "packages/svelte"
+  },
+  "bugs": {
+    "url": "https://github.com/johannschopplich/unlazy/issues"
+  },
+  "keywords": [
+    "async",
+    "image",
+    "intersection",
+    "lazy",
+    "loading",
+    "lozad",
+    "native",
+    "observer",
+    "responsive",
+    "svelte"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "pnpm -C playground run dev",
+    "dev:build": "pnpm -C playground run build",
+    "test:types": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "fast-blurhash": "^1.1.2"
+  },
+  "dependencies": {
+    "unlazy": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.1.0",
+    "@tsconfig/svelte": "^4.0.1",
+    "@types/node": "^18.15.13",
+    "fast-blurhash": "^1.1.2",
+    "svelte": "^3.58.0"
+  }
+}
