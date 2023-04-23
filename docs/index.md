@@ -34,16 +34,16 @@ features:
     details: Works with any framework or no framework at all. Ready for Vue, Solid, React and Nuxt.
     link: /integrations/
     linkText: Build your own integration
-  - title: SSR & Client-Side BlurHash & ThumbHash Decoding
-    icon: <span class="i-carbon:matrix"></span>
-    details: Decodes BlurHash and ThumbHash strings on the server or in the browser. No cumulative layout shifts.
+  - title: BlurHash and ThumbHash Support
+    icon: <span class="i-carbon:data-blob"></span>
+    details: Use BlurHash and ThumbHash placeholders for instant loading.
     link: /placeholders/
-    linkText: Placeholder image representations
-  - title: BlurHash Aspect Ratio
+    linkText: Placeholder images
+  - title: SSR and Client-Side Decoding
     icon: <span class="i-carbon:fit-to-screen"></span>
-    details: Calculates the best aspect ratio for the placeholder image.
-    link: /placeholders/blurhash/
-    linkText: BlurHash guide
+    details: Decodes BlurHash and ThumbHash strings on the server or in the browser.
+    link: /placeholders/
+    linkText: Placeholder images
   - title: Auto-Sizing
     icon: <span class="i-carbon:fit-to-width"></span>
     details: Automatically calculates the <code>sizes</code> attribute for optimal performance.
