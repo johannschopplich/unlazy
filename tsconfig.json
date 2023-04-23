@@ -24,7 +24,9 @@
     /* Linting */
     "strict": true
   },
-  "include": ["packages"],
+  "include": [
+    "packages"
+  ],
   "exclude": [
     "node_modules",
     "packages/nuxt",

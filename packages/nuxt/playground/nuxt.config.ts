@@ -1,4 +1,5 @@
 import { resolve } from 'node:path'
+import { defineNuxtConfig } from 'nuxt/config'
 
 const currentDir = new URL('.', import.meta.url).pathname
 
