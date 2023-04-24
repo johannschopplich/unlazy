@@ -1,1 +1,1 @@
-export * from '@unlazy/core'
+export { autoSizes, isCrawler, isLazyLoadingSupported, lazyLoad, loadImage } from '@unlazy/core'
