@@ -6,6 +6,9 @@ export default defineBuildConfig({
     './src/blurhash',
     './src/thumbhash',
   ],
+  rollup: {
+    emitCJS: true,
+  },
   declaration: true,
   clean: true,
 })

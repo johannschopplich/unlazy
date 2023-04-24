@@ -28,14 +28,17 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
       "import": "./dist/index.mjs"
     },
     "./blurhash": {
       "types": "./dist/blurhash.d.ts",
+      "require": "./dist/blurhash.cjs",
       "import": "./dist/blurhash.mjs"
     },
     "./thumbhash": {
       "types": "./dist/thumbhash.d.ts",
+      "require": "./dist/thumbhash.cjs",
       "import": "./dist/thumbhash.mjs"
     },
     "./*": "./*"
