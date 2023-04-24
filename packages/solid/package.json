@@ -32,6 +32,7 @@
       "import": "./dist/index.js"
     },
     "./solid": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.jsx"
     }
   },
