@@ -39,7 +39,7 @@
 Set `data-sizes="auto"` to automatically calculate the `sizes` attribute when using `data-srcset`.
 :::
 
-4. In your JavaScript file, import the `lazyLoad` function from the library and call it:
+4. In your frontend code, import the `lazyLoad` function from the library and call it:
 
 ```ts
 import { lazyLoad } from 'unlazy'
@@ -67,7 +67,7 @@ When calling [`lazyLoad`](/api/lazy-load), the library will automatically calcul
 
 Alternatively, you can use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute for all images with `data-sizes="auto"`, without lazy loading the images.
 
-To do so, import the `autoSizes` function from the library and call it:
+To do so, import the [`autoSizes`](/api/auto-sizes) function from the library and call it:
 
 ```ts
 import { autoSizes } from 'unlazy'
@@ -94,7 +94,9 @@ The `loading="lazy"` attribute is still required for the images to be lazy loade
 
 ## Manually Loading Images
 
-If you want to load an image before it enters the viewport, you can call the `loadImage` function directly. It accepts a `HTMLImageElement`. Import the `loadImage` function from the library and call it:
+If you want to load an image before it enters the viewport, you can call the [`loadImage`](/api/load-image) function directly. It accepts a `HTMLImageElement` as an argument.
+
+Import the `loadImage` function from the library and call it:
 
 ```ts
 import { loadImage } from 'unlazy'
@@ -105,4 +107,6 @@ const coolImage = document.querySelector('.image-to-load-first')
 loadImage(coolImage)
 ```
 
+::: tip
 Keep in mind that manually loading images might negatively affect the perceived performance, as it will force the full-quality image to load immediately, even if it's not visible on the viewport.
+:::
