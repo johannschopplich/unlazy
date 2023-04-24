@@ -29,17 +29,20 @@
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.js"
+    },
+    "./solid": {
+      "import": "./dist/index.jsx"
     }
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "tsup",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
     "test:types": "tsc --noEmit"
@@ -53,6 +56,8 @@
   "devDependencies": {
     "@types/node": "^18.16.0",
     "solid-js": "^1.7.3",
+    "tsup": "^6.7.0",
+    "tsup-preset-solid": "^0.1.8",
     "vite-plugin-solid": "^2.7.0"
   }
 }
