@@ -38,5 +38,6 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
 
       - run: npx changelogithub
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
