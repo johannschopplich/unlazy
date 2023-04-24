@@ -51,11 +51,14 @@ const isSSR = process.server && (props.ssr ?? unlazy.ssr)
 // const now = performance.now()
 const pngPlaceholder = (isSSR && (props.thumbhash || props.blurhash))
   ? props.blurhash
-    ? createPngDataUriFromBlurHash(props.blurhash, { ratio: props.placeholderRatio })
+    ? createPngDataUriFromBlurHash(props.blurhash, {
+      size: props.placeholderSize || unlazy.placeholderSize,
+      ratio: props.placeholderRatio,
+    })
     : createPngDataUriFromThumbHash(props.thumbhash!)
   : undefined
 
-// if (isSSR)
+// if (isSSR && process.dev)
 //   console.log(`[unlazy] BlurHash decoded in ${performance.now() - now}ms`)
 
 onMounted(() => {
