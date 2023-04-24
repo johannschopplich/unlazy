@@ -8,7 +8,10 @@ import { onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '
 const props = withDefaults(
   defineProps<{
     src?: ImgHTMLAttributes['src']
-    /** A flag to indicate whether the sizes attribute should be automatically calculated. */
+    /**
+     * A flag to indicate whether the sizes attribute should be automatically calculated.
+     * @default false
+     */
     autoSizes?: boolean
     /** A BlurHash string representing the blurry placeholder image. */
     blurhash?: string
@@ -18,6 +21,11 @@ const props = withDefaults(
     placeholderSize?: number
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
     placeholderRatio?: number
+    /**
+     * A flag to indicate whether the image should be loaded immediately.
+     * @default false
+     */
+    immediate?: boolean
     /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */
     ssr?: boolean
   }>(),
@@ -28,6 +36,7 @@ const props = withDefaults(
     thumbhash: undefined,
     placeholderSize: undefined,
     placeholderRatio: undefined,
+    immediate: false,
     ssr: undefined,
   },
 )
@@ -60,6 +69,7 @@ onMounted(() => {
       hash: props.thumbhash || props.blurhash,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: props.placeholderSize || unlazy.placeholderSize,
+      immediate: props.immediate,
     })
   })
 })

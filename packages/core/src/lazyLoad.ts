@@ -18,6 +18,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     hash = true,
     hashType = 'blurhash',
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
+    immediate = false,
     onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
@@ -26,6 +27,14 @@ export function lazyLoad<T extends HTMLImageElement>(
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
+
+    // Load the image right away if `immediate` is set to `true`
+    if (immediate) {
+      updatePictureSources(image)
+      updateImageSrcset(image)
+      updateImageSrc(image)
+      continue
+    }
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
@@ -50,7 +59,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
       updateImageSrcset(image)
-      onImageLoad?.(image)
+      updateImageSrc(image)
       continue
     }
 

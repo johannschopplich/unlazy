@@ -63,6 +63,18 @@ interface UnLazyLoadOptions {
   placeholderSize?: number
 
   /**
+   * Controls whether the image should be loaded immediately, or only when it
+   * enters the viewport.
+   *
+   * @remarks
+   * This option is intended primarily for internal usage in frontend framework
+   * components that need to control when single images should be loaded.
+   *
+   * @default false
+   */
+  immediate?: boolean
+
+  /**
    * A callback function to run when an image is loaded.
    */
   onImageLoad?: (image: HTMLImageElement) => void

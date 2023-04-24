@@ -8,12 +8,20 @@ import type { UnLazyLoadOptions } from 'unlazy'
 interface Props
   extends JSX.ImgHTMLAttributes<HTMLImageElement>,
   Pick<UnLazyLoadOptions, 'placeholderSize'> {
-  /** A flag to indicate whether the sizes attribute should be automatically calculated. */
+  /**
+   * A flag to indicate whether the sizes attribute should be automatically calculated.
+   * @default false
+   */
   autoSizes?: boolean
   /** A BlurHash string representing the blurry placeholder image. */
   blurhash?: string
   /** A ThumbHash string representing the blurry placeholder image. */
   thumbhash?: string
+  /**
+   * A flag to indicate whether the image should be loaded immediately.
+   * @default false
+   */
+  immediate?: boolean
 }
 
 export function UnLazyImage(props: Props) {
@@ -28,6 +36,7 @@ export function UnLazyImage(props: Props) {
         hash: props.thumbhash || props.blurhash,
         hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
         placeholderSize: props.placeholderSize,
+        immediate: props.immediate,
       })
 
       onCleanup(() => {
