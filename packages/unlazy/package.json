@@ -42,6 +42,7 @@
       "import": "./dist/thumbhash.mjs"
     }
   },
+  "main": "./dist/index.cjs",
   "unpkg": "./dist/unlazy.iife.js",
   "jsdelivr": "./dist/unlazy.iife.js",
   "types": "./dist/index.d.ts",
