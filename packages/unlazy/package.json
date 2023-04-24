@@ -46,6 +46,16 @@
   "unpkg": "./dist/unlazy.iife.js",
   "jsdelivr": "./dist/unlazy.iife.js",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "*",
+        "dist/*",
+        "dist/*.d.ts",
+        "dist/*/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
