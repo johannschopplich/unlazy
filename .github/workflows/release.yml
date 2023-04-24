@@ -2,7 +2,6 @@ name: Release
 
 permissions:
   contents: write
-  id-token: write
 
 on:
   push:
@@ -12,6 +11,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v3
         with:
