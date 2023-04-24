@@ -16,15 +16,13 @@
     "url": "https://github.com/johannschopplich/unlazy/issues"
   },
   "keywords": [
-    "async",
-    "image",
-    "intersection",
+    "blurhash",
     "lazy",
     "loading",
     "lozad",
-    "native",
-    "observer",
-    "responsive"
+    "placeholder",
+    "responsive",
+    "thumbhash"
   ],
   "sideEffects": false,
   "exports": {
