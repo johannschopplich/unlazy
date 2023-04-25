@@ -78,9 +78,12 @@ The `UnLazyImage` component accepts the following props:
 
 | Prop | Type | Description |
 | --- | --- | --- |
+| `src` | String | Image source URL to be lazy-loaded. |
+| `srcSet` | String | Image source set to be lazy-loaded. |
 | `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
 | `thumbhash` | String | A ThumbHash string representing the blurry placeholder image. |
 | `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
+| `placeholderSrc` | String | Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. |
 | `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
 | `placeholderRatio` | Number | Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. |
 | `lazyLoad` | Boolean | A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded. |
@@ -88,18 +91,18 @@ The `UnLazyImage` component accepts the following props:
 
 ## Examples
 
-::: info
-In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
-:::
-
 ```html
 <!-- Inlined placeholder image as data URI -->
 <UnLazyImage
-  src="data:image/svg+xml, ..."
-  data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+  placeholder-src="data:image/svg+xml, ..."
+  src-set="image-320w.jpg 320w, image-640w.jpg 640w"
   auto-sizes
 />
 ```
+
+::: tip
+In every `srcSet` example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
+:::
 
 ### BlurHash
 
@@ -108,16 +111,17 @@ In each example, the `sizes` attribute is automatically calculated given the `au
   <UnLazyImage
     :blurhash="blurhash"
     :blurhash-ratio="2"
-    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     width="640"
     height="320"
   />
   ```
   ```html [Client-side decoded BlurHash]
   <UnLazyImage
-    :blurhash="blurhash"
     :ssr="false"
-    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    :blurhash="blurhash"
+    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
     width="640"
     height="320"
   />
@@ -130,16 +134,18 @@ In each example, the `sizes` attribute is automatically calculated given the `au
   ```html [SSR-decoded ThumbHash]
   <UnLazyImage
     :thumbhash="thumbhash"
-    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
     width="640"
     height="320"
   />
   ```
   ```html [Client-side decoded ThumbHash]
   <UnLazyImage
-    :thumbhash="thumbhash"
     :ssr="false"
-    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    :thumbhash="thumbhash"
+    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
     width="640"
     height="320"
   />
