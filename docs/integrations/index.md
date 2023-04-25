@@ -1,6 +1,8 @@
 # Integrations
 
-unlazy supports lazy loading images in your framework of choice. The following integrations are available as of now:
+unlazy supports lazy loading images in your framework of choice. Each package provides a `UnLazyImage` component as a drop-in replacement for the native `<img>` element.
+
+The following integrations are available as of now:
 
 ## Frontend Frameworks
 
