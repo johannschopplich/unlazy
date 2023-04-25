@@ -32,6 +32,7 @@
     "packages/nuxt",
     "packages/react",
     "packages/solid",
+    "packages/svelte",
     "packages/vue",
     "**/*.md",
     "**/dist"
