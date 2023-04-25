@@ -202,6 +202,21 @@ function sidebarCookbook(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Overview',
+      link: '/cookbook/',
+    },
+    {
+      text: 'Articles',
+      items: [
+        { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
+      ],
+    },
+  ]
+}
+
+function sidebarApi(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Overview',
       link: '/api/',
     },
     {
@@ -222,21 +237,6 @@ function sidebarCookbook(): DefaultTheme.SidebarItem[] {
       text: 'ThumbHash',
       items: [
         { text: 'createPngDataUri', link: '/api/thumbhash-create-png-data-uri' },
-      ],
-    },
-  ]
-}
-
-function sidebarApi(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'Overview',
-      link: '/cookbook/',
-    },
-    {
-      text: 'Articles',
-      items: [
-        { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
       ],
     },
   ]
