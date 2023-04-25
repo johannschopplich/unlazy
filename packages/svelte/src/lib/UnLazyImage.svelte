@@ -13,11 +13,6 @@
   /** A ThumbHash string representing the blurry placeholder image. */
   export let thumbhash: string | undefined = undefined
   export let placeholderSize: UnLazyLoadOptions['placeholderSize'] = 32
-  /**
-   * A flag to indicate whether the image should be loaded immediately.
-   * @default false
-   */
-  export let immediate = false
 
   let target: HTMLImageElement | undefined
   let cleanup: (() => void) | undefined
@@ -34,7 +29,6 @@
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
-      immediate,
     })
   }
 

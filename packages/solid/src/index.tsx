@@ -15,11 +15,6 @@ interface Props
   blurhash?: string
   /** A ThumbHash string representing the blurry placeholder image. */
   thumbhash?: string
-  /**
-   * A flag to indicate whether the image should be loaded immediately.
-   * @default false
-   */
-  immediate?: boolean
 }
 
 export function UnLazyImage(props: Props) {
@@ -34,7 +29,6 @@ export function UnLazyImage(props: Props) {
         hash: props.thumbhash || props.blurhash,
         hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
         placeholderSize: props.placeholderSize,
-        immediate: props.immediate,
       })
 
       onCleanup(() => {

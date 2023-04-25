@@ -14,11 +14,6 @@ const props = defineProps<{
   thumbhash?: string
   /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
   placeholderSize?: number
-  /**
-   * A flag to indicate whether the image should be loaded immediately.
-   * @default false
-   */
-  immediate?: boolean
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
@@ -35,7 +30,6 @@ onMounted(() => {
       hash: props.thumbhash || props.blurhash,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: props.placeholderSize,
-      immediate: props.immediate,
     })
   })
 })

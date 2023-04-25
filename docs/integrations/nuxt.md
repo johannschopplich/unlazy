@@ -83,7 +83,6 @@ The `UnLazyImage` component accepts the following props:
 | `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
 | `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
 | `placeholderRatio` | Number | Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. |
-| `immediate` | Boolean | A flag to indicate whether the image should be loaded immediately. |
 | `ssr` | Boolean | Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. |
 
 ## Examples
