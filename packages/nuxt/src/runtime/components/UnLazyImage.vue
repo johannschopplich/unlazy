@@ -22,10 +22,10 @@ const props = withDefaults(
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
     placeholderRatio?: number
     /**
-     * A flag to indicate whether the image should be loaded immediately.
-     * @default false
+     * A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded.
+     * @default true
      */
-    immediate?: boolean
+    lazyLoad?: boolean
     /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */
     ssr?: boolean
   }>(),
@@ -36,7 +36,7 @@ const props = withDefaults(
     thumbhash: undefined,
     placeholderSize: undefined,
     placeholderRatio: undefined,
-    immediate: false,
+    lazyLoad: true,
     ssr: undefined,
   },
 )
@@ -44,12 +44,11 @@ const props = withDefaults(
 const { unlazy } = useRuntimeConfig().public
 const target = ref<HTMLImageElement | undefined>()
 let cleanup: () => void | undefined
+// const now = performance.now()
 
 // SSR-decoded BlurHash as PNG data URI placeholder image
-const isSSR = process.server && (props.ssr ?? unlazy.ssr)
-
-// const now = performance.now()
-const pngPlaceholder = (isSSR && (props.thumbhash || props.blurhash))
+const loadSSR = process.server && (props.ssr ?? unlazy.ssr)
+const pngPlaceholder = (loadSSR && (props.thumbhash || props.blurhash))
   ? props.blurhash
     ? createPngDataUriFromBlurHash(props.blurhash, {
       size: props.placeholderSize || unlazy.placeholderSize,
@@ -58,21 +57,23 @@ const pngPlaceholder = (isSSR && (props.thumbhash || props.blurhash))
     : createPngDataUriFromThumbHash(props.thumbhash!)
   : undefined
 
-// if (isSSR && process.dev)
+// if (loadSSR && process.dev)
 //   console.log(`[unlazy] BlurHash decoded in ${performance.now() - now}ms`)
 
 onMounted(() => {
+  if (!target.value)
+    return
+
   watchEffect(() => {
     cleanup?.()
 
-    if (!target.value)
+    if (!props.lazyLoad)
       return
 
     cleanup = lazyLoad(target.value, {
       hash: props.thumbhash || props.blurhash,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: props.placeholderSize || unlazy.placeholderSize,
-      immediate: props.immediate,
     })
   })
 })

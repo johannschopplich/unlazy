@@ -18,7 +18,6 @@ export function lazyLoad<T extends HTMLImageElement>(
     hash = true,
     hashType = 'blurhash',
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
-    immediate = false,
     onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
@@ -28,27 +27,16 @@ export function lazyLoad<T extends HTMLImageElement>(
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
-    // Load the image right away if `immediate` is set to `true`
-    if (immediate) {
-      updatePictureSources(image)
-      updateImageSrcset(image)
-      updateImageSrc(image)
-      continue
-    }
-
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
-      const { blurhash, thumbhash } = image.dataset
-      const hasOptsHash = typeof hash === 'string'
-      const _hash = hasOptsHash ? hash : (thumbhash || blurhash)
-
-      if (_hash) {
-        applyPlaceholder(image, {
-          hash: _hash,
-          type: hasOptsHash ? hashType : thumbhash ? 'thumbhash' : 'blurhash',
-          size: placeholderSize,
-        })
-      }
+      const placeholoder = createPlaceholderFromHash({
+        image,
+        hash: typeof hash === 'string' ? hash : undefined,
+        hashType,
+        placeholderSize,
+      })
+      if (placeholoder)
+        image.src = placeholoder
     }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
@@ -101,9 +89,13 @@ export function loadImage(
   onImageLoad?: (image: HTMLImageElement) => void,
 ) {
   const imageLoader = new Image()
-  imageLoader.srcset = image.dataset.srcset!
-  imageLoader.src = image.dataset.src!
-  imageLoader.sizes = image.sizes
+  const { srcset, src, sizes } = image.dataset
+  if (srcset)
+    imageLoader.srcset = srcset
+  if (src)
+    imageLoader.src = src
+  if (sizes)
+    imageLoader.sizes = sizes
 
   imageLoader.addEventListener('load', () => {
     updatePictureSources(image)
@@ -111,6 +103,55 @@ export function loadImage(
     updateImageSrc(image)
     onImageLoad?.(image)
   })
+}
+
+export function createPlaceholderFromHash(
+  {
+    /** If given, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions */
+    image,
+    hash,
+    hashType = 'blurhash',
+    /** @default 32 */
+    placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
+    /** Will be calculated from the image's actual dimensions if not provided */
+    placeholderRatio,
+  }: {
+    image?: HTMLImageElement
+    hash?: string
+    hashType?: 'blurhash' | 'thumbhash'
+    placeholderSize?: number
+    placeholderRatio?: number
+  } = {},
+) {
+  if (!hash && image) {
+    const { blurhash, thumbhash } = image.dataset
+    hash = thumbhash || blurhash
+    hashType = thumbhash ? 'thumbhash' : 'blurhash'
+  }
+
+  if (!hash)
+    return
+
+  try {
+    if (hashType === 'thumbhash') {
+      return createPngDataUriFromThumbHash(hash)
+    }
+    else {
+      // Preserve the original image's aspect ratio
+      if (!placeholderRatio && image) {
+        const actualWidth = image.width || image.offsetWidth || placeholderSize
+        const actualHeight = image.height || image.offsetHeight || placeholderSize
+        placeholderRatio = actualWidth / actualHeight
+      }
+      return createPngDataUriFromBlurHash(hash, {
+        ratio: placeholderRatio,
+        size: placeholderSize,
+      })
+    }
+  }
+  catch (error) {
+    console.error(`Error generating ${hashType} placeholder:`, error)
+  }
 }
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
@@ -146,35 +187,5 @@ function updatePictureSources(image: HTMLImageElement) {
   if (picture?.tagName.toLowerCase() === 'picture') {
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
-  }
-}
-
-function applyPlaceholder(
-  image: HTMLImageElement,
-  { hash, type, size }: {
-    hash: string
-    type: 'blurhash' | 'thumbhash'
-    size: number
-  },
-) {
-  try {
-    // Generate the blurry placeholder for either a ThumbHash or a BlurHash string
-    let placeholder: string
-
-    if (type === 'thumbhash') {
-      placeholder = createPngDataUriFromThumbHash(hash)
-    }
-    else {
-      // Preserve the original image's aspect ratio
-      const actualWidth = image.width || image.offsetWidth || size
-      const actualHeight = image.height || image.offsetHeight || size
-      const ratio = actualWidth / actualHeight
-      placeholder = createPngDataUriFromBlurHash(hash, { ratio, size })
-    }
-
-    image.src = placeholder
-  }
-  catch (error) {
-    console.error(`Error generating ${type} placeholder:`, error)
   }
 }
