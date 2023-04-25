@@ -105,6 +105,7 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'Nuxt', link: '/integrations/nuxt' },
             { text: 'React', link: '/integrations/react' },
             { text: 'Solid', link: '/integrations/solid' },
+            { text: 'Svelte', link: '/integrations/svelte' },
           ],
         },
       ],
@@ -189,14 +190,10 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Nuxt', link: '/integrations/nuxt' },
         { text: 'React', link: '/integrations/react' },
         { text: 'Solid', link: '/integrations/solid' },
+        { text: 'Svelte', link: '/integrations/svelte' },
       ],
     },
-    {
-      text: 'Cookbook',
-      items: [
-        { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
-      ],
-    },
+    { text: 'Cookbook', link: '/cookbook/' },
     { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/packages/nuxt/playground' },
   ]
 }

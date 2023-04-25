@@ -2,10 +2,20 @@
 
 unlazy supports lazy loading images in your framework of choice. The following integrations are available as of now:
 
+## Frontend Frameworks
+
 - [Vue](/integrations/vue)
 - [React](/integrations/react)
 - [Solid](/integrations/solid)
-- [Nuxt](/integrations/nuxt) (including SSR-decoding of ThumbHash and BlurHash strings)
+- [Svelte](/integrations/svelte)
+
+## Meta-Frameworks
+
+- [Nuxt](/integrations/nuxt)
+
+::: tip
+These include SSR-decoding of [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) strings.
+:::
 
 ## Generic How-To
 

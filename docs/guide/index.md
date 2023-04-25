@@ -1,6 +1,6 @@
 # What Is unlazy?
 
-unlazy is a universal lazy loading library leveraging native browser APIs. It's intended to be used with the (blurry) placeholder images or a [BlurHash](/placeholders/blurhash) alongside the native `loading="lazy"` attribute.
+unlazy is a universal lazy loading library leveraging native browser APIs. It's intended to be used with inlined (blurry) placeholder images or a placeholder image representation like a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) alongside the native `loading="lazy"` attribute.
 
 Images are initially rendered with blurry placeholders, giving the user an impression of the page layout and content. As the images enter the viewport, they are replaced with the full-quality versions, providing a smoother experience. This approach prioritizes the initial rendering of the page and improves the perceived performance for users, especially when the connection is slow or unstable.
 
