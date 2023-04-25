@@ -3,7 +3,7 @@ import { lazyLoad } from 'unlazy'
 import { createPngDataUri as createPngDataUriFromThumbHash } from 'unlazy/thumbhash'
 import { createPngDataUri as createPngDataUriFromBlurHash } from 'unlazy/blurhash'
 import type { ImgHTMLAttributes } from 'vue'
-import { onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { computed, onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 const props = withDefaults(
   defineProps<{
@@ -62,14 +62,17 @@ let cleanup: () => void | undefined
 
 // SSR-decoded BlurHash as PNG data URI placeholder image
 const loadSSR = process.server && (props.ssr ?? unlazy.ssr)
-const pngPlaceholder = (loadSSR && (props.thumbhash || props.blurhash))
-  ? props.blurhash
+const pngPlaceholder = computed(() => {
+  if (!loadSSR || (!props.blurhash && !props.thumbhash))
+    return
+
+  return props.blurhash
     ? createPngDataUriFromBlurHash(props.blurhash, {
       size: props.placeholderSize || unlazy.placeholderSize,
       ratio: props.placeholderRatio,
     })
     : createPngDataUriFromThumbHash(props.thumbhash!)
-  : undefined
+})
 
 // if (loadSSR && process.dev)
 //   console.log(`[unlazy] BlurHash decoded in ${performance.now() - now}ms`)
