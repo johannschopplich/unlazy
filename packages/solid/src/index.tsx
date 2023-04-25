@@ -1,5 +1,3 @@
-// eslint-disable-next-line unused-imports/no-unused-imports
-import { template } from 'solid-js/web'
 import { createEffect, onCleanup, onMount } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { lazyLoad } from 'unlazy'

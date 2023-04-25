@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "plugin:solid/typescript",
+    "@antfu/eslint-config-ts"
+  ]
+}
