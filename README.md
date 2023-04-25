@@ -55,7 +55,7 @@ You can target specific images by passing a CSS selector, a DOM element, a list 
 2. Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
 3. Install dependencies using `pnpm install`
 4. Run `pnpm run dev:prepare`
-5. Start development server using `pnpm run dev`
+5. Start development server using `pnpm run dev` inside the one of the `packages` directories
 
 ## License
 

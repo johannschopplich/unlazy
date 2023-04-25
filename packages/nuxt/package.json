@@ -42,8 +42,7 @@
     "dev": "nuxi dev playground",
     "dev:build": "nuxi build playground",
     "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
-    "test:types": "vue-tsc --noEmit",
-    "prepare": "nuxi prepare playground"
+    "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@nuxt/kit": "^3.4.2",

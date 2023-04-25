@@ -1,0 +1,64 @@
+{
+  "name": "@unlazy/svelte",
+  "type": "module",
+  "version": "0.7.6",
+  "packageManager": "pnpm@8.3.1",
+  "description": "Svelte lazy loading library for placeholder images",
+  "author": "Johann Schopplich <pkg@johannschopplich.com>",
+  "license": "MIT",
+  "homepage": "https://unlazy.byjohann.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johannschopplich/unlazy.git",
+    "directory": "packages/svelte"
+  },
+  "bugs": {
+    "url": "https://github.com/johannschopplich/unlazy/issues"
+  },
+  "keywords": [
+    "blurhash",
+    "lazy",
+    "loading",
+    "lozad",
+    "placeholder",
+    "responsive",
+    "thumbhash",
+    "svelte"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js"
+    }
+  },
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm run package",
+    "dev": "vite dev",
+    "dev:build": "vite build && pnpm run package",
+    "dev:prepare": "pnpm run package",
+    "dev:preview": "vite preview",
+    "package": "svelte-kit sync && svelte-package",
+    "test:types": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "svelte": "^3.54.0"
+  },
+  "dependencies": {
+    "unlazy": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^2.0.1",
+    "@sveltejs/kit": "^1.15.8",
+    "@sveltejs/package": "^2.0.2",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "svelte": "^3.58.0",
+    "svelte-check": "^3.2.0",
+    "tslib": "^2.5.0"
+  }
+}

@@ -1,5 +1,6 @@
 .nuxt
 .output
+.svelte-kit
 **/.vitepress/cache
 *.log*
 .DS_Store
