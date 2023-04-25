@@ -19,8 +19,8 @@
    */
   export let immediate = false
 
-  let target: HTMLImageElement | null = null
-  let cleanup: (() => void) | null = null
+  let target: HTMLImageElement | undefined
+  let cleanup: (() => void) | undefined
   let isMounted = false
 
   onMount(() => {
