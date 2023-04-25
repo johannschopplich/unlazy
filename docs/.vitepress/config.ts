@@ -41,7 +41,7 @@ export default defineConfig({
       '/guide/': sidebarGuide(),
       '/placeholders/': sidebarGuide(),
       '/integrations/': sidebarGuide(),
-      '/cookbook/': sidebarGuide(),
+      '/cookbook/': sidebarCookbook(),
       '/api/': sidebarApi(),
     },
 
@@ -198,7 +198,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
   ]
 }
 
-function sidebarApi(): DefaultTheme.SidebarItem[] {
+function sidebarCookbook(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Overview',
@@ -222,6 +222,21 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
       text: 'ThumbHash',
       items: [
         { text: 'createPngDataUri', link: '/api/thumbhash-create-png-data-uri' },
+      ],
+    },
+  ]
+}
+
+function sidebarApi(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Overview',
+      link: '/cookbook/',
+    },
+    {
+      text: 'Articles',
+      items: [
+        { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
       ],
     },
   ]

@@ -10,7 +10,6 @@ const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
 const shouldLoadImage = ref(false)
 
 function loadImage() {
-  console.log('load image')
   shouldLoadImage.value = true
 }
 </script>
