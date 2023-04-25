@@ -65,17 +65,17 @@ In each example, the `sizes` attribute is automatically calculated given the `au
   />
   ```
   ```svelte [ThumbHash]
-    <UnLazyImage
-      thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
-      autoSizes
-      data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+  <UnLazyImage
+    thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
+    autoSizes
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   />
   ```
   ```svelte [Inlined placeholder image]
-    <UnLazyImage
-      autoSizes
-      src="data:image/svg+xml, ..."
-      data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+  <UnLazyImage
+    autoSizes
+    src="data:image/svg+xml, ..."
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   />
   ```
 :::
