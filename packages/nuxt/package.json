@@ -53,8 +53,8 @@
     "@nuxt/module-builder": "^0.3.0",
     "@nuxt/schema": "^3.4.2",
     "@types/node": "^18.16.0",
-    "@unocss/nuxt": "^0.51.6",
-    "@unocss/reset": "^0.51.6",
+    "@unocss/nuxt": "^0.51.8",
+    "@unocss/reset": "^0.51.8",
     "nuxt": "^3.4.2"
   }
 }
