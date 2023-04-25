@@ -57,25 +57,23 @@ const props = withDefaults(
 
 const { unlazy } = useRuntimeConfig().public
 const target = ref<HTMLImageElement | undefined>()
+let isLoaded = false
 let cleanup: () => void | undefined
-// const now = performance.now()
 
 // SSR-decoded BlurHash as PNG data URI placeholder image
-const loadSSR = process.server && (props.ssr ?? unlazy.ssr)
 const pngPlaceholder = computed(() => {
-  if (!loadSSR || (!props.blurhash && !props.thumbhash))
-    return
-
-  return props.blurhash
-    ? createPngDataUriFromBlurHash(props.blurhash, {
-      size: props.placeholderSize || unlazy.placeholderSize,
-      ratio: props.placeholderRatio,
-    })
-    : createPngDataUriFromThumbHash(props.thumbhash!)
+  if (
+    (process.client || (props.ssr ?? unlazy.ssr))
+    && (props.blurhash || props.thumbhash)
+  ) {
+    return props.blurhash
+      ? createPngDataUriFromBlurHash(props.blurhash, {
+        size: props.placeholderSize || unlazy.placeholderSize,
+        ratio: props.placeholderRatio,
+      })
+      : createPngDataUriFromThumbHash(props.thumbhash!)
+  }
 })
-
-// if (loadSSR && process.dev)
-//   console.log(`[unlazy] BlurHash decoded in ${performance.now() - now}ms`)
 
 onMounted(() => {
   if (!target.value)
@@ -84,14 +82,19 @@ onMounted(() => {
   watchEffect(() => {
     cleanup?.()
 
+    if (pngPlaceholder.value && !isLoaded)
+      target.value!.src = pngPlaceholder.value
+
     if (!props.lazyLoad)
       return
 
-    cleanup = lazyLoad(target.value, {
+    cleanup = lazyLoad(target.value!, {
       hash: props.thumbhash || props.blurhash,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: props.placeholderSize || unlazy.placeholderSize,
     })
+
+    isLoaded = true
   })
 })
 
