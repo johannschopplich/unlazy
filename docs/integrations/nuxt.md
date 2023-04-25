@@ -2,6 +2,8 @@
 
 unlazy is not only framework-agnostic, but also provides a Nuxt module that you can use in your Nuxt application.
 
+The auto-imported `UnLazyImage` component is a drop-in replacement for the native `<img>` element and `<picture>` element respectively if you provide the `sources` prop.
+
 ## Installation
 
 Install the `@unlazy/nuxt` package using your favorite package manager:
@@ -91,18 +93,18 @@ The `UnLazyImage` component accepts the following props:
 
 ## Examples
 
-```html
-<!-- Inlined placeholder image as data URI -->
-<UnLazyImage
-  placeholder-src="data:image/svg+xml, ..."
-  src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-  auto-sizes
-/>
-```
-
 ::: tip
 In every `srcSet` example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
 :::
+
+### Inlined placeholder image
+
+```html [Inlined placeholder image]
+<UnLazyImage
+  placeholder-src="data:image/svg+xml, ..."
+  src="/foo/bar.jpg"
+/>
+```
 
 ### BlurHash
 
@@ -151,3 +153,33 @@ In every `srcSet` example, the `sizes` attribute is automatically calculated giv
   />
   ```
 :::
+
+### Multiple image sources
+
+In this example, we're using the `UnLazyImage` component with an `exampleImgSrc` for the default image source, and an array of objects named `exampleSources` for the `sources` prop. Each object in the array includes a `type` and a `srcSet` property. In addition, the `blurhash` attribute is set to a predefined BlurHash string, and the `autoSizes` attribute is set to `true`, which will enable automatic calculation of the `sizes` attribute.
+
+```vue
+<script setup lang="ts">
+import UnlazyImg from 'unlazy/UnlazyImg.vue'
+
+const exampleImgSrc = '/images/foo.jpg'
+const exampleSources = [
+  {
+    type: 'image/webp',
+    srcSet: '/images/foo.webp 1x, /images/foo@2x.webp 2x'
+  },
+  {
+    type: 'image/jpeg',
+    srcSet: '/images/foo.jpg 1x, /images/foo@2x.jpg 2x'
+  }
+]
+</script>
+
+<template>
+  <UnLazyImage
+    :src="exampleImgSrc"
+    :sources="exampleSources"
+    blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
+    auto-sizes
+  />
+</template>

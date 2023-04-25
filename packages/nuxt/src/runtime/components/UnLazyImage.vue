@@ -7,7 +7,16 @@ import { onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '
 
 const props = withDefaults(
   defineProps<{
+    /** Image source URL to be lazy-loaded. */
     src?: ImgHTMLAttributes['src']
+    /** Image source set to be lazy-loaded. */
+    srcSet?: ImgHTMLAttributes['srcset']
+    /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
+    sources?: {
+      type: string
+      srcSet: string
+      sizes?: string
+    }[]
     /**
      * A flag to indicate whether the sizes attribute should be automatically calculated.
      * @default false
@@ -17,6 +26,8 @@ const props = withDefaults(
     blurhash?: string
     /** A ThumbHash string representing the blurry placeholder image. */
     thumbhash?: string
+    /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
+    placeholderSrc?: string
     /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
     placeholderSize?: number
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
@@ -31,9 +42,12 @@ const props = withDefaults(
   }>(),
   {
     src: undefined,
+    srcSet: undefined,
+    sources: undefined,
     autoSizes: false,
     blurhash: undefined,
     thumbhash: undefined,
+    placeholderSrc: undefined,
     placeholderSize: undefined,
     placeholderRatio: undefined,
     lazyLoad: true,
@@ -85,9 +99,29 @@ onBeforeUnmount(() => {
 
 <template>
   <img
+    v-if="!props.sources?.length"
     ref="target"
-    :src="pngPlaceholder || src"
+    :src="pngPlaceholder || placeholderSrc"
+    :data-src="src"
+    :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
     loading="lazy"
   >
+  <picture v-else>
+    <source
+      v-for="(source, index) in props.sources"
+      :key="index"
+      :type="source.type"
+      :data-srcset="source.srcSet"
+      :data-sizes="source.sizes"
+    >
+    <img
+      ref="target"
+      :src="pngPlaceholder || placeholderSrc"
+      :data-src="src"
+      :data-srcset="srcSet"
+      :data-sizes="autoSizes ? 'auto' : undefined"
+      loading="lazy"
+    >
+  </picture>
 </template>

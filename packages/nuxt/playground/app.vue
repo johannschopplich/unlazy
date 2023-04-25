@@ -27,8 +27,7 @@ function loadImage() {
           <PlaygroundDivider><strong>SSR</strong>-decoded BlurHash</PlaygroundDivider>
           <UnLazyImage
             :blurhash="blurhash"
-            :blurhash-ratio="2"
-            data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+            src-set="image-320w.jpg 320w, image-640w.jpg 640w"
             width="640"
             height="320"
           />
@@ -41,8 +40,7 @@ function loadImage() {
           <UnLazyImage
             :ssr="false"
             :blurhash="blurhash"
-            :blurhash-ratio="2"
-            data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+            src-set="image-320w.jpg 320w, image-640w.jpg 640w"
             width="640"
             height="320"
           />
@@ -57,7 +55,7 @@ function loadImage() {
           <PlaygroundDivider><strong>SSR</strong>-decoded ThumbHash</PlaygroundDivider>
           <UnLazyImage
             :thumbhash="thumbhash"
-            data-src="/images/sunrise-evan-wallace.jpg"
+            src="/images/sunrise-evan-wallace.jpg"
             width="480"
             height="640"
             style="aspect-ratio: 3/4;"
@@ -72,7 +70,7 @@ function loadImage() {
           <UnLazyImage
             :ssr="false"
             :thumbhash="thumbhash"
-            data-src="/images/sunrise-evan-wallace.jpg"
+            src="/images/sunrise-evan-wallace.jpg"
             width="480"
             height="640"
             style="aspect-ratio: 3/4;"
@@ -86,9 +84,10 @@ function loadImage() {
           <UnLazyImage
             thumbhash="HBkSHYSIeHiPiHh8eJd4eTN0EEQG"
             :lazy-load="shouldLoadImage"
-            data-src="/images/fall-evan-wallace.jpg"
+            src="/images/fall-evan-wallace.jpg"
             width="480"
             height="640"
+            style="aspect-ratio: 3/2;"
             @click="loadImage"
           />
           <p class="text-sm text-gray-500">
