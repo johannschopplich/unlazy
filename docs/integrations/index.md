@@ -46,16 +46,18 @@ Both the `unlazy/blurhash` and `unlazy/thumbhash` exports provide a `createPngDa
 The [Nuxt](/integrations/nuxt) integration uses this approach to enable the `UnLazyImage` component to provide an SSR `src` attribute for the initial render.
 :::
 
+## Available Integrations
+
 The following integrations are available as of now:
 
-## Frontend Frameworks
+### Frontend Frameworks
 
 - [Vue](/integrations/vue)
 - [React](/integrations/react)
 - [Solid](/integrations/solid)
 - [Svelte](/integrations/svelte)
 
-## Meta-Frameworks
+### Meta-Frameworks
 
 ::: tip
 These include SSR-decoding of [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) strings.
