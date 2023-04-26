@@ -1,7 +1,7 @@
 <script lang="ts">
-import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
-import type { ImgHTMLAttributes } from 'vue'
-import { computed, defineComponent, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+/* eslint-disable import/no-duplicates */
+/* eslint-disable import/order */
+import { defineComponent } from '#imports'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -9,6 +9,11 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
+/* eslint-disable import/first */
+import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
+import type { ImgHTMLAttributes } from 'vue'
+import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+
 const props = withDefaults(
   defineProps<{
     /** Image source URL to be lazy-loaded. */
