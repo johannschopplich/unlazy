@@ -36,15 +36,17 @@ export function UnLazyImage({
   const target = useRef<HTMLImageElement | null>(null)
 
   useEffect(() => {
-    if (target.current) {
-      const cleanup = lazyLoad(target.current, {
-        hash: thumbhash || blurhash,
-        hashType: thumbhash ? 'thumbhash' : 'blurhash',
-        placeholderSize,
-      })
-      return () => {
-        cleanup()
-      }
+    if (!target.current)
+      return
+
+    const cleanup = lazyLoad(target.current, {
+      hash: thumbhash || blurhash,
+      hashType: thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize,
+    })
+
+    return () => {
+      cleanup()
     }
   }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize])
 
