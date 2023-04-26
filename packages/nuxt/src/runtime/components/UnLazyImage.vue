@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
-import { onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 const props = withDefaults(
   defineProps<{
@@ -53,13 +53,13 @@ const props = withDefaults(
   },
 )
 
-// SSR-decoded BlurHash as PNG data URI placeholder image
 const { unlazy } = useRuntimeConfig().public
-const hash = props.thumbhash || props.blurhash
-const loadSSR = process.server && (props.ssr ?? unlazy.ssr)
-const pngPlaceholder = (loadSSR && hash)
+const hash = computed(() => props.thumbhash || props.blurhash)
+
+// SSR-decoded BlurHash as PNG data URI placeholder image
+const pngPlaceholder = (process.server && (props.ssr ?? unlazy.ssr) && hash.value)
   ? createPlaceholderFromHash({
-    hash,
+    hash: hash.value,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     size: props.placeholderSize || unlazy.placeholderSize,
     ratio: props.placeholderRatio,
@@ -68,7 +68,7 @@ const pngPlaceholder = (loadSSR && hash)
 
 const target = ref<HTMLImageElement | undefined>()
 let cleanup: () => void | undefined
-let hasPlaceholder = false
+let lastHash: string | undefined
 
 watchEffect(() => {
   cleanup?.()
@@ -76,10 +76,10 @@ watchEffect(() => {
   if (!target.value)
     return
 
-  if (!hasPlaceholder) {
+  if (hash.value && hash.value !== lastHash) {
     const placeholder = createPlaceholderFromHash({
       image: target.value,
-      hash: props.thumbhash || props.blurhash,
+      hash: hash.value,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
       size: props.placeholderSize || unlazy.placeholderSize,
       ratio: props.placeholderRatio,
@@ -88,7 +88,7 @@ watchEffect(() => {
     if (placeholder)
       target.value.src = placeholder
 
-    hasPlaceholder = true
+    lastHash = hash.value
   }
 
   if (!props.lazyLoad)
