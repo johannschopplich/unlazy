@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { lazyLoad } from 'unlazy'
-import { createPngDataUri as createPngDataUriFromThumbHash } from 'unlazy/thumbhash'
-import { createPngDataUri as createPngDataUriFromBlurHash } from 'unlazy/blurhash'
+import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
-import { computed, onBeforeUnmount, onMounted, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 const props = withDefaults(
   defineProps<{
@@ -55,47 +53,49 @@ const props = withDefaults(
   },
 )
 
-const { unlazy } = useRuntimeConfig().public
-const target = ref<HTMLImageElement | undefined>()
-let isLoaded = false
-let cleanup: () => void | undefined
-
 // SSR-decoded BlurHash as PNG data URI placeholder image
-const pngPlaceholder = computed(() => {
-  if (
-    (process.client || (props.ssr ?? unlazy.ssr))
-    && (props.blurhash || props.thumbhash)
-  ) {
-    return props.blurhash
-      ? createPngDataUriFromBlurHash(props.blurhash, {
-        size: props.placeholderSize || unlazy.placeholderSize,
-        ratio: props.placeholderRatio,
-      })
-      : createPngDataUriFromThumbHash(props.thumbhash!)
-  }
-})
+const { unlazy } = useRuntimeConfig().public
+const hash = props.thumbhash || props.blurhash
+const loadSSR = process.server && (props.ssr ?? unlazy.ssr)
+const pngPlaceholder = (loadSSR && hash)
+  ? createPlaceholderFromHash({
+    hash,
+    hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+    size: props.placeholderSize || unlazy.placeholderSize,
+    ratio: props.placeholderRatio,
+  })
+  : undefined
 
-onMounted(() => {
+const target = ref<HTMLImageElement | undefined>()
+let cleanup: () => void | undefined
+let hasPlaceholder = false
+
+watchEffect(() => {
+  cleanup?.()
+
   if (!target.value)
     return
 
-  watchEffect(() => {
-    cleanup?.()
-
-    if (pngPlaceholder.value && !isLoaded)
-      target.value!.src = pngPlaceholder.value
-
-    if (!props.lazyLoad)
-      return
-
-    cleanup = lazyLoad(target.value!, {
+  if (!hasPlaceholder) {
+    const placeholder = createPlaceholderFromHash({
+      image: target.value,
       hash: props.thumbhash || props.blurhash,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
-      placeholderSize: props.placeholderSize || unlazy.placeholderSize,
+      size: props.placeholderSize || unlazy.placeholderSize,
+      ratio: props.placeholderRatio,
     })
 
-    isLoaded = true
-  })
+    if (placeholder)
+      target.value.src = placeholder
+
+    hasPlaceholder = true
+  }
+
+  if (!props.lazyLoad)
+    return
+
+  // Placeholder is already decoded
+  cleanup = lazyLoad(target.value, { hash: false })
 })
 
 onBeforeUnmount(() => {
@@ -104,16 +104,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <img
-    v-if="!props.sources?.length"
-    ref="target"
-    :src="pngPlaceholder || placeholderSrc"
-    :data-src="src"
-    :data-srcset="srcSet"
-    :data-sizes="autoSizes ? 'auto' : undefined"
-    loading="lazy"
-  >
-  <picture v-else>
+  <picture v-if="props.sources?.length">
     <source
       v-for="(source, index) in props.sources"
       :key="index"
@@ -130,4 +121,13 @@ onBeforeUnmount(() => {
       loading="lazy"
     >
   </picture>
+  <img
+    v-else
+    ref="target"
+    :src="pngPlaceholder || placeholderSrc"
+    :data-src="src"
+    :data-srcset="srcSet"
+    :data-sizes="autoSizes ? 'auto' : undefined"
+    loading="lazy"
+  >
 </template>

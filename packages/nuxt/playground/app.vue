@@ -30,6 +30,7 @@ function loadImage() {
             src-set="image-320w.jpg 320w, image-640w.jpg 640w"
             width="640"
             height="320"
+            style="aspect-ratio: 1/1;"
           />
           <p class="text-sm text-gray-500">
             The image above is inlined as a PNG data URI.
@@ -43,6 +44,7 @@ function loadImage() {
             src-set="image-320w.jpg 320w, image-640w.jpg 640w"
             width="640"
             height="320"
+            style="aspect-ratio: 1/1;"
           />
           <p class="text-sm text-gray-500">
             The client-side decoded BlurHash will infer the image dimensions from the <code>width</code> and <code>height</code> attributes.
