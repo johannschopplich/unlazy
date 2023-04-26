@@ -1,11 +1,7 @@
 <script lang="ts">
-/* eslint-disable import/no-duplicates */
-/* eslint-disable import/order */
-import { defineComponent } from '#imports'
-
-export default defineComponent({
+export default {
   inheritAttrs: false,
-})
+}
 </script>
 
 <script setup lang="ts">

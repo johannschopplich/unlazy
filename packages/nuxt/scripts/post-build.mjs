@@ -12,14 +12,20 @@ const files = [
   'runtime/components/UnLazyImage.vue',
 ]
 
-for (const file of files) {
+files.forEach(ensureScriptLang)
+files.forEach(removeDts)
+
+function ensureScriptLang(file) {
   const filePath = join(distDir, file)
   const content = readFileSync(filePath, 'utf-8')
-  const newContent = content.replace(/<script>/, '<script lang="ts">')
+  const newContent = content.replace('<script>', '<script lang="ts">')
   writeFileSync(filePath, newContent)
+}
 
-  // Remove UnLazyImage.vue.d.ts
+function removeDts(file) {
+  const filePath = join(distDir, file)
   const dtsPath = `${filePath}.d.ts`
+
   try {
     unlinkSync(dtsPath)
   }
