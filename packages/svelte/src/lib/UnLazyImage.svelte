@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte'
+  import { onDestroy } from 'svelte'
   import { lazyLoad } from 'unlazy'
 
   /** Image source URL to be lazy-loaded. */
@@ -22,13 +22,8 @@
 
   let target: HTMLImageElement | undefined
   let cleanup: (() => void) | undefined
-  let isMounted = false
 
-  onMount(() => {
-    isMounted = true
-  })
-
-  $: if (isMounted && target) {
+  $: if (target) {
     cleanup?.()
 
     cleanup = lazyLoad(target, {
