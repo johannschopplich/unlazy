@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
+import { onBeforeUnmount, ref, watchEffect } from 'vue'
 import { lazyLoad } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 
@@ -26,18 +26,16 @@ const props = defineProps<{
 const target = ref<HTMLImageElement | undefined>()
 let cleanup: () => void | undefined
 
-onMounted(() => {
-  watchEffect(() => {
-    cleanup?.()
+watchEffect(() => {
+  cleanup?.()
 
-    if (!target.value)
-      return
+  if (!target.value)
+    return
 
-    cleanup = lazyLoad(target.value, {
-      hash: props.thumbhash || props.blurhash,
-      hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
-      placeholderSize: props.placeholderSize,
-    })
+  cleanup = lazyLoad(target.value, {
+    hash: props.thumbhash || props.blurhash,
+    hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+    placeholderSize: props.placeholderSize,
   })
 })
 
