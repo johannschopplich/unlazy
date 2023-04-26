@@ -164,8 +164,6 @@ In this example, we're using the `UnLazyImage` component with an `exampleImgSrc`
 
 ```vue
 <script setup lang="ts">
-import UnlazyImg from 'unlazy/UnlazyImg.vue'
-
 const exampleImgSrc = '/images/foo.jpg'
 const exampleSources = [
   {
