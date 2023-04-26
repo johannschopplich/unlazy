@@ -1,8 +1,14 @@
-<script setup lang="ts">
+<script lang="ts">
 import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
-import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { computed, defineComponent, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
 
+export default defineComponent({
+  inheritAttrs: false,
+})
+</script>
+
+<script setup lang="ts">
 const props = withDefaults(
   defineProps<{
     /** Image source URL to be lazy-loaded. */
@@ -114,6 +120,7 @@ onBeforeUnmount(() => {
     >
     <img
       ref="target"
+      v-bind="$attrs"
       :src="pngPlaceholder || placeholderSrc"
       :data-src="src"
       :data-srcset="srcSet"
@@ -124,6 +131,7 @@ onBeforeUnmount(() => {
   <img
     v-else
     ref="target"
+    v-bind="$attrs"
     :src="pngPlaceholder || placeholderSrc"
     :data-src="src"
     :data-srcset="srcSet"
