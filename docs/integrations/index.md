@@ -2,23 +2,6 @@
 
 unlazy supports lazy loading images in your framework of choice. Each package provides a `UnLazyImage` component as a drop-in replacement for the native `<img>` element.
 
-The following integrations are available as of now:
-
-## Frontend Frameworks
-
-- [Vue](/integrations/vue)
-- [React](/integrations/react)
-- [Solid](/integrations/solid)
-- [Svelte](/integrations/svelte)
-
-## Meta-Frameworks
-
-- [Nuxt](/integrations/nuxt)
-
-::: tip
-These include SSR-decoding of [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) strings.
-:::
-
 ## Generic How-To
 
 To create a component for the framework of your choice, keep the following in mind:
@@ -62,3 +45,20 @@ Both the `unlazy/blurhash` and `unlazy/thumbhash` exports provide a `createPngDa
 ::: tip
 The [Nuxt](/integrations/nuxt) integration uses this approach to enable the `UnLazyImage` component to provide an SSR `src` attribute for the initial render.
 :::
+
+The following integrations are available as of now:
+
+## Frontend Frameworks
+
+- [Vue](/integrations/vue)
+- [React](/integrations/react)
+- [Solid](/integrations/solid)
+- [Svelte](/integrations/svelte)
+
+## Meta-Frameworks
+
+::: tip
+These include SSR-decoding of [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) strings.
+:::
+
+- [Nuxt](/integrations/nuxt)

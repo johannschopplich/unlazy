@@ -70,6 +70,10 @@ export default defineNuxtConfig({
 })
 ```
 
+::: warning
+Disabling server-side rendering of the blurry placeholder image will result in a flash of the original image on the initial page load and kinda defeats the purpose of the SSR abilities from Nuxt.
+:::
+
 ## `UnLazyImage` Component
 
 The `UnLazyImage` component is [globally available](https://nuxt.com/docs/guide/concepts/auto-imports) in your Nuxt application.
