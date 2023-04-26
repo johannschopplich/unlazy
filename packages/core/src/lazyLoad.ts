@@ -29,14 +29,14 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
-      const placeholoder = createPlaceholderFromHash({
+      const placeholder = createPlaceholderFromHash({
         image,
         hash: typeof hash === 'string' ? hash : undefined,
         hashType,
-        placeholderSize,
+        size: placeholderSize,
       })
-      if (placeholoder)
-        image.src = placeholoder
+      if (placeholder)
+        image.src = placeholder
     }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
@@ -112,15 +112,15 @@ export function createPlaceholderFromHash(
     hash,
     hashType = 'blurhash',
     /** @default 32 */
-    placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
-    /** Will be calculated from the image's actual dimensions if not provided */
-    placeholderRatio,
+    size = DEFAULT_PLACEHOLDER_SIZE,
+    /** Will be calculated from the image's actual dimensions if not provided and image is given */
+    ratio,
   }: {
     image?: HTMLImageElement
     hash?: string
     hashType?: 'blurhash' | 'thumbhash'
-    placeholderSize?: number
-    placeholderRatio?: number
+    size?: number
+    ratio?: number
   } = {},
 ) {
   if (!hash && image) {
@@ -138,15 +138,12 @@ export function createPlaceholderFromHash(
     }
     else {
       // Preserve the original image's aspect ratio
-      if (!placeholderRatio && image) {
-        const actualWidth = image.width || image.offsetWidth || placeholderSize
-        const actualHeight = image.height || image.offsetHeight || placeholderSize
-        placeholderRatio = actualWidth / actualHeight
+      if (!ratio && image) {
+        const actualWidth = image.width || image.offsetWidth || size
+        const actualHeight = image.height || image.offsetHeight || size
+        ratio = actualWidth / actualHeight
       }
-      return createPngDataUriFromBlurHash(hash, {
-        ratio: placeholderRatio,
-        size: placeholderSize,
-      })
+      return createPngDataUriFromBlurHash(hash, { ratio, size })
     }
   }
   catch (error) {

@@ -17,7 +17,7 @@ The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM eleme
 
 Options can be passed to the function to customize its behavior. These options include:
 
-- `hash`: Whether to use a hash for generating a blurry placeholder. Default is true.
+- `hash`: Whether to use a hash for generating a blurry placeholder. Default is `true`.
 - `hashType`: The type of hash to use for generating a blurry placeholder. Possible values are `blurhash` and `thumbhash`. Default is `blurhash`.
 - `placeholderSize`: The size of the placeholder. Applies only to BlurHash strings. Default is `32`.
 - `onImageLoad`: A callback function that will be executed when the image is loaded.
