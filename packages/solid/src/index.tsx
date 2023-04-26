@@ -1,4 +1,4 @@
-import { createEffect, onCleanup, onMount, splitProps } from 'solid-js'
+import { createEffect, createSignal, onCleanup, splitProps } from 'solid-js'
 import type { JSX } from 'solid-js'
 import { lazyLoad } from 'unlazy'
 import type { UnLazyLoadOptions } from 'unlazy'
@@ -28,28 +28,28 @@ export function UnLazyImage(props: Props) {
     props,
     ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize'],
   )
-  let target: HTMLImageElement
 
-  onMount(() => {
-    if (!target)
+  const [target, setTarget] = createSignal<HTMLImageElement>()
+
+  createEffect(() => {
+    const el = target()
+    if (!el)
       return
 
-    createEffect(() => {
-      const cleanup = lazyLoad(target, {
-        hash: local.thumbhash || local.blurhash,
-        hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
-        placeholderSize: local.placeholderSize,
-      })
+    const cleanup = lazyLoad(el, {
+      hash: local.thumbhash || local.blurhash,
+      hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize: local.placeholderSize,
+    })
 
-      onCleanup(() => {
-        cleanup()
-      })
+    onCleanup(() => {
+      cleanup()
     })
   })
 
   return (
     <img
-      ref={el => (target = el)}
+      ref={setTarget}
       src={local.placeholderSrc}
       data-src={local.src}
       data-srcset={local.srcSet}
