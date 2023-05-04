@@ -4,13 +4,13 @@ Install the `unlazy` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
-  pnpm add -D unlazy
+  pnpm add unlazy
   ```
   ```bash [yarn]
-  yarn add -D unlazy
+  yarn add unlazy
   ```
   ```bash [npm]
-  npm install -D unlazy
+  npm install unlazy
   ```
 :::
 

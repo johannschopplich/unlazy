@@ -28,10 +28,10 @@ It's the modernized and now framework-agnostic rewrite of my [Loadeer.js](https:
 
 ```bash
 # pnpm
-pnpm add -D unlazy
+pnpm add unlazy
 
 # npm
-npm i -D unlazy
+npm i unlazy
 ```
 
 ## Basic Usage
