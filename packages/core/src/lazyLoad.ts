@@ -27,6 +27,10 @@ export function lazyLoad<T extends HTMLImageElement>(
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
+    // Update `sizes` attribute for source elements inside a picture element
+    if (image.parentElement?.tagName.toLowerCase() === 'picture')
+      [...image.parentElement.getElementsByTagName('source')].forEach(updateSizesAttribute)
+
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
       const placeholder = createPlaceholderFromHash({
