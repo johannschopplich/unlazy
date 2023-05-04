@@ -55,7 +55,7 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^18.16.0",
+    "@types/node": "^18.16.3",
     "eslint-plugin-solid": "^0.12.1",
     "solid-js": "^1.7.3",
     "tsup": "^6.7.0",
