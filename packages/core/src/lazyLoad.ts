@@ -27,7 +27,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     updateSizesAttribute(image)
 
-    // Update `sizes` attribute for source elements inside a picture element
+    // Calculate the `sizes` attribute for sources inside a `<picture>` element
     if (image.parentElement?.tagName.toLowerCase() === 'picture')
       [...image.parentElement.getElementsByTagName('source')].forEach(updateSizesAttribute)
 
