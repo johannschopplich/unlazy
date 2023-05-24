@@ -28,6 +28,7 @@ export default defineNuxtConfig({
     shim: false,
     tsConfig: {
       compilerOptions: {
+        moduleResolution: 'bundler',
         paths: {
           '@unlazy/core': ['../../core/src/index.ts'],
           '@unlazy/core/*': ['../../core/src/*'],

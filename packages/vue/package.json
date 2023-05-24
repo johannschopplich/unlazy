@@ -60,8 +60,8 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^18.16.5",
-    "@vitejs/plugin-vue": "^4.2.1",
-    "vue": "^3.2.47"
+    "@types/node": "^18.16.14",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "vue": "^3.3.4"
   }
 }
