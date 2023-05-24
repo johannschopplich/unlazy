@@ -42,18 +42,23 @@ jobs:
         run: pnpm i
 
       - name: Typecheck
-        run: |
-          pnpm run dev:prepare
-          pnpm run test:types
+        run: pnpm run test:types
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        node: [18]
+        os: [ubuntu-latest]
+      fail-fast: false
+
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: ${{ matrix.node }}
 
       - run: corepack enable
 
