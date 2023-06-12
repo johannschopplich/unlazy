@@ -1,11 +1,4 @@
-<script lang="ts">
-export default {
-  inheritAttrs: false,
-}
-</script>
-
 <script setup lang="ts">
-/* eslint-disable import/first */
 import { createPlaceholderFromHash, lazyLoad } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
@@ -59,6 +52,10 @@ const props = withDefaults(
     ssr: undefined,
   },
 )
+
+defineOptions({
+  inheritAttrs: false,
+})
 
 const { unlazy } = useRuntimeConfig().public
 const hash = computed(() => props.thumbhash || props.blurhash)

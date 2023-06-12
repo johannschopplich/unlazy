@@ -1,5 +1,6 @@
 import { defu } from 'defu'
 import { addComponent, createResolver, defineNuxtModule } from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
 import { name, version } from '../package.json'
 
 export interface ModuleOptions {
@@ -29,7 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     version,
     configKey: 'unlazy',
     compatibility: {
-      nuxt: '^3',
+      nuxt: '^3.5',
     },
   },
   defaults: {
@@ -53,4 +54,4 @@ export default defineNuxtModule<ModuleOptions>({
       filePath: resolve('runtime/components/UnLazyImage.vue'),
     })
   },
-})
+}) as NuxtModule<ModuleOptions>
