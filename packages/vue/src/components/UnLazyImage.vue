@@ -24,7 +24,7 @@ const props = defineProps<{
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
-let cleanup: () => void | undefined
+let cleanup: (() => void) | undefined
 
 watchEffect(() => {
   cleanup?.()
