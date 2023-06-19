@@ -52,7 +52,7 @@
   "devDependencies": {
     "@nuxt/module-builder": "^0.4.0",
     "@nuxt/schema": "^3.5.3",
-    "@types/node": "^18.16.17",
+    "@types/node": "^18.16.18",
     "@unocss/nuxt": "^0.53.1",
     "@unocss/reset": "^0.53.1",
     "nuxt": "^3.5.3"
