@@ -3,9 +3,8 @@ import * as components from './components'
 
 const install: Plugin = {
   install(app) {
-    for (const key in components) {
+    for (const key in components)
       app.component(key, components[key as keyof typeof components])
-    }
   },
 }
 
