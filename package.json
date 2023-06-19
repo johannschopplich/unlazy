@@ -1,6 +1,6 @@
 {
   "name": "@unlazy/monorepo",
-  "version": "0.8.9",
+  "version": "0.9.0",
   "private": true,
   "packageManager": "pnpm@8.6.2",
   "scripts": {
