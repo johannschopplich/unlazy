@@ -71,7 +71,7 @@ const pngPlaceholder = (process.server && (props.ssr ?? unlazy.ssr) && hash.valu
   : undefined
 
 const target = ref<HTMLImageElement | undefined>()
-let cleanup: () => void | undefined
+let cleanup: (() => void) | undefined
 let lastHash: string | undefined
 
 watchEffect(() => {
