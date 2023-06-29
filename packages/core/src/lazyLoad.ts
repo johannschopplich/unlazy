@@ -155,6 +155,10 @@ export function createPlaceholderFromHash(
   }
 }
 
+// keeps track of elements that have a `data-sizes="auto"` attribute
+// and need to be updated when their size changes
+const resizeElementRepository = new Array<HTMLImageElement | HTMLSourceElement>;
+
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   const { sizes } = element.dataset
   if (sizes !== 'auto')
@@ -166,6 +170,14 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
 
   if (width)
     element.sizes = `${width}px`
+
+  const doesElementRecalculateOnResize = resizeElementRepository.includes(element)
+  if (doesElementRecalculateOnResize)
+    return
+
+  const resizeObserver = new ResizeObserver(() => updateSizesAttribute(element))
+  resizeObserver.observe(element)
+  resizeElementRepository.push(element)
 }
 
 function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
