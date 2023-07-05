@@ -190,7 +190,7 @@ const exampleSources = [
 
 ### Preload Image
 
-Useful if the `UnLazyImage` is part of e.g. a slider and you want to preload the next image.
+Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
 
 ```vue
 <template>
@@ -198,5 +198,6 @@ Useful if the `UnLazyImage` is part of e.g. a slider and you want to preload the
     :blurhash="blurhash"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
+    preload
   />
 </template>
