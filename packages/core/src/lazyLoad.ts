@@ -25,11 +25,18 @@ export function lazyLoad<T extends HTMLImageElement>(
 
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
-    updateSizesAttribute(image)
+    cleanupFns.add(
+      updateSizesAttribute(image),
+    )
 
     // Calculate the `sizes` attribute for sources inside a `<picture>` element
-    if (image.parentElement?.tagName.toLowerCase() === 'picture')
-      [...image.parentElement.getElementsByTagName('source')].forEach(updateSizesAttribute)
+    if (image.parentElement?.tagName.toLowerCase() === 'picture') {
+      [...image.parentElement.getElementsByTagName('source')].forEach((source) => {
+        cleanupFns.add(
+          updateSizesAttribute(source),
+        )
+      })
+    }
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
@@ -157,12 +164,21 @@ export function createPlaceholderFromHash(
 
 // keeps track of elements that have a `data-sizes="auto"` attribute
 // and need to be updated when their size changes
-const resizeElementStore = new Set<HTMLImageElement | HTMLSourceElement>()
+const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
+  const removeResizeObserver = (): void => {
+    const observerInstance = resizeElementStore.get(element)
+    if (!observerInstance)
+      return
+
+    observerInstance.disconnect()
+    resizeElementStore.delete(element)
+  }
+
   const { sizes } = element.dataset
   if (sizes !== 'auto')
-    return
+    return removeResizeObserver
 
   const width = element instanceof HTMLSourceElement
     ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
@@ -171,13 +187,14 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   if (width)
     element.sizes = `${width}px`
 
-  if (resizeElementStore.has(element))
-    return
+  if (!resizeElementStore.has(element)) {
+    const debounceResize = debounce(() => updateSizesAttribute(element), 500)
+    const observerInstance = new ResizeObserver(debounceResize)
+    resizeElementStore.set(element, observerInstance)
+    observerInstance.observe(element)
+  }
 
-  const debounceResize = debounce(() => updateSizesAttribute(element), 500)
-  const resizeObserver = new ResizeObserver(debounceResize)
-  resizeElementStore.add(element)
-  resizeObserver.observe(element)
+  return removeResizeObserver
 }
 
 function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
