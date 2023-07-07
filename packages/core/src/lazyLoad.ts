@@ -26,16 +26,14 @@ export function lazyLoad<T extends HTMLImageElement>(
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     cleanupFns.add(
-      updateSizesAttribute(image),
+      updateSizesAttribute(image, true),
     )
 
     // Calculate the `sizes` attribute for sources inside a `<picture>` element
     if (image.parentElement?.tagName.toLowerCase() === 'picture') {
-      [...image.parentElement.getElementsByTagName('source')].forEach((source) => {
-        cleanupFns.add(
-          updateSizesAttribute(source),
-        )
-      })
+      [...image.parentElement.getElementsByTagName('source')].forEach(
+        sourceTag => updateSizesAttribute(sourceTag, false),
+      )
     }
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
@@ -166,7 +164,7 @@ export function createPlaceholderFromHash(
 // and need to be updated when their size changes
 const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
-function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
+function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
   const removeResizeObserver = (): void => {
     const observerInstance = resizeElementStore.get(element)
     if (!observerInstance)
@@ -187,7 +185,7 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   if (width)
     element.sizes = `${width}px`
 
-  if (!resizeElementStore.has(element)) {
+  if (shouldUpdateOnResize && !resizeElementStore.has(element)) {
     const debounceResize = debounce(() => updateSizesAttribute(element), 500)
     const observerInstance = new ResizeObserver(debounceResize)
     resizeElementStore.set(element, observerInstance)
