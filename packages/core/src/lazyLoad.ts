@@ -1,5 +1,5 @@
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
+import { debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
@@ -157,7 +157,7 @@ export function createPlaceholderFromHash(
 
 // keeps track of elements that have a `data-sizes="auto"` attribute
 // and need to be updated when their size changes
-const resizeElementRepository = new Array<HTMLImageElement | HTMLSourceElement>;
+const resizeElementRepository = new Array<HTMLImageElement | HTMLSourceElement>()
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   const { sizes } = element.dataset
@@ -175,9 +175,10 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement) {
   if (doesElementRecalculateOnResize)
     return
 
-  const resizeObserver = new ResizeObserver(() => updateSizesAttribute(element))
-  resizeObserver.observe(element)
+  const debounceResize = debounce(() => updateSizesAttribute(element), 500)
+  const resizeObserver = new ResizeObserver(debounceResize)
   resizeElementRepository.push(element)
+  resizeObserver.observe(element)
 }
 
 function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
