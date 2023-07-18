@@ -44,8 +44,10 @@ export function lazyLoad<T extends HTMLImageElement>(
     }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
-    if (!image.dataset.src && !image.dataset.srcset)
+    if (!image.dataset.src && !image.dataset.srcset) {
+      console.error('unlazy: Image is missing a `data-src` or `data-srcset` attribute.', image)
       continue
+    }
 
     // Use the same logic as for crawlers when native lazy-loading is not supported
     if (isCrawler || !isLazyLoadingSupported) {
