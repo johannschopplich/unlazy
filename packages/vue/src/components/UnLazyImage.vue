@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watchEffect } from 'vue'
-import { lazyLoad } from 'unlazy'
+import { lazyLoad, loadImage } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 
 const props = defineProps<{
@@ -21,6 +21,11 @@ const props = defineProps<{
   placeholderSrc?: string
   /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
   placeholderSize?: number
+  /**
+   * A flag to indicate whether the image should be preloaded, even if it's not in the viewport yet.
+   * @default false
+   */
+  preload?: boolean
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
@@ -31,6 +36,11 @@ watchEffect(() => {
 
   if (!target.value)
     return
+
+  if (props.preload) {
+    loadImage(target.value)
+    return
+  }
 
   cleanup = lazyLoad(target.value, {
     hash: props.thumbhash || props.blurhash,

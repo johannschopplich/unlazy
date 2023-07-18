@@ -42,6 +42,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Add module options to public runtime config
     nuxt.options.runtimeConfig.public.unlazy = defu(
+      // @ts-expect-error: Maybe not defined
       nuxt.options.runtimeConfig.public.unlazy,
       options,
     )
