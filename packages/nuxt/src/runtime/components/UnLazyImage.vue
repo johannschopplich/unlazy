@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { createPlaceholderFromHash, lazyLoad, loadImage } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
+import type { ModuleOptions } from '../../module'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+
+defineOptions({
+  inheritAttrs: false,
+})
 
 const props = withDefaults(
   defineProps<{
@@ -59,11 +64,7 @@ const props = withDefaults(
   },
 )
 
-defineOptions({
-  inheritAttrs: false,
-})
-
-const { unlazy } = useRuntimeConfig().public
+const unlazy = useRuntimeConfig().public.unlazy as ModuleOptions
 const hash = computed(() => props.thumbhash || props.blurhash)
 
 // SSR-decoded BlurHash as PNG data URI placeholder image

@@ -1,7 +1,7 @@
 {
   "name": "@unlazy/nuxt",
-  "version": "0.9.0",
-  "packageManager": "pnpm@8.6.2",
+  "version": "0.9.1",
+  "packageManager": "pnpm@8.6.6",
   "description": "Nuxt lazy loading module for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
@@ -45,16 +45,16 @@
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.5.3",
+    "@nuxt/kit": "^3.6.2",
     "defu": "^6.1.2",
     "unlazy": "workspace:*"
   },
   "devDependencies": {
     "@nuxt/module-builder": "^0.4.0",
-    "@nuxt/schema": "^3.5.3",
-    "@types/node": "^18.16.18",
-    "@unocss/nuxt": "^0.53.1",
-    "@unocss/reset": "^0.53.1",
-    "nuxt": "^3.5.3"
+    "@nuxt/schema": "^3.6.2",
+    "@types/node": "^20.4.0",
+    "@unocss/nuxt": "^0.53.4",
+    "@unocss/reset": "^0.53.4",
+    "nuxt": "^3.6.2"
   }
 }
