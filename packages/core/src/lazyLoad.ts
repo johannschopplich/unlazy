@@ -45,7 +45,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset) {
-      console.error('unlazy: Image is missing a `data-src` or `data-srcset` attribute.', image)
+      console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
       continue
     }
 
