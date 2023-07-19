@@ -63,6 +63,13 @@ interface UnLazyLoadOptions {
   placeholderSize?: number
 
   /**
+   * Whether to update the `sizes` attribute on resize events with the current image width.
+   *
+   * @default false
+   */
+  updateSizesOnResize?: boolean
+
+  /**
    * A callback function to run when an image is loaded.
    */
   onImageLoad?: (image: HTMLImageElement) => void

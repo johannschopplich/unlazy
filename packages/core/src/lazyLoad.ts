@@ -18,6 +18,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     hash = true,
     hashType = 'blurhash',
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
+    updateSizesOnResize = false,
     onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
@@ -26,13 +27,13 @@ export function lazyLoad<T extends HTMLImageElement>(
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     cleanupFns.add(
-      updateSizesAttribute(image, true),
+      updateSizesAttribute(image, updateSizesOnResize),
     )
 
     // Calculate the `sizes` attribute for sources inside a `<picture>` element
     if (image.parentElement?.tagName.toLowerCase() === 'picture') {
       [...image.parentElement.getElementsByTagName('source')].forEach(
-        sourceTag => updateSizesAttribute(sourceTag, false),
+        sourceTag => updateSizesAttribute(sourceTag),
       )
     }
 
@@ -160,7 +161,7 @@ export function createPlaceholderFromHash(
   }
 }
 
-// keeps track of elements that have a `data-sizes="auto"` attribute
+// Keep track of elements that have a `data-sizes="auto"` attribute
 // and need to be updated when their size changes
 const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
