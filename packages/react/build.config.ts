@@ -1,21 +1,15 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  entries: ['src/index'],
-  clean: true,
-  declaration: true,
-  externals: [
-    'react',
-    'react/jsx-runtime',
-    'react-dom',
+  entries: [
+    {
+      builder: 'mkdist',
+      input: 'src',
+      esbuild: {
+        jsx: 'automatic',
+      },
+    },
   ],
-  rollup: {
-    emitCJS: true,
-    resolve: {
-      extensions: ['.ts', '.tsx'],
-    },
-    esbuild: {
-      jsx: 'automatic',
-    },
-  },
+  declaration: true,
+  clean: true,
 })
