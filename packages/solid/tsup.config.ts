@@ -1,10 +1,12 @@
-import { defineConfig } from 'tsup-preset-solid'
+import { defineConfig } from 'tsup'
+import { generateTsupOptions, parsePresetOptions } from 'tsup-preset-solid'
+import type { PresetOptions } from 'tsup-preset-solid'
 
-export default defineConfig(
-  {
-    entry: 'src/index.tsx',
-  },
-  {
-    cjs: true,
-  },
-)
+const presetOptions: PresetOptions = {
+  entries: [{ entry: 'src/index.tsx' }],
+}
+
+export default defineConfig(() => {
+  const resolvedOptions = parsePresetOptions(presetOptions)
+  return generateTsupOptions(resolvedOptions)
+})
