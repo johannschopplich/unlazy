@@ -2,7 +2,7 @@
   "name": "unlazy",
   "type": "module",
   "version": "0.9.2",
-  "packageManager": "pnpm@8.6.11",
+  "packageManager": "pnpm@8.6.12",
   "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
@@ -28,18 +28,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     },
     "./blurhash": {
       "types": "./dist/blurhash.d.ts",
-      "require": "./dist/blurhash.cjs",
-      "import": "./dist/blurhash.mjs"
+      "import": "./dist/blurhash.mjs",
+      "require": "./dist/blurhash.cjs"
     },
     "./thumbhash": {
       "types": "./dist/thumbhash.d.ts",
-      "require": "./dist/thumbhash.cjs",
-      "import": "./dist/thumbhash.mjs"
+      "import": "./dist/thumbhash.mjs",
+      "require": "./dist/thumbhash.cjs"
     }
   },
   "main": "./dist/index.cjs",
