@@ -1,8 +1,10 @@
-import { thumbHashToRGBA } from 'thumbhash'
-import { base64ToBytes } from './utils'
-import { rgbaToDataUri } from './utils/dataUri'
-
 export function createPngDataUri(hash: string) {
-  const { w, h, rgba } = thumbHashToRGBA(base64ToBytes(hash))
-  return rgbaToDataUri(w, h, rgba)
+  const worker = new Worker('./workers/thumbhash-worker.ts')
+  worker.postMessage({ hash })
+
+  return new Promise<string>((resolve) => {
+    worker.onmessage = (event) => {
+      resolve(event.data)
+    }
+  })
 }

@@ -1,7 +1,4 @@
-import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { getScaledDimensions } from './utils'
-import { rgbaToDataUri } from './utils/dataUri'
 
 export interface BlurHashOptions {
   /**
@@ -27,7 +24,16 @@ export function createPngDataUri(
     size = DEFAULT_PLACEHOLDER_SIZE,
   }: BlurHashOptions = {},
 ) {
-  const { width, height } = getScaledDimensions(ratio, size)
-  const rgba = decodeBlurHash(hash, width, height)
-  return rgbaToDataUri(width, height, rgba)
+  const worker = new Worker('./workers/blurhash-worker.ts')
+  worker.postMessage({
+    hash,
+    ratio,
+    size,
+  })
+
+  return new Promise<string>((resolve) => {
+    worker.onmessage = (event) => {
+      resolve(event.data)
+    }
+  })
 }
