@@ -33,6 +33,7 @@ export function createPngDataUri(
 
   return new Promise<string>((resolve) => {
     worker.onmessage = (event) => {
+      worker.terminate();
       resolve(event.data)
     }
   })

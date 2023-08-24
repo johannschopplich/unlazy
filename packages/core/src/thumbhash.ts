@@ -4,6 +4,7 @@ export function createPngDataUri(hash: string) {
 
   return new Promise<string>((resolve) => {
     worker.onmessage = (event) => {
+      worker.terminate();
       resolve(event.data)
     }
   })
