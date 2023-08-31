@@ -64,7 +64,7 @@
     "test:run": "vitest run",
     "test:types": "tsc --noEmit"
   },
-  "dependencies": {
+  "devDependencies": {
     "fast-blurhash": "^1.1.2",
     "thumbhash": "^0.1.1"
   }

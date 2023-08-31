@@ -63,15 +63,7 @@
     "dev:prepare": "unbuild --stub",
     "test:types": "tsc --noEmit"
   },
-  "peerDependencies": {
-    "fast-blurhash": "^1.1.2",
-    "thumbhash": "^0.1.1"
-  },
   "dependencies": {
     "@unlazy/core": "workspace:*"
-  },
-  "devDependencies": {
-    "fast-blurhash": "^1.1.2",
-    "thumbhash": "^0.1.1"
   }
 }
