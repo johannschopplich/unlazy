@@ -1,4 +1,4 @@
-import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
@@ -63,8 +63,13 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
+    // Ensure that `loading="lazy"` works correctly by setting the `src`
+    // attribute to a transparent 1x1 pixel
+    if (!image.src)
+      image.src = DEFAULT_IMAGE_PLACEHOLDER
+
+    // Load the image if it's already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      // Load the image if it's already in the viewport
       loadImage(image, onImageLoad)
       continue
     }
