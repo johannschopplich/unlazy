@@ -105,16 +105,19 @@ export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
 ) {
-  const imageLoader = new Image()
+  const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
+  if (sizes) {
+    // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
+    const width = getOffsetWidth(image)
+    imagePreLoader.sizes = (sizes === 'auto' && width) ? `${width}px` : sizes
+  }
   if (srcset)
-    imageLoader.srcset = srcset
+    imagePreLoader.srcset = srcset
   if (src)
-    imageLoader.src = src
-  if (sizes)
-    imageLoader.sizes = sizes
+    imagePreLoader.src = src
 
-  imageLoader.addEventListener('load', () => {
+  imagePreLoader.addEventListener('load', () => {
     updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
@@ -186,9 +189,7 @@ export function updateSizesAttribute(element: HTMLImageElement | HTMLSourceEleme
   if (sizes !== 'auto')
     return removeResizeObserver
 
-  const width = element instanceof HTMLSourceElement
-    ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
-    : element.offsetWidth
+  const width = getOffsetWidth(element)
 
   if (width)
     element.sizes = `${width}px`
@@ -224,4 +225,10 @@ function updatePictureSources(image: HTMLImageElement) {
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
   }
+}
+
+function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
+  return element instanceof HTMLSourceElement
+    ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
+    : element.offsetWidth
 }
