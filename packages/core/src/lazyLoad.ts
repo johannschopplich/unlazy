@@ -167,8 +167,8 @@ export function createPlaceholderFromHash(
 // and need to be updated when their size changes
 const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
-function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
-  const removeResizeObserver = (): void => {
+export function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
+  const removeResizeObserver = () => {
     const observerInstance = resizeElementStore.get(element)
     if (!observerInstance)
       return
