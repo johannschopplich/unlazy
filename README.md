@@ -18,8 +18,7 @@ It's the modernized and now framework-agnostic rewrite of my [Loadeer.js](https:
 - 🎟 **`<picture>`**: Supports multiple image tags
 - 🏎 **Auto-initialize**: Usable without a build step
 
-> **Note**
->
+> [!NOTE]
 > Although the `loading="lazy"` attribute is supported in all major browsers, it is only available in Safari 16.4 (released March 2023) and later versions by default. It is important to consider this limitation when using unlazy for your project, as it might impact the user experience for visitors using older Safari versions or other unsupported browsers.
 
 ## Setup
