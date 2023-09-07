@@ -100,16 +100,16 @@ export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
 ) {
-  const imageLoader = new Image()
+  const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
   if (srcset)
-    imageLoader.srcset = srcset
+    imagePreLoader.srcset = srcset
   if (src)
-    imageLoader.src = src
+    imagePreLoader.src = src
   if (sizes)
-    imageLoader.sizes = sizes
+    imagePreLoader.sizes = sizes
 
-  imageLoader.addEventListener('load', () => {
+  imagePreLoader.addEventListener('load', () => {
     updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
