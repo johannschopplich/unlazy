@@ -102,12 +102,17 @@ export function loadImage(
 ) {
   const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
+  if (sizes) {
+    // make sure that we calculate the correct `sizes` attribute
+    // if the image has a `sizes` attribute set to `auto`
+    sizes === 'auto'
+      ? imagePreLoader.sizes = `${image.offsetWidth}px`
+      : imagePreLoader.sizes = sizes
+  }
   if (srcset)
     imagePreLoader.srcset = srcset
   if (src)
     imagePreLoader.src = src
-  if (sizes)
-    imagePreLoader.sizes = sizes
 
   imagePreLoader.addEventListener('load', () => {
     updatePictureSources(image)
