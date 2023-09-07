@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref, watchEffect } from 'vue'
-import { lazyLoad, loadImage } from 'unlazy'
+import { lazyLoad, loadImage, updateSizesAttribute } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 
 const props = defineProps<{
@@ -38,6 +38,15 @@ watchEffect(() => {
     return
 
   if (props.preload) {
+    updateSizesAttribute(target.value)
+
+    // Calculate the `sizes` attribute for sources inside a `<picture>` element
+    if (target.value.parentElement?.tagName.toLowerCase() === 'picture') {
+      [...target.value.parentElement.getElementsByTagName('source')].forEach(
+        sourceTag => updateSizesAttribute(sourceTag),
+      )
+    }
+
     loadImage(target.value)
     return
   }
