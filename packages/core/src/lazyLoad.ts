@@ -103,11 +103,9 @@ export function loadImage(
   const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
   if (sizes) {
-    // make sure that we calculate the correct `sizes` attribute
-    // if the image has a `sizes` attribute set to `auto`
-    sizes === 'auto'
-      ? imagePreLoader.sizes = `${image.offsetWidth}px`
-      : imagePreLoader.sizes = sizes
+    // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
+    const width = getOffsetWidth(image)
+    imagePreLoader.sizes = (sizes === 'auto' && width) ? `${width}px` : sizes
   }
   if (srcset)
     imagePreLoader.srcset = srcset
@@ -186,9 +184,7 @@ export function updateSizesAttribute(element: HTMLImageElement | HTMLSourceEleme
   if (sizes !== 'auto')
     return removeResizeObserver
 
-  const width = element instanceof HTMLSourceElement
-    ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
-    : element.offsetWidth
+  const width = getOffsetWidth(element)
 
   if (width)
     element.sizes = `${width}px`
@@ -224,4 +220,10 @@ function updatePictureSources(image: HTMLImageElement) {
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
     [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
   }
+}
+
+function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
+  return element instanceof HTMLSourceElement
+    ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
+    : element.offsetWidth
 }
