@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { createPlaceholderFromHash, lazyLoad, loadImage, updateSizesAttribute } from 'unlazy'
+import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, loadImage } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 import type { ModuleOptions } from '../../module'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
@@ -104,15 +104,8 @@ watchEffect(() => {
   }
 
   if (props.preload) {
-    updateSizesAttribute(target.value)
-
-    // Calculate the `sizes` attribute for sources inside a `<picture>` element
-    if (target.value.parentElement?.tagName.toLowerCase() === 'picture') {
-      [...target.value.parentElement.getElementsByTagName('source')].forEach(
-        sourceTag => updateSizesAttribute(sourceTag),
-      )
-    }
-
+    if (props.autoSizes)
+      _autoSizes(target.value)
     loadImage(target.value)
     return
   }
