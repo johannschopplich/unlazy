@@ -26,16 +26,9 @@ export function lazyLoad<T extends HTMLImageElement>(
 
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
-    cleanupFns.add(
-      updateSizesAttribute(image, updateSizesOnResize),
-    )
-
-    // Calculate the `sizes` attribute for sources inside a `<picture>` element
-    if (image.parentElement?.tagName.toLowerCase() === 'picture') {
-      [...image.parentElement.getElementsByTagName('source')].forEach(
-        sourceTag => updateSizesAttribute(sourceTag),
-      )
-    }
+    const onResizeCleanup = updateSizesAttribute(image, updateSizesOnResize)
+    if (updateSizesOnResize && onResizeCleanup)
+      cleanupFns.add(onResizeCleanup)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
@@ -175,45 +168,51 @@ export function createPlaceholderFromHash(
 // and need to be updated when their size changes
 const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
-export function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
-  const removeResizeObserver = () => {
-    const observerInstance = resizeElementStore.get(element)
-    if (!observerInstance)
-      return
-
-    observerInstance.disconnect()
-    resizeElementStore.delete(element)
-  }
-
-  const { sizes } = element.dataset
-  if (sizes !== 'auto')
-    return removeResizeObserver
+function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
+  if (element.dataset.sizes !== 'auto')
+    return
 
   const width = getOffsetWidth(element)
 
   if (width)
     element.sizes = `${width}px`
 
-  if (shouldUpdateOnResize && !resizeElementStore.has(element)) {
+  // Calculate the `sizes` attribute for sources inside a `<picture>` element
+  if (element.parentElement?.tagName.toLowerCase() === 'picture') {
+    [...element.parentElement.getElementsByTagName('source')].forEach(
+      sourceTag => updateSizesAttribute(sourceTag),
+    )
+  }
+
+  if (!shouldUpdateOnResize)
+    return
+
+  if (!resizeElementStore.has(element)) {
     const debounceResize = debounce(() => updateSizesAttribute(element), 500)
     const observerInstance = new ResizeObserver(debounceResize)
     resizeElementStore.set(element, observerInstance)
     observerInstance.observe(element)
   }
 
-  return removeResizeObserver
+  return () => {
+    const observerInstance = resizeElementStore.get(element)
+    if (observerInstance) {
+      observerInstance.disconnect()
+      resizeElementStore.delete(element)
+    }
+  }
 }
 
 function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
   if (image.dataset.src) {
-    image.src = image.dataset.src!
+    image.src = image.dataset.src
     image.removeAttribute('data-src')
   }
 }
 
 function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
   if (image.dataset.srcset) {
-    image.srcset = image.dataset.srcset!
+    image.srcset = image.dataset.srcset
     image.removeAttribute('data-srcset')
   }
 }
