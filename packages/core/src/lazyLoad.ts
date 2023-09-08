@@ -100,10 +100,15 @@ export function loadImage(
 ) {
   const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
-  if (sizes) {
-    // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
+
+  // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
+  if (sizes === 'auto') {
     const width = getOffsetWidth(image)
-    imagePreLoader.sizes = (sizes === 'auto' && width) ? `${width}px` : sizes
+    if (width)
+      imagePreLoader.sizes = `${width}px`
+  }
+  else if (image.sizes) {
+    imagePreLoader.sizes = image.sizes
   }
   if (srcset)
     imagePreLoader.srcset = srcset
