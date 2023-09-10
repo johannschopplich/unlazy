@@ -4,7 +4,7 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
 
-// Compile-time flag to exclude BlurHash and ThumbHash from IIFE bundle
+/** Compile-time flag to let BlurHash and ThumbHash generation be excluded from the bundle */
 const __ENABLE_HASH_DECODING__ = true
 
 export function lazyLoad<T extends HTMLImageElement>(
