@@ -32,14 +32,17 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (__ENABLE_HASH_DECODING__ && hash) {
-      const placeholder = createPlaceholderFromHash({
+      createPlaceholderFromHash({
         image,
         hash: typeof hash === 'string' ? hash : undefined,
         hashType,
         size: placeholderSize,
       })
-      if (placeholder)
-        image.src = placeholder
+        .then((placeholder) => {
+          if (!placeholder)
+            return
+          image.src = placeholder
+        })
     }
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
@@ -123,7 +126,7 @@ export function loadImage(
   })
 }
 
-export function createPlaceholderFromHash(
+export async function createPlaceholderFromHash(
   {
     /** If given, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions */
     image,
@@ -152,7 +155,7 @@ export function createPlaceholderFromHash(
 
   try {
     if (hashType === 'thumbhash') {
-      return createPngDataUriFromThumbHash(hash)
+      return await createPngDataUriFromThumbHash(hash)
     }
     else {
       // Preserve the original image's aspect ratio
@@ -161,7 +164,7 @@ export function createPlaceholderFromHash(
         const actualHeight = image.height || image.offsetHeight || size
         ratio = actualWidth / actualHeight
       }
-      return createPngDataUriFromBlurHash(hash, { ratio, size })
+      return await createPngDataUriFromBlurHash(hash, { ratio, size })
     }
   }
   catch (error) {

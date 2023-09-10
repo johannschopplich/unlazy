@@ -70,7 +70,7 @@ const hash = computed(() => props.thumbhash || props.blurhash)
 // SSR-decoded BlurHash as PNG data URI placeholder image
 // eslint-disable-next-line n/prefer-global/process
 const pngPlaceholder = (process.server && (props.ssr ?? unlazy.ssr) && hash.value)
-  ? createPlaceholderFromHash({
+  ? await createPlaceholderFromHash({
     hash: hash.value,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     size: props.placeholderSize || unlazy.placeholderSize,
@@ -82,14 +82,14 @@ const target = ref<HTMLImageElement | undefined>()
 let cleanup: (() => void) | undefined
 let lastHash: string | undefined
 
-watchEffect(() => {
+watchEffect(async () => {
   cleanup?.()
 
   if (!target.value)
     return
 
   if (hash.value && hash.value !== lastHash) {
-    const placeholder = createPlaceholderFromHash({
+    const placeholder = await createPlaceholderFromHash({
       image: target.value,
       hash: hash.value,
       hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
