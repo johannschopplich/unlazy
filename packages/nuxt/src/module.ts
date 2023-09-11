@@ -1,5 +1,5 @@
 import { defu } from 'defu'
-import { addComponent, createResolver, defineNuxtModule } from '@nuxt/kit'
+import { addComponent, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
 import type { NuxtModule } from '@nuxt/schema'
 import { name, version } from '../package.json'
 
@@ -49,6 +49,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Transpile runtime
     nuxt.options.build.transpile.push(resolve('runtime'))
+
+    extendViteConfig((config) => {
+      config.define = config.define || {}
+      config.define.__ENABLE_HASH_DECODING__ = true
+    })
 
     addComponent({
       name: 'UnLazyImage',

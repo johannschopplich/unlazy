@@ -13,4 +13,8 @@ export default defineConfig({
       formats: ['es', 'iife'],
     },
   },
+
+  define: {
+    __ENABLE_HASH_DECODING__: true,
+  },
 })
