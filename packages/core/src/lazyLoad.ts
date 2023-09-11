@@ -4,9 +4,6 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
 
-/** Compile-time flag to let BlurHash and ThumbHash generation be excluded from the bundle */
-const __ENABLE_HASH_DECODING__ = true
-
 export function lazyLoad<T extends HTMLImageElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
@@ -31,7 +28,8 @@ export function lazyLoad<T extends HTMLImageElement>(
       cleanupFns.add(onResizeCleanup)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
-    if (__ENABLE_HASH_DECODING__ && hash) {
+    // @ts-expect-error: Compile-time flag to exclude this code from the bundle
+    if (typeof __ENABLE_HASH_DECODING__ === 'undefined' && hash) {
       const placeholder = createPlaceholderFromHash({
         image,
         hash: typeof hash === 'string' ? hash : undefined,
