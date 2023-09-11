@@ -28,8 +28,11 @@ export function lazyLoad<T extends HTMLImageElement>(
       cleanupFns.add(onResizeCleanup)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
-    // @ts-expect-error: Compile-time flag to exclude this code from the bundle
-    if (typeof __ENABLE_HASH_DECODING__ === 'undefined' && hash) {
+    if (
+      // @ts-expect-error: Compile-time flag to exclude this code from the bundle
+      (typeof __ENABLE_HASH_DECODING__ === 'undefined' || __ENABLE_HASH_DECODING__)
+      && hash
+    ) {
       const placeholder = createPlaceholderFromHash({
         image,
         hash: typeof hash === 'string' ? hash : undefined,
