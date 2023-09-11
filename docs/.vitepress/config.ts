@@ -118,6 +118,7 @@ function nav(): DefaultTheme.NavItem[] {
           text: 'Cookbook',
           items: [
             { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
+            { text: 'Build Flags', link: '/cookbook/build-flags' },
           ],
         },
       ],
@@ -208,6 +209,7 @@ function sidebarCookbook(): DefaultTheme.SidebarItem[] {
       text: 'Articles',
       items: [
         { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
+        { text: 'Build Flags', link: '/cookbook/build-flags' },
       ],
     },
   ]
