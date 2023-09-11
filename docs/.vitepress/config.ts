@@ -41,7 +41,7 @@ export default defineConfig({
       '/guide/': sidebarGuide(),
       '/placeholders/': sidebarGuide(),
       '/integrations/': sidebarGuide(),
-      '/cookbook/': sidebarCookbook(),
+      '/advanced/': sidebarGuide(),
       '/api/': sidebarApi(),
     },
 
@@ -111,14 +111,14 @@ function nav(): DefaultTheme.NavItem[] {
       ],
     },
     {
-      text: 'Cookbook',
-      activeMatch: '^/cookbook/',
+      text: 'Advanced',
+      activeMatch: '^/advanced/',
       items: [
         {
-          text: 'Cookbook',
+          text: 'Advanced',
           items: [
-            { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
-            { text: 'Build Flags', link: '/cookbook/build-flags' },
+            { text: 'Build Flags', link: '/advanced/build-flags' },
+            { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
           ],
         },
       ],
@@ -194,24 +194,14 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Svelte', link: '/integrations/svelte' },
       ],
     },
-    { text: 'Cookbook', link: '/cookbook/' },
-    { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/packages/nuxt/playground' },
-  ]
-}
-
-function sidebarCookbook(): DefaultTheme.SidebarItem[] {
-  return [
     {
-      text: 'Overview',
-      link: '/cookbook/',
-    },
-    {
-      text: 'Articles',
+      text: 'Advanced',
       items: [
-        { text: 'Aspect Ratio', link: '/cookbook/aspect-ratio' },
-        { text: 'Build Flags', link: '/cookbook/build-flags' },
+        { text: 'Build Flags', link: '/advanced/build-flags' },
+        { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
       ],
     },
+    { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/packages/nuxt/playground' },
   ]
 }
 
