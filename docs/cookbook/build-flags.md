@@ -30,5 +30,5 @@ export default defineConfig({
 ::: warning
 This will only disable bundling the BlurHash and ThumbHash decoding algorithms when using [`lazyLoad`](/api/lazy-load).
 
-If you use either `unlazy/blurhash` or `unlazy/thumbhash` subpath importws directly, the decoding algorithms will still be bundled.
+If you use either `unlazy/blurhash` or `unlazy/thumbhash` sub-path imports directly, the decoding algorithms will still be bundled.
 :::
