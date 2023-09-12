@@ -23,7 +23,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 
   for (const image of toElementArray<T>(selectorsOrElements)) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
-    const onResizeCleanup = updateSizesAttribute(image, updateSizesOnResize)
+    const onResizeCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
     if (updateSizesOnResize && onResizeCleanup)
       cleanupFns.add(onResizeCleanup)
 
@@ -174,7 +174,13 @@ export function createPlaceholderFromHash(
 // and need to be updated when their size changes
 const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
-function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, shouldUpdateOnResize = false) {
+function updateSizesAttribute(
+  element: HTMLImageElement | HTMLSourceElement,
+  options?: {
+    updateOnResize?: boolean
+    isRecursiveCall?: boolean
+  },
+) {
   if (element.dataset.sizes !== 'auto')
     return
 
@@ -184,27 +190,29 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement, sho
     element.sizes = `${width}px`
 
   // Calculate the `sizes` attribute for sources inside a `<picture>` element
-  if (element.parentElement?.tagName.toLowerCase() === 'picture') {
+  if (
+    element.parentElement?.tagName.toLowerCase() === 'picture'
+    && !options?.isRecursiveCall
+  ) {
     [...element.parentElement.getElementsByTagName('source')].forEach(
-      sourceTag => updateSizesAttribute(sourceTag),
+      sourceTag => updateSizesAttribute(sourceTag, { isRecursiveCall: true }),
     )
   }
 
-  if (!shouldUpdateOnResize)
-    return
+  if (options?.updateOnResize) {
+    if (!resizeElementStore.has(element)) {
+      const debounceResize = debounce(() => updateSizesAttribute(element), 500)
+      const observerInstance = new ResizeObserver(debounceResize)
+      resizeElementStore.set(element, observerInstance)
+      observerInstance.observe(element)
+    }
 
-  if (!resizeElementStore.has(element)) {
-    const debounceResize = debounce(() => updateSizesAttribute(element), 500)
-    const observerInstance = new ResizeObserver(debounceResize)
-    resizeElementStore.set(element, observerInstance)
-    observerInstance.observe(element)
-  }
-
-  return () => {
-    const observerInstance = resizeElementStore.get(element)
-    if (observerInstance) {
-      observerInstance.disconnect()
-      resizeElementStore.delete(element)
+    return () => {
+      const observerInstance = resizeElementStore.get(element)
+      if (observerInstance) {
+        observerInstance.disconnect()
+        resizeElementStore.delete(element)
+      }
     }
   }
 }
