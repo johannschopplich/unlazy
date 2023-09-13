@@ -178,7 +178,7 @@ function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
   options?: {
     updateOnResize?: boolean
-    isRecursiveCall?: boolean
+    skipChildren?: boolean
   },
 ) {
   if (element.dataset.sizes !== 'auto')
@@ -192,10 +192,10 @@ function updateSizesAttribute(
   // Calculate the `sizes` attribute for sources inside a `<picture>` element
   if (
     element.parentElement?.tagName.toLowerCase() === 'picture'
-    && !options?.isRecursiveCall
+    && !options?.skipChildren
   ) {
     [...element.parentElement.getElementsByTagName('source')].forEach(
-      sourceTag => updateSizesAttribute(sourceTag, { isRecursiveCall: true }),
+      sourceTag => updateSizesAttribute(sourceTag, { skipChildren: true }),
     )
   }
 
