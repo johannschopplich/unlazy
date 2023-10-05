@@ -68,7 +68,7 @@ const unlazy = useRuntimeConfig().public.unlazy as ModuleOptions
 const hash = computed(() => props.thumbhash || props.blurhash)
 
 // SSR-decoded BlurHash as PNG data URI placeholder image
-// eslint-disable-next-line n/prefer-global/process
+// eslint-disable-next-line node/prefer-global/process
 const pngPlaceholder = (process.server && (props.ssr ?? unlazy.ssr) && hash.value)
   ? createPlaceholderFromHash({
     hash: hash.value,

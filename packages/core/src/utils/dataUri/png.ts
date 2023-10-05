@@ -1,4 +1,5 @@
-/* eslint-disable n/prefer-global/buffer */
+/* eslint-disable node/prefer-global/buffer */
+/* eslint-disable antfu/consistent-list-newline */
 /**
  * Encodes an RGBA image to a PNG data URI. RGB should not be premultiplied by A.
  *

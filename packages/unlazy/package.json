@@ -2,7 +2,7 @@
   "name": "unlazy",
   "type": "module",
   "version": "0.10.1",
-  "packageManager": "pnpm@8.7.4",
+  "packageManager": "pnpm@8.8.0",
   "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",

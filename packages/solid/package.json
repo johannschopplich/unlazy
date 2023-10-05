@@ -2,7 +2,7 @@
   "name": "@unlazy/solid",
   "type": "module",
   "version": "0.10.1",
-  "packageManager": "pnpm@8.7.4",
+  "packageManager": "pnpm@8.8.0",
   "description": "Solid lazy loading library for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
@@ -44,6 +44,8 @@
     "build": "tsup",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test:types": "tsc --noEmit"
   },
   "peerDependencies": {
@@ -53,9 +55,9 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.8.2",
     "eslint-plugin-solid": "^0.13.0",
-    "solid-js": "^1.7.11",
+    "solid-js": "^1.7.12",
     "tsup": "^7.2.0",
     "tsup-preset-solid": "^2.1.0",
     "vite-plugin-solid": "^2.7.0"
