@@ -201,7 +201,7 @@ function updateSizesAttribute(
 
   if (options?.updateOnResize) {
     if (!resizeElementStore.has(element)) {
-      const debounceResize = debounce(() => updateSizesAttribute(element), 500)
+      const debounceResize = debounce(() => updateSizesAttribute(element), 200)
       const observerInstance = new ResizeObserver(debounceResize)
       resizeElementStore.set(element, observerInstance)
       observerInstance.observe(element)
