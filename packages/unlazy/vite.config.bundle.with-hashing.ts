@@ -15,6 +15,6 @@ export default defineConfig({
   },
 
   define: {
-    __ENABLE_HASH_DECODING__: true,
+    __UNLAZY_HASH_DECODING__: true,
   },
 })

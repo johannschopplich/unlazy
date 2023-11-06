@@ -52,7 +52,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     extendViteConfig((config) => {
       config.define = config.define || {}
-      config.define.__ENABLE_HASH_DECODING__ = true
+      config.define.__UNLAZY_HASH_DECODING__ = true
     })
 
     addComponent({
