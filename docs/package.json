@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@iconify-json/carbon": "^1.1.21",
-    "unocss": "^0.56.5",
-    "vitepress": "1.0.0-rc.20"
+    "unocss": "^0.57.2",
+    "vitepress": "1.0.0-rc.24"
   }
 }

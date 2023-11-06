@@ -8,8 +8,8 @@
 
   // Auto-fix
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": false
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
 
   // Silent the stylistic rules in you IDE, but still auto-fix them
@@ -25,7 +25,7 @@
     { "rule": "*semi", "severity": "off" }
   ],
 
-  // Enable eslint for all supported languages
+  // Enable ESLint for all supported languages
   "eslint.validate": [
     "javascript",
     "javascriptreact",
