@@ -29,8 +29,8 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
-      // @ts-expect-error: Compile-time flag to exclude this code from the bundle
-      (typeof __ENABLE_HASH_DECODING__ === 'undefined' || __ENABLE_HASH_DECODING__)
+      // @ts-expect-error: Compile-time flag
+      (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
       && hash
     ) {
       const placeholder = createPlaceholderFromHash({
@@ -45,7 +45,9 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset) {
-      console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
+      // @ts-expect-error: Compile-time flag
+      if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+        console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
       continue
     }
 
@@ -166,7 +168,9 @@ export function createPlaceholderFromHash(
     }
   }
   catch (error) {
-    console.error(`Error generating ${hashType} placeholder:`, error)
+    // @ts-expect-error: Compile-time flag
+    if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+      console.error(`Error generating ${hashType} placeholder:`, error)
   }
 }
 
