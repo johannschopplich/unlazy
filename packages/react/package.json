@@ -2,7 +2,7 @@
   "name": "@unlazy/react",
   "type": "module",
   "version": "0.10.2",
-  "packageManager": "pnpm@8.10.2",
+  "packageManager": "pnpm@8.10.5",
   "description": "React lazy loading library for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
@@ -48,10 +48,10 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.8.10",
-    "@types/react": "^18.2.36",
-    "@types/react-dom": "^18.2.14",
-    "@vitejs/plugin-react": "^4.1.1",
+    "@types/node": "^20.9.4",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }
