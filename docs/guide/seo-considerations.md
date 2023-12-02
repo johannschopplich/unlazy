@@ -4,7 +4,7 @@ When implementing lazy loading with blurry placeholders, it is important to cons
 
 ## Detects Bots and Crawlers
 
-unlazy provided includes an exported function called `isCrawler` that detects if the visitor is a bot or a crawler. This is useful to ensure that the full-quality image is loaded and indexed by search engines. The library trusts that bots and crawlers can evaluate the `srcset` attribute and load the appropriate image based on their needs.
+unlazy includes an exported function called `isCrawler` that detects if the visitor is a bot or a crawler. This is useful to ensure that the full-quality image is loaded and indexed by search engines. The library trusts that bots and crawlers can evaluate the `srcset` attribute and load the appropriate image based on their needs.
 
 The `isCrawler` function checks the user agent string for common bot and crawler identifiers and determines if the `onscroll` event is supported by the browser. This information is then used to decide whether to immediately load the full-quality image or to use the blurry placeholder approach for the specific visitor.
 
