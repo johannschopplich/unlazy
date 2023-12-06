@@ -21,7 +21,7 @@ jobs:
           cache: pnpm
 
       - name: Install
-        run: pnpm i
+        run: pnpm install
 
       - name: Lint
         run: pnpm run lint
@@ -37,7 +37,7 @@ jobs:
           cache: pnpm
 
       - name: Install
-        run: pnpm i
+        run: pnpm install
 
       - name: Typecheck
         run: pnpm run test:types
@@ -60,7 +60,7 @@ jobs:
           cache: pnpm
 
       - name: Install
-        run: pnpm i
+        run: pnpm install
 
       - name: Test
         run: pnpm run test

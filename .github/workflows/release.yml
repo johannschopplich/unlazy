@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install
-        run: pnpm i
+        run: pnpm install
 
       - name: Build
         run: pnpm run build
