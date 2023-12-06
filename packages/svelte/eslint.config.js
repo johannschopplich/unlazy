@@ -3,7 +3,7 @@ import * as svelteParser from 'svelte-eslint-parser'
 import * as tsParser from '@typescript-eslint/parser'
 import antfu from '@antfu/eslint-config'
 
-export default antfu(
+export default await antfu(
   {
     vue: false,
     ignores: ['.svelte-kit', 'tsconfig.json'],

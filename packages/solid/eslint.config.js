@@ -2,7 +2,7 @@ import solidPlugin from 'eslint-plugin-solid'
 import * as tsParser from '@typescript-eslint/parser'
 import antfu from '@antfu/eslint-config'
 
-export default antfu(
+export default await antfu(
   {
     vue: false,
     ignores: ['tsconfig.json'],
