@@ -2,7 +2,7 @@
   "name": "@unlazy/vue",
   "type": "module",
   "version": "0.10.2",
-  "packageManager": "pnpm@8.11.0",
+  "packageManager": "pnpm@8.14.0",
   "description": "Vue lazy loading library for placeholder images",
   "author": "Johann Schopplich <pkg@johannschopplich.com>",
   "license": "MIT",
@@ -59,8 +59,8 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^20.10.3",
-    "@vitejs/plugin-vue": "^4.5.1",
-    "vue": "^3.3.10"
+    "@types/node": "^20.10.6",
+    "@vitejs/plugin-vue": "^5.0.2",
+    "vue": "^3.4.3"
   }
 }
