@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
   import { onDestroy } from 'svelte'
   import { lazyLoad } from 'unlazy'
 
@@ -20,8 +20,8 @@
   /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
   export let placeholderSize: number | undefined = undefined
 
-  let target: HTMLImageElement | undefined
-  let cleanup: (() => void) | undefined
+  let target: HTMLImageElement | undefined = undefined
+  let cleanup: (() => void) | undefined = undefined
 
   $: if (target) {
     cleanup?.()
@@ -45,6 +45,6 @@
   data-src={src}
   data-srcset={srcSet}
   data-sizes={autoSizes ? 'auto' : undefined}
-  loading="lazy"
+  loading='lazy'
   {...$$restProps}
 />
