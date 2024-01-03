@@ -39,6 +39,10 @@ jobs:
       - name: Install
         run: pnpm install
 
+      # Required for svelte-check
+      - name: Build
+        run: pnpm --filter=./packages/unlazy run build
+
       - name: Typecheck
         run: pnpm run test:types
 
