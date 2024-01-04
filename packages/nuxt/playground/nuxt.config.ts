@@ -24,18 +24,11 @@ export default defineNuxtConfig({
     },
   },
 
+  future: {
+    typescriptBundlerResolution: true,
+  },
+
   typescript: {
     shim: false,
-    tsConfig: {
-      compilerOptions: {
-        moduleResolution: 'bundler',
-        paths: {
-          '@unlazy/core': ['../../core/src/index.ts'],
-          '@unlazy/core/*': ['../../core/src/*'],
-          'unlazy': ['../../unlazy/src/index.ts'],
-          'unlazy/*': ['../../unlazy/src/*'],
-        },
-      },
-    },
   },
 })

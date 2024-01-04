@@ -42,7 +42,7 @@ export default defineNuxtModule<ModuleOptions>({
 
     // Add module options to public runtime config
     nuxt.options.runtimeConfig.public.unlazy = defu(
-      // @ts-expect-error: Maybe not defined
+      // @ts-expect-error: Can be unknown
       nuxt.options.runtimeConfig.public.unlazy,
       options,
     )
@@ -51,7 +51,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.build.transpile.push(resolve('runtime'))
 
     extendViteConfig((config) => {
-      config.define = config.define || {}
+      config.define ||= {}
       config.define.__UNLAZY_HASH_DECODING__ = true
     })
 
