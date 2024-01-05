@@ -55,7 +55,7 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^3.0.1",
+    "@sveltejs/adapter-auto": "^3.1.0",
     "@sveltejs/kit": "^2.0.6",
     "@sveltejs/package": "^2.2.5",
     "eslint-plugin-svelte": "^2.35.1",

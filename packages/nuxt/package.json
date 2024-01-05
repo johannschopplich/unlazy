@@ -45,16 +45,16 @@
     "test:types": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.9.0",
-    "defu": "^6.1.3",
+    "@nuxt/kit": "^3.9.1",
+    "defu": "^6.1.4",
     "unlazy": "workspace:*"
   },
   "devDependencies": {
     "@nuxt/module-builder": "^0.5.5",
-    "@nuxt/schema": "^3.9.0",
+    "@nuxt/schema": "^3.9.1",
     "@types/node": "^20.10.6",
     "@unocss/nuxt": "^0.58.3",
     "@unocss/reset": "^0.58.3",
-    "nuxt": "^3.9.0"
+    "nuxt": "^3.9.1"
   }
 }
