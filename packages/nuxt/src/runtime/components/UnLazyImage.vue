@@ -4,6 +4,8 @@ import type { ImgHTMLAttributes } from 'vue'
 import type { ModuleOptions } from '../../module'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
 
+const emit = defineEmits(['onImageLoad'])
+
 defineOptions({
   inheritAttrs: false,
 })
@@ -113,7 +115,7 @@ watchEffect(() => {
     return
 
   // Placeholder is already decoded
-  cleanup = lazyLoad(target.value, { hash: false })
+  cleanup = lazyLoad(target.value, { hash: false, onImageLoad: () => emit('onImageLoad') })
 })
 
 onBeforeUnmount(() => {
