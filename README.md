@@ -6,8 +6,6 @@
 
 Universal lazy loading library leveraging native browser APIs. It's intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images and with a [BlurHash](https://unlazy.byjohann.dev/placeholders/blurhash) or [ThumbHash](https://unlazy.byjohann.dev/placeholders/thumbhash) string.
 
-It's the modernized and now framework-agnostic rewrite of my [Loadeer.js](https://github.com/johannschopplich/loadeer) library, which uses an Intersection Observer to detect when an image enters the viewport.
-
 ## Features
 
 - 🎀 **Native**: Utilizes the `loading="lazy"` attribute
