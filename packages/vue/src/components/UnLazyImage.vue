@@ -28,6 +28,10 @@ const props = defineProps<{
   preload?: boolean
 }>()
 
+const emit = defineEmits<{
+  (event: 'loaded', image: HTMLImageElement): void
+}>()
+
 const target = ref<HTMLImageElement | undefined>()
 let cleanup: (() => void) | undefined
 
@@ -48,6 +52,7 @@ watchEffect(() => {
     hash: props.thumbhash || props.blurhash,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     placeholderSize: props.placeholderSize,
+    onImageLoad: image => emit('loaded', image),
   })
 })
 

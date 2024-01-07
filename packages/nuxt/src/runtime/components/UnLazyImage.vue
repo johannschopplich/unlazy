@@ -64,6 +64,10 @@ const props = withDefaults(
   },
 )
 
+const emit = defineEmits<{
+  (event: 'loaded', image: HTMLImageElement): void
+}>()
+
 const unlazy = useRuntimeConfig().public.unlazy as ModuleOptions
 const hash = computed(() => props.thumbhash || props.blurhash)
 
@@ -113,7 +117,10 @@ watchEffect(() => {
     return
 
   // Placeholder is already decoded
-  cleanup = lazyLoad(target.value, { hash: false })
+  cleanup = lazyLoad(target.value, {
+    hash: false,
+    onImageLoad: image => emit('loaded', image),
+  })
 })
 
 onBeforeUnmount(() => {

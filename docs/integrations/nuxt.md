@@ -96,6 +96,12 @@ The `UnLazyImage` component accepts the following props:
 | `preload` | Boolean | A flag to indicate whether the image should be preloaded, even if it's not in the viewport yet. |
 | `ssr` | Boolean | Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. |
 
+### Emitted Events
+
+| Event | Description |
+| --- | --- | --- |
+| `loaded` | Emitted when the image has been loaded. The event payload is the image element itself. |
+
 ## Examples
 
 ::: tip

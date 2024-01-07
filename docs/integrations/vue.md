@@ -68,6 +68,12 @@ The `UnLazyImage` component accepts the following props:
 | `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
 | `preload` | Boolean | A flag to indicate whether the image should be preloaded, even if it's not in the viewport yet. |
 
+### Emitted Events
+
+| Event | Description |
+| --- | --- | --- |
+| `loaded` | Emitted when the image has been loaded. The event payload is the image element itself. |
+
 ## Examples
 
 ::: code-group
