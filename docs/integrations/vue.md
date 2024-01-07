@@ -71,7 +71,7 @@ The `UnLazyImage` component accepts the following props:
 ### Emitted Events
 
 | Event | Description |
-| --- | --- | --- |
+| --- | --- |
 | `loaded` | Emitted when the image has been loaded. The event payload is the image element itself. |
 
 ## Examples
