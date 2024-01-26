@@ -28,7 +28,7 @@ body:
     id: required-info
     attributes:
       label: Final checks
-      description: Before submitting, please make sure you do the following
+      description: 'Before submitting, please make sure you do the following:'
       options:
         - label: Check existing [issues](https://github.com/johannschopplich/unlazy/issues).
           required: true
