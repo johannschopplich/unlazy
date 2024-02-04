@@ -28,10 +28,6 @@ export default defineNuxtConfig({
     autoImport: false,
   },
 
-  future: {
-    typescriptBundlerResolution: true,
-  },
-
   typescript: {
     shim: false,
   },
