@@ -56,4 +56,4 @@ You can target specific images by passing a CSS selector, a DOM element, a list 
 
 ## License
 
-[MIT](./LICENSE) License © 2023-present [Johann Schopplich](https://github.com/johannschopplich)
+[MIT](./LICENSE) License © 2023-PRESENT [Johann Schopplich](https://github.com/johannschopplich)
