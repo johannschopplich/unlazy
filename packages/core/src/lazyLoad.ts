@@ -101,6 +101,17 @@ export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
 ) {
+  const isChildOfPictureElement = image.parentElement?.tagName.toLowerCase() === 'picture'
+
+  // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
+  if (isChildOfPictureElement) {
+    updatePictureSources(image)
+    updateImageSrcset(image)
+    updateImageSrc(image)
+    onImageLoad?.(image)
+    return
+  }
+
   const imagePreLoader = new Image()
   const { srcset, src, sizes } = image.dataset
 
@@ -113,9 +124,6 @@ export function loadImage(
   else if (image.sizes) {
     imagePreLoader.sizes = image.sizes
   }
-
-  // Update sources to prevent duplicate downloads
-  updatePictureSources(image)
 
   if (srcset)
     imagePreLoader.srcset = srcset
