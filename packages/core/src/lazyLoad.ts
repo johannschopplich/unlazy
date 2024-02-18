@@ -113,13 +113,16 @@ export function loadImage(
   else if (image.sizes) {
     imagePreLoader.sizes = image.sizes
   }
+
+  // Update sources to prevent duplicate downloads
+  updatePictureSources(image)
+
   if (srcset)
     imagePreLoader.srcset = srcset
   if (src)
     imagePreLoader.src = src
 
   imagePreLoader.addEventListener('load', () => {
-    updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
     onImageLoad?.(image)
