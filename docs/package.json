@@ -11,5 +11,6 @@
     "@iconify-json/carbon": "^1.1.30",
     "unocss": "^0.58.5",
     "vitepress": "1.0.0-rc.35"
-  }
+  },
+  "version": "0.10.5"
 }
