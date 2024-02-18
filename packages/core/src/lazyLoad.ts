@@ -134,7 +134,7 @@ export function loadImage(
     updateImageSrcset(image)
     updateImageSrc(image)
     onImageLoad?.(image)
-  })
+  }, { once: true })
 }
 
 export function createPlaceholderFromHash(
