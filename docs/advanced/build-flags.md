@@ -42,7 +42,7 @@ If you use either `unlazy/blurhash` or `unlazy/thumbhash` sub-path imports direc
 
 unlazy will help you locate missing `data-src` or `data-srcset` attributes in your project by logging a warning in the browser console. An example warning message looks like this:
 
-```bash
+```
 [unlazy] Missing `data-src` or `data-srcset` attribute: <img>
 ```
 
