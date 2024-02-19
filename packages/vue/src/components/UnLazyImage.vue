@@ -30,6 +30,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (event: 'loaded', image: HTMLImageElement): void
+  (event: 'error', error: Event): void
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
@@ -69,5 +70,6 @@ onBeforeUnmount(() => {
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
     loading="lazy"
+    @error="emit('error', $event)"
   >
 </template>
