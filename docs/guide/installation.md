@@ -4,13 +4,13 @@ Install the `unlazy` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
-  pnpm add unlazy
+  pnpm add -D unlazy
   ```
   ```bash [yarn]
-  yarn add unlazy
+  yarn add -D unlazy
   ```
   ```bash [npm]
-  npm install unlazy
+  npm install -D unlazy
   ```
 :::
 
@@ -39,10 +39,12 @@ unlazy can be used without a build step. Useful for prototyping or when you don'
   - Must be used with `<script type="module">`
 
 :::info
+
 To keep the size of the bundle small, the global build does neither include BlurHash, nor ThumbHash decoding. If you want to use either of those, you must import the `unlazy.with-hashing.iife.js` or `unlazy.with-hashing.js` files instead:
 
 - Global build: <CdnLink name="unlazy.with-hashing.iife.js" />
 - ESM build: <CdnLink name="unlazy.with-hashing.js" />
+
 :::
 
 ### Auto-Initialization

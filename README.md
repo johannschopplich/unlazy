@@ -2,7 +2,8 @@
 
 # unlazy
 
-[![npm version](https://img.shields.io/npm/v/unlazy?color=a1b858&label=)](https://www.npmjs.com/package/unlazy)
+[![npm version][npm-version-src]][npm-version-href]
+[![bundle][bundle-src]][bundle-href]
 
 Universal lazy loading library leveraging native browser APIs. It's intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images and with a [BlurHash](https://unlazy.byjohann.dev/placeholders/blurhash) or [ThumbHash](https://unlazy.byjohann.dev/placeholders/thumbhash) string.
 
@@ -16,19 +17,16 @@ Universal lazy loading library leveraging native browser APIs. It's intended to 
 - 🎟 **`<picture>`**: Supports multiple image tags
 - 🏎 **Auto-initialize**: Usable without a build step
 
-> [!NOTE]
-> Although the `loading="lazy"` attribute is supported in all major browsers, it is only available in Safari 16.4 (released March 2023) and later versions by default. It is important to consider this limitation when using unlazy for your project, as it might impact the user experience for visitors using older Safari versions or other unsupported browsers.
-
 ## Setup
 
 > [📖 Read the documentation](https://unlazy.byjohann.dev)
 
 ```bash
 # pnpm
-pnpm add unlazy
+pnpm add -D unlazy
 
 # npm
-npm i unlazy
+npm i -D unlazy
 ```
 
 ## Basic Usage
@@ -57,3 +55,10 @@ You can target specific images by passing a CSS selector, a DOM element, a list 
 ## License
 
 [MIT](./LICENSE) License © 2023-PRESENT [Johann Schopplich](https://github.com/johannschopplich)
+
+<!-- Badges -->
+
+[npm-version-src]: https://img.shields.io/npm/v/unlazy?style=flat
+[npm-version-href]: https://npmjs.com/package/unlazy
+[bundle-src]: https://img.shields.io/bundlephobia/minzip/unlazy?style=flat
+[bundle-href]: https://bundlephobia.com/result?p=unlazy
