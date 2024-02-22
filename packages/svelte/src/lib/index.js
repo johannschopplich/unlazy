@@ -1,1 +1,1 @@
-export { default as UnLazyimage } from './UnLazyImage.svelte'
+export { default as UnLazyImage } from './UnLazyImage.svelte'
