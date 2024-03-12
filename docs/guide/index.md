@@ -5,7 +5,7 @@ unlazy is a universal lazy loading library leveraging native browser APIs. It's 
 Images are initially rendered with blurry placeholders, giving the user an impression of the page layout and content. As the images enter the viewport, they are replaced with the full-quality versions, providing a smoother experience. This approach prioritizes the initial rendering of the page and improves the perceived performance for users, especially when the connection is slow or unstable.
 
 ::: info
-Although the `loading="lazy"` attribute is supported in all major browsers, it is only available in Safari 16.4 (released March 2023) and later versions by default. If native lazy loading is not supported, unlazy will fall back to eager loading.
+Although the `loading="lazy"` attribute is supported in all major browsers, it is only available in Safari 15.4 (released March 2022) and later versions by default. If native lazy loading is not supported, unlazy will fall back to eager loading.
 :::
 
 ## How It Works
