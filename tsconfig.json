@@ -1,29 +1,24 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
+    "jsx": "preserve",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "paths": {
       "@unlazy/core": ["./packages/core/src/index.ts"],
       "@unlazy/core/*": ["./packages/core/src/*"],
       "unlazy": ["./packages/unlazy/src/index.ts"],
       "unlazy/*": ["./packages/unlazy/src/*"]
     },
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "strict": true,
     "noEmit": true,
-    "jsx": "preserve",
-
-    /* Linting */
-    "strict": true
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
   },
   "include": [
     "packages"
