@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     /* Limit global types to those in the current package */
-    "typeRoots": ["./node_modules/@types"],
-    "jsx": "react-jsx"
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": ["src", "playground"],
   "exclude": ["**/dist"]
