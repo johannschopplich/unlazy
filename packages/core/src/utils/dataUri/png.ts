@@ -1,5 +1,5 @@
-/* eslint-disable node/prefer-global/buffer */
 /* eslint-disable antfu/consistent-list-newline */
+
 /**
  * Encodes an RGBA image to a PNG data URI. RGB should not be premultiplied by A.
  *
@@ -65,9 +65,7 @@ export function rgbaToDataUri(
     bytes[end++] = c & 255
   }
 
-  const base64 = typeof Buffer !== 'undefined'
-    ? Buffer.from(new Uint8Array(bytes)).toString('base64')
-    : btoa(String.fromCharCode(...bytes))
+  const base64 = globalThis.btoa(String.fromCharCode(...bytes))
 
   return `data:image/png;base64,${base64}`
 }

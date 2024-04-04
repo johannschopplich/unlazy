@@ -1,4 +1,3 @@
-/* eslint-disable node/prefer-global/buffer */
 export const isSSR = typeof window === 'undefined'
 export const isLazyLoadingSupported = !isSSR && 'loading' in HTMLImageElement.prototype
 export const isCrawler = !isSSR && (!('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
@@ -30,16 +29,6 @@ export function getScaledDimensions(aspectRatio: number, referenceSize: number) 
   }
 
   return { width, height }
-}
-
-export function base64ToBytes(value: string) {
-  const base64 = value.replace(/-/g, '+').replace(/_/g, '/')
-
-  const decodedData = typeof Buffer !== 'undefined'
-    ? Buffer.from(base64, 'base64')
-    : Uint8Array.from(atob(base64), char => char.charCodeAt(0))
-
-  return new Uint8Array(decodedData)
 }
 
 export function debounce<T extends (...args: any[]) => void>(
