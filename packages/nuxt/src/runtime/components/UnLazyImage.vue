@@ -111,6 +111,7 @@ watchEffect(() => {
     if (props.autoSizes)
       _autoSizes(target.value)
     loadImage(target.value)
+    emit('loaded', target.value)
     return
   }
 
@@ -120,7 +121,9 @@ watchEffect(() => {
   // Placeholder is already decoded
   cleanup = lazyLoad(target.value, {
     hash: false,
-    onImageLoad: image => emit('loaded', image),
+    onImageLoad(image) {
+      emit('loaded', image)
+    },
   })
 })
 
