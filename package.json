@@ -21,7 +21,7 @@
     "@antfu/eslint-config": "^2.15.0",
     "@types/node": "^20.12.7",
     "bumpp": "^9.4.0",
-    "eslint": "^9.0.0",
+    "eslint": "^8.57.0",
     "happy-dom": "^14.7.1",
     "typescript": "^5.4.5",
     "unbuild": "^3.0.0-rc.1",
