@@ -1,9 +1,9 @@
 {
   "name": "@unlazy/nuxt",
   "version": "0.11.3",
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@8.15.7",
   "description": "Nuxt lazy loading module for placeholder images",
-  "author": "Johann Schopplich <pkg@johannschopplich.com>",
+  "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",
   "repository": {
@@ -52,9 +52,9 @@
   "devDependencies": {
     "@nuxt/module-builder": "^0.5.5",
     "@nuxt/schema": "^3.11.2",
-    "@types/node": "^20.12.4",
-    "@unocss/nuxt": "^0.58.9",
-    "@unocss/reset": "^0.58.9",
+    "@types/node": "^20.12.7",
+    "@unocss/nuxt": "^0.59.4",
+    "@unocss/reset": "^0.59.4",
     "nuxt": "^3.11.2"
   }
 }

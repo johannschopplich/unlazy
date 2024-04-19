@@ -4,7 +4,7 @@ export default await antfu(
   {
     vue: false,
     svelte: true,
-    ignores: ['.svelte-kit', 'tsconfig.json'],
+    ignores: ['.svelte-kit'],
   },
   {
     files: ['**/*.svelte'],
