@@ -1,7 +1,8 @@
 import { resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineNuxtConfig } from 'nuxt/config'
 
-const currentDir = new URL('.', import.meta.url).pathname
+const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineNuxtConfig({
   modules: ['@unocss/nuxt', '../src/module'],
