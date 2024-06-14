@@ -30,7 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     version,
     configKey: 'unlazy',
     compatibility: {
-      nuxt: '^3.5',
+      nuxt: '>=3.5',
     },
   },
   defaults: {
