@@ -35,15 +35,15 @@ export function debounce<T extends (...args: any[]) => void>(
   fn: T,
   delay: number,
 ) {
-  let timeout: ReturnType<typeof setTimeout> | undefined
+  let timeoutId: number | undefined
 
   return function (...args: Parameters<T>) {
-    if (timeout)
-      clearTimeout(timeout)
+    if (timeoutId != null)
+      clearTimeout(timeoutId)
 
-    timeout = setTimeout(() => {
-      timeout = undefined
+    timeoutId = (setTimeout as Window['setTimeout'])(() => {
       fn(...args)
+      timeoutId = undefined
     }, delay)
   }
 }
