@@ -1,6 +1,6 @@
 export const isSSR = typeof window === 'undefined'
 export const isLazyLoadingSupported = !isSSR && 'loading' in HTMLImageElement.prototype
-export const isCrawler = !isSSR && (!('onscroll' in window) || /(gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
+export const isCrawler = !isSSR && (!('onscroll' in window) || /(?:gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
 
 export function toElementArray<T extends HTMLElement>(
   target: string | T | NodeListOf<T> | T[],

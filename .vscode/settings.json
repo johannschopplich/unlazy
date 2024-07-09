@@ -1,6 +1,6 @@
 {
   // Enable the ESLint flat config support
-  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
 
   // Disable the default formatter, use ESLint instead
   "prettier.enable": false,
@@ -15,6 +15,7 @@
   // Silent the stylistic rules in you IDE, but still auto-fix them
   "eslint.rules.customizations": [
     { "rule": "style/*", "severity": "off" },
+    { "rule": "format/*", "severity": "off" },
     { "rule": "*-indent", "severity": "off" },
     { "rule": "*-spacing", "severity": "off" },
     { "rule": "*-spaces", "severity": "off" },
