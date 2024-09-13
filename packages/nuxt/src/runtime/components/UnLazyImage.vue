@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, loadImage } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 import type { ModuleOptions } from '../../module'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, loadImage } from 'unlazy'
 
 defineOptions({
   inheritAttrs: false,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watchEffect } from 'vue'
-import { autoSizes as _autoSizes, lazyLoad, loadImage } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
+import { autoSizes as _autoSizes, lazyLoad, loadImage } from 'unlazy'
+import { onBeforeUnmount, ref, watchEffect } from 'vue'
 
 const props = defineProps<{
   /** Image source URL to be lazy-loaded. */

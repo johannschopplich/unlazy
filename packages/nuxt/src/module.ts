@@ -1,6 +1,6 @@
-import { defu } from 'defu'
-import { addComponent, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
 import type { NuxtModule } from '@nuxt/schema'
+import { addComponent, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
+import { defu } from 'defu'
 import { name, version } from '../package.json'
 
 export interface ModuleOptions {

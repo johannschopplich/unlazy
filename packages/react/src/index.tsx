@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react'
 import type { ImgHTMLAttributes } from 'react'
-import { lazyLoad } from 'unlazy'
 import type { UnLazyLoadOptions } from 'unlazy'
+import { useEffect, useRef } from 'react'
+import { lazyLoad } from 'unlazy'
 
 interface Props
   extends ImgHTMLAttributes<HTMLImageElement>,

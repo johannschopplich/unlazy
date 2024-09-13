@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitepress'
 import type { DefaultTheme } from 'vitepress'
+import { defineConfig } from 'vitepress'
 import { github, ogDescription, ogImage, ogTitle, ogUrl, releases, version } from './meta'
 
 const url = new URL(ogUrl)

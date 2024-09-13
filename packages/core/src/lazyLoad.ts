@@ -1,8 +1,8 @@
-import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
-import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
-import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import type { UnLazyLoadOptions } from './types'
+import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
+import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
+import { debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 
 export function lazyLoad<T extends HTMLImageElement>(
   /**

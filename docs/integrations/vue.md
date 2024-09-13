@@ -42,8 +42,8 @@ If you prefer to make the `LazyImage` component globally available, you can regi
 
 ```ts
 // src/main.ts
-import { createApp } from 'vue'
 import Unlazy from '@unlazy/vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
