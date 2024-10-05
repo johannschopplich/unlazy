@@ -209,9 +209,9 @@ function updateSizesAttribute(
     element.parentElement?.tagName.toLowerCase() === 'picture'
     && !options?.skipChildren
   ) {
-    [...element.parentElement.getElementsByTagName('source')].forEach(
-      sourceTag => updateSizesAttribute(sourceTag, { skipChildren: true }),
-    )
+    for (const sourceTag of [...element.parentElement.getElementsByTagName('source')]) {
+      updateSizesAttribute(sourceTag, { skipChildren: true })
+    }
   }
 
   if (options?.updateOnResize) {
