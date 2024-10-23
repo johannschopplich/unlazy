@@ -38,7 +38,6 @@
   })
 </script>
 
-<!-- svelte-ignore a11y-missing-attribute -->
 <img
   bind:this={target}
   src={placeholderSrc}

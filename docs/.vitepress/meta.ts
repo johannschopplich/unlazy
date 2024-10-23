@@ -7,6 +7,7 @@ export const ogUrl = 'https://unlazy.byjohann.dev/'
 export const ogTitle = name
 export const ogDescription = description
 export const ogImage = `${ogUrl}og.jpg`
+export const twitterImage = `${ogUrl}twitter.jpg`
 
 /* GitHub and social links */
 export const github = 'https://github.com/johannschopplich/unlazy'
