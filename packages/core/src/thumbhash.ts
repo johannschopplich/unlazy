@@ -15,6 +15,6 @@ function base64ToUint8Array(base64String: string) {
   )
 }
 
-function base64UrlToBase64(base64url: string) {
-  return base64url.replaceAll('-', '+').replaceAll('_', '/')
+function base64UrlToBase64(base64Url: string) {
+  return base64Url.replaceAll('-', '+').replaceAll('_', '/')
 }
