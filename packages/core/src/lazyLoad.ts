@@ -187,7 +187,7 @@ export function createPlaceholderFromHash(
 
 // Keep track of elements that have a `data-sizes="auto"` attribute
 // and need to be updated when their size changes
-const resizeElementStore = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
+const elementResizeObserverMap = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
@@ -215,18 +215,18 @@ function updateSizesAttribute(
   }
 
   if (options?.updateOnResize) {
-    if (!resizeElementStore.has(element)) {
+    if (!elementResizeObserverMap.has(element)) {
       const debounceResize = debounce(() => updateSizesAttribute(element), 500)
       const observerInstance = new ResizeObserver(debounceResize)
-      resizeElementStore.set(element, observerInstance)
+      elementResizeObserverMap.set(element, observerInstance)
       observerInstance.observe(element)
     }
 
     return () => {
-      const observerInstance = resizeElementStore.get(element)
+      const observerInstance = elementResizeObserverMap.get(element)
       if (observerInstance) {
         observerInstance.disconnect()
-        resizeElementStore.delete(element)
+        elementResizeObserverMap.delete(element)
       }
     }
   }
