@@ -1,6 +1,6 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { getScaledDimensions } from './utils'
+import { calculateProportionalSize } from './utils'
 import { rgbaToDataUri } from './utils/dataUri'
 
 export interface BlurHashOptions {
@@ -27,7 +27,7 @@ export function createPngDataUri(
     size = DEFAULT_PLACEHOLDER_SIZE,
   }: BlurHashOptions = {},
 ) {
-  const { width, height } = getScaledDimensions(ratio, size)
+  const { width, height } = calculateProportionalSize(ratio, size)
   const rgba = decodeBlurHash(hash, width, height)
   return rgbaToDataUri(width, height, rgba)
 }

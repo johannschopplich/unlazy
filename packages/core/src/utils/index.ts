@@ -15,7 +15,7 @@ export function toElementArray<T extends HTMLElement>(
   return [...target]
 }
 
-export function getScaledDimensions(aspectRatio: number, referenceSize: number) {
+export function calculateProportionalSize(aspectRatio: number, referenceSize: number) {
   let width: number
   let height: number
 
