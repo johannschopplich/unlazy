@@ -1,8 +1,8 @@
 import type { UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
-import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
-import { debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
+import { createIndexedImagePlaceholder, debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 
 export function lazyLoad<T extends HTMLImageElement>(
   /**
@@ -21,13 +21,11 @@ export function lazyLoad<T extends HTMLImageElement>(
 ) {
   const cleanupFns = new Set<() => void>()
 
-  for (const image of toElementArray<T>(selectorsOrElements)) {
+  for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     const onResizeCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
     if (updateSizesOnResize && onResizeCleanup)
       cleanupFns.add(onResizeCleanup)
-
-    const hasValidSrc = Boolean(image.src)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
@@ -61,18 +59,15 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
-    // Ensure that `loading="lazy"` works correctly by setting the `src`
-    // attribute to a transparent 1x1 pixel
+    // Ensure that `loading="lazy"` works correctly by setting a default placeholder.
+    // For Chrome, is is necessary to generate a unique placeholder. Otherwise, as
+    // soon as the first placeholder is loaded, the `load` event will be triggered
+    // for all subsequent images, even if they are not in the viewport.
     if (!image.src)
-      image.src = DEFAULT_IMAGE_PLACEHOLDER
+      image.src = createIndexedImagePlaceholder(index)
 
-    // Load immediately if:
-    // 1. Either the image has a valid `src` attribute and it is already loaded
-    // 2. Or it is already in the viewport (even with placeholder)
-    if (
-      (hasValidSrc && image.complete && image.naturalWidth > 0)
-      || isPartiallyInViewport(image)
-    ) {
+    // Load immediately if the image is already in the viewport
+    if (image.complete && image.naturalWidth > 0) {
       loadImage(image, onImageLoad)
       continue
     }
@@ -266,14 +261,4 @@ function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
   return element instanceof HTMLSourceElement
     ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
     : element.offsetWidth
-}
-
-function isPartiallyInViewport(element: HTMLElement) {
-  const rect = element.getBoundingClientRect()
-  return (
-    rect.top < window.innerHeight
-    && rect.bottom >= 0
-    && rect.left < window.innerWidth
-    && rect.right >= 0
-  )
 }

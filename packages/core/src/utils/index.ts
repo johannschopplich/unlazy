@@ -1,3 +1,5 @@
+import { DEFAULT_IMAGE_PLACEHOLDER } from '../constants'
+
 export const isSSR = typeof window === 'undefined'
 export const isLazyLoadingSupported = !isSSR && 'loading' in HTMLImageElement.prototype
 export const isCrawler = !isSSR && (!('onscroll' in window) || /(?:gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
@@ -15,20 +17,21 @@ export function toElementArray<T extends HTMLElement>(
   return [...target]
 }
 
-export function calculateProportionalSize(aspectRatio: number, referenceSize: number) {
-  let width: number
-  let height: number
+export function createIndexedImagePlaceholder(index: number) {
+  return DEFAULT_IMAGE_PLACEHOLDER.replace('data-i=\'\'', `data-i='${index}'`)
+}
 
-  if (aspectRatio >= 1) {
-    width = referenceSize
-    height = Math.round(referenceSize / aspectRatio)
-  }
-  else {
-    width = Math.round(referenceSize * aspectRatio)
-    height = referenceSize
-  }
+export function calculateAspectRatioDimensions(aspectRatio: number, referenceSize: number) {
+  const isLandscapeOrSquare = aspectRatio >= 1
 
-  return { width, height }
+  return {
+    width: isLandscapeOrSquare
+      ? referenceSize
+      : Math.round(referenceSize * aspectRatio),
+    height: isLandscapeOrSquare
+      ? Math.round(referenceSize / aspectRatio)
+      : referenceSize,
+  }
 }
 
 export function debounce<T extends (...args: any[]) => void>(
