@@ -24,12 +24,12 @@ export function lazyLoad<T extends HTMLImageElement>(
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     const onResizeCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
+
     if (updateSizesOnResize && onResizeCleanup)
       cleanupFns.add(onResizeCleanup)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
-      // @ts-expect-error: Compile-time flag
       (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
       && hash
     ) {
@@ -45,13 +45,13 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Bail if the image does not provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset) {
-      // @ts-expect-error: Compile-time flag
       if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
         console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
       continue
     }
 
-    // If native lazy loading is not supported, use the same logic as for crawlers
+    // Load the image immediately if the browser is considered a crawler or
+    // does not support lazy loading
     if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
       updateImageSrcset(image)
@@ -66,7 +66,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (!image.src)
       image.src = createIndexedImagePlaceholder(index)
 
-    // Load immediately if the image is already in the viewport
+    // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
       loadImage(image, onImageLoad)
       continue
@@ -167,23 +167,22 @@ export function createPlaceholderFromHash(
     return
 
   try {
-    if (hashType === 'thumbhash') {
-      return createPngDataUriFromThumbHash(hash)
-    }
-    else {
+    if (hashType === 'blurhash') {
       // Preserve the original image's aspect ratio
       if (!ratio && image) {
-        const actualWidth = image.width || image.offsetWidth || size
-        const actualHeight = image.height || image.offsetHeight || size
+        const actualWidth = image.width ?? image.offsetWidth ?? size
+        const actualHeight = image.height ?? image.offsetHeight ?? size
         ratio = actualWidth / actualHeight
       }
+
       return createPngDataUriFromBlurHash(hash, { ratio, size })
     }
+
+    return createPngDataUriFromThumbHash(hash)
   }
   catch (error) {
-    // @ts-expect-error: Compile-time flag
     if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
-      console.error(`Error generating ${hashType} placeholder:`, error)
+      console.error(`[unlazy] Failed to generate ${hashType} placeholder:`, error)
   }
 }
 

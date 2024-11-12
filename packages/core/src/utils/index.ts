@@ -19,7 +19,8 @@ export function toElementArray<T extends HTMLElement>(
 
 export function createIndexedImagePlaceholder(index: number) {
   const now = Date.now()
-  return DEFAULT_IMAGE_PLACEHOLDER.replace('data-id=\'\'', `data-id='${now}-${index}'`)
+  // Add a `data-id` attribute right after the opening SVG tag to identify the placeholder
+  return DEFAULT_IMAGE_PLACEHOLDER.replace(/\s/, ` data-id='${now}-${index}' `)
 }
 
 export function calculateAspectRatioDimensions(aspectRatio: number, referenceSize: number) {
