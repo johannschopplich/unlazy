@@ -37,15 +37,6 @@
     }
   },
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "*",
-        "dist/*",
-        "dist/*.d.ts"
-      ]
-    }
-  },
   "files": [
     "dist"
   ],
