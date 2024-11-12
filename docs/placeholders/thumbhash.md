@@ -2,7 +2,7 @@
 
 unlazy supports client-side and server-side (SSR) decoding of [ThumbHash](https://github.com/evanw/thumbhash) strings. This allows you to use ThumbHash placeholders for images that are not yet loaded.
 
-A ThumbHash is a very compact representation of a placeholder for an image. It's similar to [BlurHash](https://blurha.sh) but with the following advantages:
+A ThumbHash is a very compact representation of a placeholder for an image. It is similar to [BlurHash](https://blurha.sh) but with the following advantages:
 
 - Encodes more detail in the same space
 - Also encodes the aspect ratio

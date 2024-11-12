@@ -31,7 +31,7 @@ For more use cases, head over to the [Usage](/guide/usage) guide.
 
 ## Without a Build Step
 
-unlazy can be used without a build step. Useful for prototyping or when you don't want to add a build step to your project. Simply load it from a CDN:
+unlazy can be used without a build step. Useful for prototyping or when you do not want to add a build step to your project. Simply load it from a CDN:
 
 - Global build: <CdnLink name="unlazy.iife.js" />
   - Exposes `UnLazy` global property, supports auto initializing
@@ -64,7 +64,7 @@ The short CDN URLs are meant for prototyping. For production usage, use a fully 
 
 ### Manual Initialization
 
-If you don't want the auto-initialize, remove the `init` attribute and move the scripts to end of the `<body>` tag:
+If you do not want the auto-initialize the library, remove the `init` attribute and move the scripts to end of the `<body>` tag:
 
 ```html
 <script src="https://unpkg.com/unlazy"></script>

@@ -28,7 +28,7 @@ export default defineConfig({
 
 unlazy ships with the [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) decoding algorithms to decode the hash values into images.
 
-In case your project doesn't use these placeholders, you can disable the hash decoding algorithms to reduce the bundle size. Use the following build flags to tree-shake the hash decoding algorithms:
+In case your project does not use these placeholders, you can disable the hash decoding algorithms to reduce the bundle size. Use the following build flags to tree-shake the hash decoding algorithms:
 
 - `__UNLAZY_HASH_DECODING__`: This flag is set to `true` by default.
 

@@ -22,7 +22,7 @@ const props = defineProps<{
   /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
   placeholderSize?: number
   /**
-   * A flag to indicate whether the image should be preloaded, even if it's not in the viewport yet.
+   * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
    * @default false
    */
   preload?: boolean

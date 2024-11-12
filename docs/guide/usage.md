@@ -108,5 +108,5 @@ loadImage(coolImage)
 ```
 
 ::: tip
-Keep in mind that manually loading images might negatively affect the perceived performance, as it will force the full-quality image to load immediately, even if it's not visible on the viewport.
+Keep in mind that manually loading images might negatively affect the perceived performance, as it will force the full-quality image to load immediately, even if it is not visible on the viewport.
 :::

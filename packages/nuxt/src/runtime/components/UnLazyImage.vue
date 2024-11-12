@@ -41,7 +41,7 @@ const props = withDefaults(
      */
     lazyLoad?: boolean
     /**
-     * A flag to indicate whether the image should be preloaded, even if it's not in the viewport yet.
+     * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
      * @default false
      */
     preload?: boolean
