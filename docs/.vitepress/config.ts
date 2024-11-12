@@ -1,4 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
+import UnoCSS from 'unocss/vite'
 import { defineConfig } from 'vitepress'
 import { github, ogDescription, ogImage, ogTitle, ogUrl, releases, version } from './meta'
 
@@ -27,6 +28,10 @@ export default defineConfig({
   ],
 
   appearance: 'dark',
+
+  vite: {
+    plugins: [UnoCSS()],
+  },
 
   themeConfig: {
     logo: '/logo.svg',
