@@ -1,6 +1,6 @@
 # `createPngDataUri`
 
-Especially when using a server-side rendering framework like [Nuxt](https://nuxt.com), you might want to generate the placeholder images for the `src` attribute with SSR. This can be done with the `createPngDataUri` function:
+Especially when using a server-side rendering framework like [Nuxt](https://nuxt.com), you might want to generate the placeholder images for the `src` attribute during SSR. This can be done with the `createPngDataUri` function:
 
 ```ts
 import { createPngDataUri } from 'unlazy/blurhash'

@@ -1,6 +1,5 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { calculateAspectRatioDimensions } from './utils'
 import { rgbaToDataUri } from './utils/dataUri'
 
 export interface BlurHashOptions {
@@ -27,7 +26,16 @@ export function createPngDataUri(
     size = DEFAULT_PLACEHOLDER_SIZE,
   }: BlurHashOptions = {},
 ) {
-  const { width, height } = calculateAspectRatioDimensions(ratio, size)
+  const { width, height } = getAspectRatioDimensions(ratio, size)
   const rgba = decodeBlurHash(hash, width, height)
   return rgbaToDataUri(width, height, rgba)
+}
+
+function getAspectRatioDimensions(ratio: number, size: number) {
+  const isLandscapeOrSquare = ratio >= 1
+
+  return {
+    width: isLandscapeOrSquare ? size : Math.round(size * ratio),
+    height: isLandscapeOrSquare ? Math.round(size / ratio) : size,
+  }
 }

@@ -23,19 +23,6 @@ export function createIndexedImagePlaceholder(index: number) {
   return DEFAULT_IMAGE_PLACEHOLDER.replace(/\s/, ` data-id='${now}-${index}' `)
 }
 
-export function calculateAspectRatioDimensions(aspectRatio: number, referenceSize: number) {
-  const isLandscapeOrSquare = aspectRatio >= 1
-
-  return {
-    width: isLandscapeOrSquare
-      ? referenceSize
-      : Math.round(referenceSize * aspectRatio),
-    height: isLandscapeOrSquare
-      ? Math.round(referenceSize / aspectRatio)
-      : referenceSize,
-  }
-}
-
 export function debounce<T extends (...args: any[]) => void>(
   fn: T,
   delay: number,

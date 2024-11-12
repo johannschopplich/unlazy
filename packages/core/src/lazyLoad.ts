@@ -141,23 +141,23 @@ export function loadImage(
 
 export function createPlaceholderFromHash(
   {
-    /** If given, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions */
     image,
     hash,
     hashType = 'blurhash',
-    /** @default 32 */
     size = DEFAULT_PLACEHOLDER_SIZE,
-    /** Will be calculated from the image's actual dimensions if not provided and image is given */
     ratio,
   }: {
+    /** If present, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions. */
     image?: HTMLImageElement
     hash?: string
     hashType?: 'blurhash' | 'thumbhash'
+    /** @default 32 */
     size?: number
+    /** Will be calculated from the image's actual dimensions if image is provided and ratio is not. */
     ratio?: number
   } = {},
 ) {
-  if (!hash && image) {
+  if (image && !hash) {
     const { blurhash, thumbhash } = image.dataset
     hash = thumbhash || blurhash
     hashType = thumbhash ? 'thumbhash' : 'blurhash'
@@ -169,9 +169,9 @@ export function createPlaceholderFromHash(
   try {
     if (hashType === 'blurhash') {
       // Preserve the original image's aspect ratio
-      if (!ratio && image) {
-        const actualWidth = image.width ?? image.offsetWidth ?? size
-        const actualHeight = image.height ?? image.offsetHeight ?? size
+      if (image && !ratio) {
+        const actualWidth = image.width || image.offsetWidth || size
+        const actualHeight = image.height || image.offsetHeight || size
         ratio = actualWidth / actualHeight
       }
 
