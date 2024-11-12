@@ -103,10 +103,8 @@ export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
 ) {
-  const isChildOfPictureElement = image.parentElement?.tagName.toLowerCase() === 'picture'
-
   // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
-  if (isChildOfPictureElement) {
+  if (isDescendantOfPicture(image)) {
     updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
@@ -206,10 +204,7 @@ function updateSizesAttribute(
     element.sizes = `${width}px`
 
   // Calculate the `sizes` attribute for sources inside a `<picture>` element
-  if (
-    element.parentElement?.tagName.toLowerCase() === 'picture'
-    && !options?.skipChildren
-  ) {
+  if (isDescendantOfPicture(element) && !options?.skipChildren) {
     for (const sourceTag of [...element.parentElement.getElementsByTagName('source')]) {
       updateSizesAttribute(sourceTag, { skipChildren: true })
     }
@@ -260,4 +255,8 @@ function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
   return element instanceof HTMLSourceElement
     ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
     : element.offsetWidth
+}
+
+function isDescendantOfPicture(element: HTMLElement): element is HTMLElement & { parentElement: HTMLPictureElement } {
+  return element.parentElement?.tagName.toLowerCase() === 'picture'
 }
