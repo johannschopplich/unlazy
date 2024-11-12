@@ -18,7 +18,8 @@ export function toElementArray<T extends HTMLElement>(
 }
 
 export function createIndexedImagePlaceholder(index: number) {
-  return DEFAULT_IMAGE_PLACEHOLDER.replace('data-i=\'\'', `data-i='${index}'`)
+  const now = Date.now()
+  return DEFAULT_IMAGE_PLACEHOLDER.replace('data-id=\'\'', `data-id='${now}-${index}'`)
 }
 
 export function calculateAspectRatioDimensions(aspectRatio: number, referenceSize: number) {
