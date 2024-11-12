@@ -5,7 +5,7 @@
  *
  * @remarks
  * This is optimized for speed and simplicity and does not optimize for size
- * at all. This doesn't do any compression (all values are stored uncompressed).
+ * at all. This does not do any compression (all values are stored uncompressed).
  *
  * @see https://github.com/evanw/thumbhash
  * @author Evan Wallace

@@ -27,6 +27,8 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (updateSizesOnResize && onResizeCleanup)
       cleanupFns.add(onResizeCleanup)
 
+    const hasValidSrc = Boolean(image.src)
+
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
       // @ts-expect-error: Compile-time flag
@@ -43,7 +45,7 @@ export function lazyLoad<T extends HTMLImageElement>(
         image.src = placeholder
     }
 
-    // Bail if the image doesn't provide a `data-src` or `data-srcset` attribute
+    // Bail if the image does not provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset) {
       // @ts-expect-error: Compile-time flag
       if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
@@ -51,7 +53,7 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
-    // Use the same logic as for crawlers when native lazy-loading is not supported
+    // If native lazy loading is not supported, use the same logic as for crawlers
     if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
       updateImageSrcset(image)
@@ -64,8 +66,13 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (!image.src)
       image.src = DEFAULT_IMAGE_PLACEHOLDER
 
-    // Load the image if it's already in the viewport
-    if (image.complete && image.naturalWidth > 0) {
+    // Load immediately if:
+    // 1. Either the image has a valid `src` attribute and it is already loaded
+    // 2. Or it is already in the viewport (even with placeholder)
+    if (
+      (hasValidSrc && image.complete && image.naturalWidth > 0)
+      || isPartiallyInViewport(image)
+    ) {
       loadImage(image, onImageLoad)
       continue
     }
@@ -259,4 +266,14 @@ function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
   return element instanceof HTMLSourceElement
     ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
     : element.offsetWidth
+}
+
+function isPartiallyInViewport(element: HTMLElement) {
+  const rect = element.getBoundingClientRect()
+  return (
+    rect.top < window.innerHeight
+    && rect.bottom >= 0
+    && rect.left < window.innerWidth
+    && rect.right >= 0
+  )
 }
