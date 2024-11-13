@@ -19,14 +19,14 @@ export function lazyLoad<T extends HTMLImageElement>(
     onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
-  const cleanupFns = new Set<() => void>()
+  const cleanupHandlers = new Set<() => void>()
 
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
-    const onResizeCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
+    const resizeObserverCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
 
-    if (updateSizesOnResize && onResizeCleanup)
-      cleanupFns.add(onResizeCleanup)
+    if (updateSizesOnResize && resizeObserverCleanup)
+      cleanupHandlers.add(resizeObserverCleanup)
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
@@ -78,14 +78,14 @@ export function lazyLoad<T extends HTMLImageElement>(
     const loadHandler = () => loadImage(image, onImageLoad)
     image.addEventListener('load', loadHandler, { once: true })
 
-    cleanupFns.add(
+    cleanupHandlers.add(
       () => image.removeEventListener('load', loadHandler),
     )
   }
 
   return () => {
-    for (const fn of cleanupFns) fn()
-    cleanupFns.clear()
+    for (const fn of cleanupHandlers) fn()
+    cleanupHandlers.clear()
   }
 }
 
@@ -114,25 +114,25 @@ export function loadImage(
     return
   }
 
-  const imagePreLoader = new Image()
-  const { srcset, src, sizes } = image.dataset
+  const temporaryImage = new Image()
+  const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
 
   // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
-  if (sizes === 'auto') {
+  if (dataSizes === 'auto') {
     const width = getOffsetWidth(image)
     if (width)
-      imagePreLoader.sizes = `${width}px`
+      temporaryImage.sizes = `${width}px`
   }
   else if (image.sizes) {
-    imagePreLoader.sizes = image.sizes
+    temporaryImage.sizes = image.sizes
   }
 
-  if (srcset)
-    imagePreLoader.srcset = srcset
-  if (src)
-    imagePreLoader.src = src
+  if (dataSrcset)
+    temporaryImage.srcset = dataSrcset
+  if (dataSrc)
+    temporaryImage.src = dataSrc
 
-  imagePreLoader.addEventListener('load', () => {
+  temporaryImage.addEventListener('load', () => {
     updateImageSrcset(image)
     updateImageSrc(image)
     onImageLoad?.(image)
@@ -170,9 +170,9 @@ export function createPlaceholderFromHash(
     if (hashType === 'blurhash') {
       // Preserve the original image's aspect ratio
       if (image && !ratio) {
-        const actualWidth = image.width || image.offsetWidth || size
-        const actualHeight = image.height || image.offsetHeight || size
-        ratio = actualWidth / actualHeight
+        const elementWidth = image.width || image.offsetWidth || size
+        const elementHeight = image.height || image.offsetHeight || size
+        ratio = elementWidth / elementHeight
       }
 
       return createPngDataUriFromBlurHash(hash, { ratio, size })
@@ -187,9 +187,7 @@ export function createPlaceholderFromHash(
   }
 }
 
-// Keep track of elements that have a `data-sizes="auto"` attribute
-// and need to be updated when their size changes
-const elementResizeObserverMap = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
+const resizeObserverCache = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
@@ -208,24 +206,24 @@ function updateSizesAttribute(
 
   // Calculate the `sizes` attribute for sources inside a `<picture>` element
   if (isDescendantOfPicture(element) && options?.processSourceElements) {
-    for (const sourceTag of [...element.parentElement.getElementsByTagName('source')]) {
-      updateSizesAttribute(sourceTag, { processSourceElements: true })
+    for (const sourceElement of [...element.parentElement.getElementsByTagName('source')]) {
+      updateSizesAttribute(sourceElement, { processSourceElements: true })
     }
   }
 
   if (options?.updateOnResize) {
-    if (!elementResizeObserverMap.has(element)) {
-      const debounceResize = debounce(() => updateSizesAttribute(element), 500)
-      const observerInstance = new ResizeObserver(debounceResize)
-      elementResizeObserverMap.set(element, observerInstance)
-      observerInstance.observe(element)
+    if (!resizeObserverCache.has(element)) {
+      const debouncedSizeUpdate = debounce(() => updateSizesAttribute(element), 500)
+      const observer = new ResizeObserver(debouncedSizeUpdate)
+      resizeObserverCache.set(element, observer)
+      observer.observe(element)
     }
 
     return () => {
-      const observerInstance = elementResizeObserverMap.get(element)
-      if (observerInstance) {
-        observerInstance.disconnect()
-        elementResizeObserverMap.delete(element)
+      const observer = resizeObserverCache.get(element)
+      if (observer) {
+        observer.disconnect()
+        resizeObserverCache.delete(element)
       }
     }
   }
@@ -246,11 +244,11 @@ function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
 }
 
 function updatePictureSources(image: HTMLImageElement) {
-  const picture = image.parentElement as HTMLPictureElement
+  const pictureElement = image.parentElement as HTMLPictureElement
 
-  if (picture?.tagName.toLowerCase() === 'picture') {
-    [...picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
-    [...picture.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
+  if (pictureElement?.tagName.toLowerCase() === 'picture') {
+    [...pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
+    [...pictureElement.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
   }
 }
 
