@@ -1,40 +1,51 @@
 <script lang='ts'>
-  import { onDestroy } from 'svelte'
+  import type { HTMLImgAttributes } from 'svelte/elements'
   import { lazyLoad } from 'unlazy'
 
-  /** Image source URL to be lazy-loaded. */
-  export let src: string | undefined = undefined
-  /** Image source set to be lazy-loaded. */
-  export let srcSet: string | undefined = undefined
-  /**
-   * A flag to indicate whether the sizes attribute should be automatically calculated.
-   * @default false
-   */
-  export let autoSizes = false
-  /** A BlurHash string representing the blurry placeholder image. */
-  export let blurhash: string | undefined = undefined
-  /** A ThumbHash string representing the blurry placeholder image. */
-  export let thumbhash: string | undefined = undefined
-  /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
-  export let placeholderSrc: string | undefined = undefined
-  /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
-  export let placeholderSize: number | undefined = undefined
+  const {
+    src,
+    srcSet,
+    autoSizes = false,
+    blurhash,
+    thumbhash,
+    placeholderSrc,
+    placeholderSize,
+    ...restProps
+  }: {
+    /** Image source URL to be lazy-loaded. */
+    src?: HTMLImgAttributes['src']
+    /** Image source set to be lazy-loaded. */
+    srcSet?: HTMLImgAttributes['srcset']
+    /**
+     * A flag to indicate whether the sizes attribute should be automatically calculated.
+     * @default false
+     */
+    autoSizes?: boolean
+    /** A BlurHash string representing the blurry placeholder image. */
+    blurhash?: string
+    /** A ThumbHash string representing the blurry placeholder image. */
+    thumbhash?: string
+    /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
+    placeholderSrc?: string
+    /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
+    placeholderSize?: number
+  } & Omit<HTMLImgAttributes, 'srcset'> = $props()
 
-  let target: HTMLImageElement | undefined = undefined
-  let cleanup: (() => void) | undefined = undefined
+  let target = $state<HTMLImageElement | undefined>()
 
-  $: if (target) {
-    cleanup?.()
+  $effect(() => {
+    if (!target)
+      return
 
-    cleanup = lazyLoad(target, {
+    const cleanup = lazyLoad(target, {
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
     })
-  }
 
-  onDestroy(() => {
-    cleanup?.()
+    return () => {
+      cleanup()
+    }
   })
 </script>
 
@@ -45,5 +56,5 @@
   data-srcset={srcSet}
   data-sizes={autoSizes ? 'auto' : undefined}
   loading='lazy'
-  {...$$restProps}
+  {...restProps}
 />

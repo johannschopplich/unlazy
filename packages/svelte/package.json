@@ -49,7 +49,7 @@
     "test:types": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "peerDependencies": {
-    "svelte": "^3 || ^4"
+    "svelte": "^5"
   },
   "dependencies": {
     "unlazy": "workspace:*"
