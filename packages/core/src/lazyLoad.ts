@@ -195,7 +195,7 @@ function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
   options?: {
     updateOnResize?: boolean
-    skipChildren?: boolean
+    processSourceElements?: boolean
   },
 ) {
   if (element.dataset.sizes !== 'auto')
@@ -207,9 +207,9 @@ function updateSizesAttribute(
     element.sizes = `${width}px`
 
   // Calculate the `sizes` attribute for sources inside a `<picture>` element
-  if (isDescendantOfPicture(element) && !options?.skipChildren) {
+  if (isDescendantOfPicture(element) && options?.processSourceElements) {
     for (const sourceTag of [...element.parentElement.getElementsByTagName('source')]) {
-      updateSizesAttribute(sourceTag, { skipChildren: true })
+      updateSizesAttribute(sourceTag, { processSourceElements: true })
     }
   }
 
