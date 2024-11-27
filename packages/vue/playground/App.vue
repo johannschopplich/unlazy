@@ -14,6 +14,7 @@ import { UnLazyImage } from '../src/components'
     thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
     src="/images/sunrise-evan-wallace.jpg"
     width="480"
+    :transition="2000"
     height="640"
   />
 </template>

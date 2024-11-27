@@ -10,6 +10,7 @@
     thumbhash,
     placeholderSrc,
     placeholderSize,
+    transition,
     ...restProps
   }: {
     /** Image source URL to be lazy-loaded. */
@@ -29,6 +30,8 @@
     placeholderSrc?: string
     /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
     placeholderSize?: number
+    /** optinal transtion timer */
+    transition?: number
   } & Omit<HTMLImgAttributes, 'srcset'> = $props()
 
   let target = $state<HTMLImageElement | undefined>()
@@ -41,6 +44,7 @@
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
+      transition,
     })
 
     return () => {
