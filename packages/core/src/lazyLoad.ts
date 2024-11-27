@@ -5,32 +5,25 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createIndexedImagePlaceholder, debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 
 export function lazyLoad<T extends HTMLImageElement>(
-  /**
-   * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
-   *
-   * @default 'img[loading="lazy"]'
-   */
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"]',
   {
     hash = true,
     hashType = 'blurhash',
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
     updateSizesOnResize = false,
+    transition = 0,
     onImageLoad,
   }: UnLazyLoadOptions = {},
 ) {
   const cleanupHandlers = new Set<() => void>()
 
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
-    // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     const resizeObserverCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
 
     if (updateSizesOnResize && resizeObserverCleanup)
       cleanupHandlers.add(resizeObserverCleanup)
 
-    // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
-      // @ts-expect-error: Build-time variable
       (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
       && hash
     ) {
@@ -44,43 +37,29 @@ export function lazyLoad<T extends HTMLImageElement>(
         image.src = placeholder
     }
 
-    // Bail if the image does not provide a `data-src` or `data-srcset` attribute
     if (!image.dataset.src && !image.dataset.srcset) {
-      // @ts-expect-error: Build-time variable
       if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
         console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
       continue
     }
 
-    // Load the image immediately if the browser is considered a crawler or
-    // does not support lazy loading
     if (isCrawler || !isLazyLoadingSupported) {
-      updatePictureSources(image)
-      updateImageSrcset(image)
-      updateImageSrc(image)
+      loadImage(image, { transition, onImageLoad })
       continue
     }
 
-    // Ensure that `loading="lazy"` works correctly by setting a default placeholder.
-    // For Chrome, is is necessary to generate a unique placeholder. Otherwise, as
-    // soon as the first placeholder is loaded, the `load` event will be triggered
-    // for all subsequent images, even if they are not in the viewport.
     if (!image.src)
       image.src = createIndexedImagePlaceholder(index)
 
-    // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      loadImage(image, onImageLoad)
+      loadImage(image, { transition, onImageLoad })
       continue
     }
 
-    // Otherwise, load the image when it enters the viewport
-    const loadHandler = () => loadImage(image, onImageLoad)
+    const loadHandler = () => loadImage(image, { transition, onImageLoad })
     image.addEventListener('load', loadHandler, { once: true })
 
-    cleanupHandlers.add(
-      () => image.removeEventListener('load', loadHandler),
-    )
+    cleanupHandlers.add(() => image.removeEventListener('load', loadHandler))
   }
 
   return () => {
@@ -103,41 +82,72 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 
 export function loadImage(
   image: HTMLImageElement,
-  onImageLoad?: (image: HTMLImageElement) => void,
+  options: UnLazyLoadOptions = {}
 ) {
-  // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
-  if (isDescendantOfPicture(image)) {
-    updatePictureSources(image)
-    updateImageSrcset(image)
-    updateImageSrc(image)
-    onImageLoad?.(image)
-    return
-  }
-
+  const { transition = 0, onImageLoad } = options
+  const currentSrc = image.src
+  
   const temporaryImage = new Image()
-  const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
+  const { srcset: dataSrcset, src: dataSrc } = image.dataset
 
-  // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
-  if (dataSizes === 'auto') {
-    const width = getOffsetWidth(image)
-    if (width)
-      temporaryImage.sizes = `${width}px`
-  }
-  else if (image.sizes) {
-    temporaryImage.sizes = image.sizes
-  }
+  temporaryImage.addEventListener('load', async () => {
+    if (transition > 0 && currentSrc) {
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const rect = image.getBoundingClientRect()
+      
+      canvas.width = rect.width
+      canvas.height = rect.height
+      canvas.style.cssText = `width:${rect.width}px;height:${rect.height}px`
+      
+      const [oldImage, newImage] = await Promise.all([
+        loadAndDecode(currentSrc),
+        loadAndDecode(dataSrc)
+      ])
+  
+      image.replaceWith(canvas)
 
-  if (dataSrcset)
-    temporaryImage.srcset = dataSrcset
-  if (dataSrc)
-    temporaryImage.src = dataSrc
+      let startTime: number
+      const animate = (currentTime: number) => {
+        if (!startTime) startTime = currentTime
+        const progress = (currentTime - startTime) / transition
+        
+        if (progress < 1) {
+          ctx.globalAlpha = 1
+          ctx.drawImage(oldImage, 0, 0, canvas.width, canvas.height)
+          ctx.globalAlpha = progress
+          ctx.drawImage(newImage, 0, 0, canvas.width, canvas.height)
+          requestAnimationFrame(animate)
+        } else {
+          canvas.replaceWith(image)
+          updateImageSrcset(image)
+          updateImageSrc(image)
+          onImageLoad?.(image)
+        }
+      }
 
-  temporaryImage.addEventListener('load', () => {
-    updateImageSrcset(image)
-    updateImageSrc(image)
-    onImageLoad?.(image)
+      requestAnimationFrame(animate)
+    } else {
+      updateImageSrcset(image)
+      updateImageSrc(image)
+      onImageLoad?.(image)
+    }
   }, { once: true })
+
+  if (dataSrcset) temporaryImage.srcset = dataSrcset
+  if (dataSrc) temporaryImage.src = dataSrc
 }
+
+export function loadAndDecode(src: string): Promise<HTMLImageElement> {
+  const img = new Image()
+  img.src = src
+  return img.decode()
+    .then(() => img)
+    .catch(err => {
+      console.error('[unlazy] Image decode failed:', err)
+      return img // Fallback to regular image load
+    })
+ }
 
 export function createPlaceholderFromHash(
   {

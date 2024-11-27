@@ -8,9 +8,13 @@ const thumbhash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
 const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
 
 const shouldLoadImage = ref(false)
+const shouldLoadImage2 = ref(false)
 
 function loadImage() {
   shouldLoadImage.value = true
+}
+function loadImage2() {
+  shouldLoadImage2.value = true
 }
 </script>
 
@@ -68,7 +72,7 @@ function loadImage() {
         </div>
 
         <div class="space-y-2">
-          <PlaygroundDivider><strong>Client-side</strong> decoded ThumbHash</PlaygroundDivider>
+          <PlaygroundDivider><strong>Client-side</strong> decoded ThumbHash </PlaygroundDivider>
           <UnLazyImage
             :ssr="false"
             :thumbhash="thumbhash"
@@ -78,6 +82,34 @@ function loadImage() {
             style="aspect-ratio: 3/4;"
           />
         </div>
+        <div class="space-y-2">
+          <PlaygroundDivider><strong>SSR</strong>-decoded ThumbHash (fade)</PlaygroundDivider>
+          <UnLazyImage
+            :thumbhash="thumbhash"
+            :transition="500"
+            src="/images/sunrise-evan-wallace.jpg"
+            width="480"
+            height="640"
+            style="aspect-ratio: 3/4;"
+          />
+          <p class="text-sm text-gray-500">
+            The image above is inlined as a PNG data URI with a 500ms fade.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <PlaygroundDivider><strong>Client-side</strong> decoded ThumbHash</PlaygroundDivider>
+          <UnLazyImage
+            :ssr="false"
+            :thumbhash="thumbhash"
+            :transition="500"
+            src="/images/sunrise-evan-wallace.jpg"
+            width="480"
+            height="640"
+            style="aspect-ratio: 3/4;"
+          />
+        </div>
+        
       </div>
 
       <div class="grid grid-cols-2 gap-6">
@@ -91,6 +123,23 @@ function loadImage() {
             height="640"
             style="aspect-ratio: 3/2;"
             @click="loadImage"
+          />
+          <p class="text-sm text-gray-500">
+            Lazy loading will only be triggered when the image is clicked.
+          </p>
+        </div>
+        <div class="space-y-2">
+          <PlaygroundDivider>Lazy load on click (fade)</PlaygroundDivider>
+          <UnLazyImage
+            thumbhash="HBkSHYSIeHiPiHh8eJd4eTN0EEQG"
+            :lazy-load="shouldLoadImage2"
+            
+            src="/images/fall-evan-wallace.jpg"
+            width="480"
+            height="640"
+            :transition="500"
+            style="aspect-ratio: 3/2;"
+            @click="loadImage2"
           />
           <p class="text-sm text-gray-500">
             Lazy loading will only be triggered when the image is clicked.
