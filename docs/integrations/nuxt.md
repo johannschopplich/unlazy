@@ -92,6 +92,7 @@ The `UnLazyImage` component accepts the following props:
 | `placeholderSrc` | String | Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. |
 | `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
 | `placeholderRatio` | Number | Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. |
+| `:transition` | Number | Time in MS for BlurHash/Thumbhash to transition to lazy loaded image. |
 | `lazyLoad` | Boolean | A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded. |
 | `preload` | Boolean | A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet. |
 | `ssr` | Boolean | Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. |
@@ -207,3 +208,18 @@ Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload th
     preload
   />
 </template>
+```
+
+### Transition
+
+Easily add a fade transition.
+
+```vue
+<template>
+  <UnLazyImage
+    src="imageSrc"
+    :thumbhash="thumbhash"
+    :transition="500"
+  />
+</template>
+```

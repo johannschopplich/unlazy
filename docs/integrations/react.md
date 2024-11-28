@@ -53,6 +53,7 @@ The `UnLazyImage` component accepts the following props:
 | `thumbhash` | String | A ThumbHash string representing the blurry placeholder image. |
 | `placeholderSrc` | String | Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. |
 | `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
+| `transition` | Number | Time in MS for BlurHash/Thumbhash to transition to lazy loaded image. |
 
 ## Examples
 
@@ -84,6 +85,15 @@ The `UnLazyImage` component accepts the following props:
     />
   )
   ```
+  ```tsx [Transition]
+  return (
+    <UnLazyImage
+      thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
+      transition={500}
+    />
+  )
+  ```
+  
 :::
 
 ::: tip
