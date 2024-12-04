@@ -66,6 +66,13 @@
   },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/*"
+      ]
+    }
+  },
   "files": [
     "dist"
   ],
