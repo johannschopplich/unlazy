@@ -1,6 +1,6 @@
 {
   "name": "@unlazy/nuxt",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "packageManager": "pnpm@9.14.4",
   "description": "Nuxt lazy loading module for placeholder images",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
