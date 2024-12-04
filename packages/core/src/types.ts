@@ -46,4 +46,12 @@ export interface UnLazyLoadOptions {
    * A callback function to run when an image is loaded.
    */
   onImageLoad?: (image: HTMLImageElement) => void
+
+  /**
+   * Duration of the transition effect in milliseconds when loading the full image
+   * @default 0
+   */
+  transition?: number
+
+  transitionEffect?: 'fade' | 'dissolve' | 'wipeRight' | 'zoomIn' | 'blur'
 }

@@ -26,6 +26,8 @@ const props = defineProps<{
    * @default false
    */
   preload?: boolean
+  /** Optional transition timer */
+  transition?: number
 }>()
 
 const emit = defineEmits<{
@@ -53,6 +55,7 @@ watchEffect(() => {
     hash: props.thumbhash || props.blurhash,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     placeholderSize: props.placeholderSize,
+    transition: props.transition,
     onImageLoad: image => emit('loaded', image),
   })
 })

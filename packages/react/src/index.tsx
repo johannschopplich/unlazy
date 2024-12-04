@@ -21,6 +21,8 @@ interface Props
   thumbhash?: string
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
+  /** Optional transition timer */
+  transition?: number
 }
 
 export function UnLazyImage({
@@ -31,6 +33,7 @@ export function UnLazyImage({
   thumbhash,
   placeholderSrc,
   placeholderSize,
+  transition,
   ...rest
 }: Props) {
   const target = useRef<HTMLImageElement | null>(null)
@@ -43,12 +46,13 @@ export function UnLazyImage({
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
+      transition,
     })
 
     return () => {
       cleanup()
     }
-  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize])
+  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, transition])
 
   return (
     <img
