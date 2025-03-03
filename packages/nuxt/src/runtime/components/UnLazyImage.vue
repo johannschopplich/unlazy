@@ -75,11 +75,11 @@ const hash = computed(() => props.thumbhash || props.blurhash)
 // SSR-decoded BlurHash as PNG data URI placeholder image
 const pngPlaceholder = (props.ssr ?? unlazy.ssr) && hash.value
   ? createPlaceholderFromHash({
-    hash: hash.value,
-    hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
-    size: props.placeholderSize || unlazy.placeholderSize,
-    ratio: props.placeholderRatio,
-  })
+      hash: hash.value,
+      hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+      size: props.placeholderSize || unlazy.placeholderSize,
+      ratio: props.placeholderRatio,
+    })
   : undefined
 
 const target = ref<HTMLImageElement | undefined>()

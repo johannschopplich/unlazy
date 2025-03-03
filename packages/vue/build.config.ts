@@ -5,6 +5,7 @@ export default defineBuildConfig({
     {
       builder: 'mkdist',
       input: 'src',
+      loaders: ['js', /* 'vue', */ 'sass', 'postcss'],
     },
   ],
   declaration: true,
