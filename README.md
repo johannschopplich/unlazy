@@ -16,6 +16,7 @@ Universal lazy loading library leveraging native browser APIs. It is intended to
 - 🔍 **SEO-friendly**: Detects search engine bots and preloads all images
 - 🎟 **`<picture>`**: Supports multiple image tags
 - 🏎 **Auto-initialize**: Usable without a build step
+- 🎉 **Fade Transitions**: Optionally fade (in ms) between BlurHash and ThumbHash to your loaded image with `:transition="500"`
 
 ## Setup
 

@@ -106,7 +106,19 @@ const coolImage = document.querySelector('.image-to-load-first')
 // Trigger the load before the image enters the viewport
 loadImage(coolImage)
 ```
-
 ::: tip
 Keep in mind that manually loading images might negatively affect the perceived performance, as it will force the full-quality image to load immediately, even if it is not visible on the viewport.
 :::
+
+## Image Transitions
+
+You can easily add a fade transition between your BlurHash/ThumbHash and loaded image using the `:transition` prop. The transition uses canvas for smooth cross-fading.
+
+Note: Transition time is measured in milliseconds. Values between 300-1000ms typically work best.
+
+```ts
+<UnLazyImage
+  :thumbhash="thumbhash"
+  :transition="500"
+  src="data:image/svg+xml, ..."
+/>

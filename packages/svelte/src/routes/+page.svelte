@@ -14,4 +14,5 @@
   src='/images/sunrise-evan-wallace.jpg'
   width='480'
   height='640'
+  transition={500}
 />
