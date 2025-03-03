@@ -73,7 +73,7 @@ importers:
         version: link:../unlazy
     devDependencies:
       '@nuxt/module-builder':
-        specifier: 1.0.0-alpha.1
+        specifier: ^1.0.0-alpha.1
         version: 1.0.0-alpha.1(nuxi@3.22.4)(typescript@5.8.2)(vue-tsc@2.2.8(typescript@5.7.3))(vue@3.5.13(typescript@5.8.2))
       '@nuxt/schema':
         specifier: ^3.15.4
