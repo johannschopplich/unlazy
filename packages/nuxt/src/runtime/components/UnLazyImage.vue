@@ -132,9 +132,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <picture v-if="props.sources?.length">
+  <picture v-if="sources?.length">
     <source
-      v-for="(source, index) in props.sources"
+      v-for="(source, index) in sources"
       :key="index"
       :type="source.type"
       :data-srcset="source.srcSet"
