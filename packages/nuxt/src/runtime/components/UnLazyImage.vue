@@ -35,6 +35,9 @@ const props = withDefaults(
     placeholderSize?: number
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
     placeholderRatio?: number
+    /** Transition time */
+    transition?: number
+    
     /**
      * A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded.
      * @default true
@@ -58,6 +61,7 @@ const props = withDefaults(
     placeholderSrc: undefined,
     placeholderSize: undefined,
     placeholderRatio: undefined,
+    transition: 0,
     lazyLoad: true,
     preload: false,
     ssr: undefined,
@@ -119,11 +123,12 @@ watchEffect(() => {
 
   // Placeholder is already decoded
   cleanup = lazyLoad(target.value, {
-    hash: false,
-    onImageLoad(image) {
-      emit('loaded', image)
-    },
-  })
+  hash: false,
+  transition: props.transition,  // Add this line
+  onImageLoad(image) {
+    emit('loaded', image)
+  },
+})
 })
 
 onBeforeUnmount(() => {

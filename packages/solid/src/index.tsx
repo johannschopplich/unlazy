@@ -21,12 +21,14 @@ interface Props
   thumbhash?: string
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
+  /** Optional transition timer */
+  transition?: number
 }
 
 export function UnLazyImage(props: Props) {
   const [local, rest] = splitProps(
     props,
-    ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize'],
+    ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'transition'],
   )
 
   const [target, setTarget] = createSignal<HTMLImageElement>()
@@ -40,6 +42,7 @@ export function UnLazyImage(props: Props) {
       hash: local.thumbhash || local.blurhash,
       hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: local.placeholderSize,
+      transition: local.transition,
     })
 
     onCleanup(() => {
