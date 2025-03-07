@@ -110,8 +110,7 @@ watchEffect(() => {
   if (props.preload) {
     if (props.autoSizes)
       _autoSizes(target.value)
-    loadImage(target.value)
-    emit('loaded', target.value)
+    loadImage(target.value, image => emit('loaded', image))
     return
   }
 
