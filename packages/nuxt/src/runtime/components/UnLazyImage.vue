@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
       :data-src="src"
       :data-srcset="srcSet"
       :data-sizes="autoSizes ? 'auto' : undefined"
-      loading="lazy"
+      :loading="props.lazyLoad ? 'lazy' : 'eager'"
       @error="emit('error', $event)"
     >
   </picture>
@@ -159,7 +159,7 @@ onBeforeUnmount(() => {
     :data-src="src"
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
-    loading="lazy"
+    :loading="props.lazyLoad ? 'lazy' : 'eager'"
     @error="emit('error', $event)"
   >
 </template>
