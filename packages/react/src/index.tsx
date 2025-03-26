@@ -21,6 +21,11 @@ interface Props
   thumbhash?: string
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
+  /**
+   * Allows to specify the loading strategy of the image.
+   * @default 'lazy'
+   */
+  loading?: ImgHTMLAttributes<HTMLImageElement>['loading']
 }
 
 export function UnLazyImage({
@@ -31,6 +36,7 @@ export function UnLazyImage({
   thumbhash,
   placeholderSrc,
   placeholderSize,
+  loading = 'lazy',
   ...rest
 }: Props) {
   const target = useRef<HTMLImageElement | null>(null)
@@ -57,7 +63,7 @@ export function UnLazyImage({
       data-src={src}
       data-srcset={srcSet}
       data-sizes={autoSizes ? 'auto' : undefined}
-      loading="lazy"
+      loading={loading}
       {...rest}
     />
   )
