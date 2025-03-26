@@ -26,6 +26,11 @@ const props = defineProps<{
    * @default false
    */
   preload?: boolean
+  /**
+   * Allows to specify the loading strategy of the image.
+   * @default 'lazy'
+   */
+  loading?: ImgHTMLAttributes['loading']
 }>()
 
 const emit = defineEmits<{
@@ -69,7 +74,7 @@ onBeforeUnmount(() => {
     :data-src="src"
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
-    loading="lazy"
+    :loading="loading || 'lazy'"
     @error="emit('error', $event)"
   >
 </template>

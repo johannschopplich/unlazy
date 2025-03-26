@@ -10,6 +10,7 @@
     thumbhash,
     placeholderSrc,
     placeholderSize,
+    loading = 'lazy',
     ...restProps
   }: {
     /** Image source URL to be lazy-loaded. */
@@ -29,6 +30,11 @@
     placeholderSrc?: string
     /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
     placeholderSize?: number
+    /**
+     * Allows to specify the loading strategy of the image.
+     * @default 'lazy'
+     */
+    loading?: HTMLImgAttributes['loading']
   } & Omit<HTMLImgAttributes, 'srcset'> = $props()
 
   let target = $state<HTMLImageElement | undefined>()
@@ -55,6 +61,6 @@
   data-src={src}
   data-srcset={srcSet}
   data-sizes={autoSizes ? 'auto' : undefined}
-  loading='lazy'
+  {loading}
   {...restProps}
 />

@@ -47,6 +47,11 @@ const props = withDefaults(
     preload?: boolean
     /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */
     ssr?: boolean
+    /**
+     * Allows to specify the loading strategy of the image.
+     * @default 'lazy'
+     */
+    loading?: ImgHTMLAttributes['loading']
   }>(),
   {
     src: undefined,
@@ -61,6 +66,7 @@ const props = withDefaults(
     lazyLoad: true,
     preload: false,
     ssr: undefined,
+    loading: undefined,
   },
 )
 
@@ -147,7 +153,7 @@ onBeforeUnmount(() => {
       :data-src="src"
       :data-srcset="srcSet"
       :data-sizes="autoSizes ? 'auto' : undefined"
-      loading="lazy"
+      :loading="loading || (props.lazyLoad ? 'lazy' : 'eager')"
       @error="emit('error', $event)"
     >
   </picture>
@@ -159,7 +165,7 @@ onBeforeUnmount(() => {
     :data-src="src"
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
-    loading="lazy"
+    :loading="loading || (props.lazyLoad ? 'lazy' : 'eager')"
     @error="emit('error', $event)"
   >
 </template>
