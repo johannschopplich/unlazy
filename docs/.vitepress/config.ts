@@ -3,8 +3,6 @@ import UnoCSS from 'unocss/vite'
 import { defineConfig } from 'vitepress'
 import { github, ogDescription, ogImage, ogTitle, ogUrl, releases, version } from './meta'
 
-const url = new URL(ogUrl)
-
 export default defineConfig({
   lang: 'en-US',
   title: ogTitle,
