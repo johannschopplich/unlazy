@@ -23,8 +23,6 @@ export default defineConfig({
     ['meta', { name: 'twitter:site', content: '@jschopplich' }],
     ['meta', { name: 'twitter:creator', content: '@jschopplich' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    // Plausible Analytics
-    ['script', { 'src': 'https://plausible.io/js/script.js', 'defer': '', 'data-domain': url.hostname }],
   ],
 
   appearance: 'dark',
