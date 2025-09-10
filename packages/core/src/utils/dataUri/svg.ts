@@ -1,4 +1,4 @@
-const uriCharReplacements: Record<string, string> = {
+const URI_DECODE_MAP: Record<string, string> = {
   '%2F': '/',
   '%3A': ':',
   '%3D': '=',
@@ -37,7 +37,7 @@ export function svgToDataUri(svg: string) {
 
   // Back-decode certain characters to improve compression,
   // except '%20' to be compliant with W3C guidelines
-  uri = uri.replace(/%2F|%3A|%3D/g, char => uriCharReplacements[char])
+  uri = uri.replace(/%2F|%3A|%3D/g, char => URI_DECODE_MAP[char]!)
 
   return `data:image/svg+xml,${uri}`
 }

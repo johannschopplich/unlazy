@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { PlaygroundDivider, UnLazyImage } from '#components'
-import { ref } from '#imports'
+import { ref, useHead } from '#imports'
 import '@unocss/reset/tailwind.css'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
@@ -9,17 +9,19 @@ const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
 
 const shouldLoadImage = ref(false)
 
+useHead({
+  title: '@unlazy/nuxt',
+  link: [
+    { rel: 'icon', href: logoUrl, type: 'image/svg+xml' },
+  ],
+})
+
 function loadImage() {
   shouldLoadImage.value = true
 }
 </script>
 
 <template>
-  <Head>
-    <Title>@unlazy/nuxt</Title>
-    <Link rel="icon" :href="logoUrl" type="image/svg+xml" />
-  </Head>
-
   <main class="mx-auto max-w-prose px-4 py-12 sm:px-6 lg:px-8">
     <div class="space-y-12">
       <div class="grid grid-cols-2 gap-6">

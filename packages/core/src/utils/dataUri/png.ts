@@ -38,7 +38,7 @@ export function rgbaToDataUri(
   for (let y = 0, i = 0, end = row - 1; y < h; y++, end += row - 1) {
     bytes.push(y + 1 < h ? 0 : 1, row & 255, row >> 8, ~row & 255, (row >> 8) ^ 255, 0)
     for (b = (b + a) % 65521; i < end; i++) {
-      const u = rgba[i] & 255
+      const u = rgba[i]! & 255
       bytes.push(u)
       a = (a + u) % 65521
       b = (b + a) % 65521
@@ -52,17 +52,17 @@ export function rgbaToDataUri(
 
   for (let [start, end] of [[12, 29], [37, 41 + idat]]) {
     let c = ~0
-    for (let i = start; i < end; i++) {
-      c ^= bytes[i]
-      c = (c >>> 4) ^ table[c & 15]
-      c = (c >>> 4) ^ table[c & 15]
+    for (let i = start!; i < end!; i++) {
+      c ^= bytes[i]!
+      c = (c >>> 4) ^ table[c & 15]!
+      c = (c >>> 4) ^ table[c & 15]!
     }
 
     c = ~c
-    bytes[end++] = c >>> 24
-    bytes[end++] = (c >> 16) & 255
-    bytes[end++] = (c >> 8) & 255
-    bytes[end++] = c & 255
+    bytes[end!++] = c >>> 24
+    bytes[end!++] = (c >> 16) & 255
+    bytes[end!++] = (c >> 8) & 255
+    bytes[end!++] = c & 255
   }
 
   const base64 = globalThis.btoa(String.fromCharCode(...bytes))
