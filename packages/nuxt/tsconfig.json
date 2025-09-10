@@ -1,4 +1,4 @@
 {
   "extends": "./.nuxt/tsconfig.json",
-  "include": ["src"]
+  "include": ["dist", "playground"]
 }

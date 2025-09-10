@@ -7,7 +7,7 @@ const currentDir = fileURLToPath(new URL('.', import.meta.url))
 export default defineNuxtConfig({
   modules: ['@unocss/nuxt', '../src/module'],
 
-  compatibilityDate: '2025-01-01',
+  compatibilityDate: '2025-09-01',
 
   vite: {
     // Custom alias for unlazy until Jiti issue is resolved
