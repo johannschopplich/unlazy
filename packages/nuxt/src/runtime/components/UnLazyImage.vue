@@ -98,6 +98,11 @@ watchEffect(() => {
   if (!target.value)
     return
 
+  // Track changes to image sources to trigger reactivity
+  void props.src
+  void props.srcSet
+  void props.sources
+
   if (hash.value && hash.value !== lastHash) {
     const placeholder = createPlaceholderFromHash({
       image: target.value,
