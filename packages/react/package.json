@@ -1,7 +1,7 @@
 {
   "name": "@unlazy/react",
   "type": "module",
-  "version": "0.12.4",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.18.3",
   "description": "React lazy loading library for placeholder images",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
