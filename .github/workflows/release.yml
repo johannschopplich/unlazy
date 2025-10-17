@@ -5,11 +5,12 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  id-token: write
+  contents: write
+
 jobs:
   release:
-    permissions:
-      id-token: write
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

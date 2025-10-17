@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.12.4",
   "private": true,
-  "packageManager": "pnpm@10.15.1",
+  "packageManager": "pnpm@10.18.3",
   "scripts": {
     "build": "pnpm -r --filter=./packages/** run build",
     "dev:prepare": "pnpm -r --filter=./packages/** run dev:prepare",
@@ -18,15 +18,15 @@
     "prepare": "pnpm run dev:prepare"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^5.3.0",
-    "@types/node": "^24.3.1",
-    "bumpp": "^10.2.3",
-    "eslint": "^9.35.0",
-    "happy-dom": "^18.0.1",
-    "typescript": "^5.9.2",
+    "@antfu/eslint-config": "^6.0.0",
+    "@types/node": "^24.8.1",
+    "bumpp": "^10.3.1",
+    "eslint": "^9.37.0",
+    "happy-dom": "^20.0.4",
+    "typescript": "^5.9.3",
     "unbuild": "^3.6.1",
-    "vite": "^7.1.5",
+    "vite": "^7.1.10",
     "vitest": "^3.2.4",
-    "vue-tsc": "^3.0.6"
+    "vue-tsc": "^3.1.1"
   }
 }
