@@ -1,3 +1,4 @@
+// #region UnLazyLoadOptions
 export interface UnLazyLoadOptions {
   /**
    * Whether to generate a blurry placeholder from a [BlurHash](https://blurha.sh)
@@ -47,3 +48,4 @@ export interface UnLazyLoadOptions {
    */
   onImageLoad?: (image: HTMLImageElement) => void
 }
+// #endregion UnLazyLoadOptions

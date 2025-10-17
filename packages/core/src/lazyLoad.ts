@@ -4,12 +4,18 @@ import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createIndexedImagePlaceholder, debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
 
+// #region lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
    *
    * @default 'img[loading="lazy"]'
    */
+  selectorsOrElements?: string | T | NodeListOf<T> | T[],
+  options?: UnLazyLoadOptions
+): () => void
+// #endregion lazyLoad
+export function lazyLoad<T extends HTMLImageElement>(
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"]',
   {
     hash = true,
@@ -18,7 +24,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     updateSizesOnResize = false,
     onImageLoad,
   }: UnLazyLoadOptions = {},
-) {
+): () => void {
   const cleanupHandlers = new Set<() => void>()
 
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
@@ -89,22 +95,33 @@ export function lazyLoad<T extends HTMLImageElement>(
   }
 }
 
+// #region autoSizes
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to calculate the `sizes` attribute for.
    *
    * @default 'img[data-sizes="auto"], source[data-sizes="auto"]'
    */
+  selectorsOrElements?: string | T | NodeListOf<T> | T[]
+): void
+// #endregion autoSizes
+export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
-) {
+): void {
   for (const image of toElementArray<T>(selectorsOrElements))
     updateSizesAttribute(image)
 }
 
+// #region loadImage
+export function loadImage(
+  image: HTMLImageElement,
+  onImageLoad?: (image: HTMLImageElement) => void
+): void
+// #endregion loadImage
 export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
-) {
+): void {
   // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
   if (isDescendantOfPicture(image)) {
     updatePictureSources(image)
@@ -139,6 +156,18 @@ export function loadImage(
   }, { once: true })
 }
 
+// #region createPlaceholderFromHash
+export function createPlaceholderFromHash(options?: {
+  /** If present, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions. */
+  image?: HTMLImageElement
+  hash?: string
+  hashType?: 'blurhash' | 'thumbhash'
+  /** @default 32 */
+  size?: number
+  /** Will be calculated from the image's actual dimensions if image is provided and ratio is not. */
+  ratio?: number
+}): string | undefined
+// #endregion createPlaceholderFromHash
 export function createPlaceholderFromHash(
   {
     image,
@@ -156,7 +185,7 @@ export function createPlaceholderFromHash(
     /** Will be calculated from the image's actual dimensions if image is provided and ratio is not. */
     ratio?: number
   } = {},
-) {
+): string | undefined {
   if (image && !hash) {
     const { blurhash, thumbhash } = image.dataset
     hash = thumbhash || blurhash
@@ -195,7 +224,7 @@ function updateSizesAttribute(
     updateOnResize?: boolean
     processSourceElements?: boolean
   },
-) {
+): (() => void) | undefined {
   if (element.dataset.sizes !== 'auto')
     return
 
@@ -252,7 +281,7 @@ function updatePictureSources(image: HTMLImageElement) {
   }
 }
 
-function getOffsetWidth(element: HTMLElement | HTMLSourceElement) {
+function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | undefined {
   return element instanceof HTMLSourceElement
     ? element.parentElement?.getElementsByTagName('img')[0]?.offsetWidth
     : element.offsetWidth

@@ -18,7 +18,7 @@ export function rgbaToDataUri(
   h: number,
   /** The pixels in the input image, row-by-row. Must have w*h*4 elements. */
   rgba: ArrayLike<number>,
-) {
+): string {
   const row = w * 4 + 1
   const idat = 6 + h * (5 + row)
   const bytes = [

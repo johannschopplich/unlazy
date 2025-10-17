@@ -33,28 +33,7 @@ export default defineNuxtConfig({
 
 The `@unlazy/nuxt` module accepts the following options:
 
-```ts
-export interface ModuleOptions {
-  /**
-   * Whether to generate the blurry placeholder on the server-side if a BlurHash
-   * or ThumbHash is provided via the `blurhash`, respectively `thumbhash` prop.
-   *
-   * @default true
-   */
-  ssr?: boolean
-
-  /**
-   * The size of the longer edge (width or height) of the BlurHash image to be
-   * decoded, depending on the aspect ratio.
-   *
-   * @remarks
-   * This option is ignored if the a ThumbHash is used.
-   *
-   * @default 32
-   */
-  placeholderSize?: number
-}
-```
+<<< @/../packages/nuxt/src/module.ts#ModuleOptions{ts}
 
 Adapt the module options to your needs:
 

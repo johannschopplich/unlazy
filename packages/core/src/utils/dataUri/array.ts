@@ -1,4 +1,4 @@
-export function arrayToDataUri(array: Uint8ClampedArray, width: number, height: number) {
+export function arrayToDataUri(array: Uint8ClampedArray, width: number, height: number): string {
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')!
 

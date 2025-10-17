@@ -15,29 +15,9 @@ The function uses the `fast-blurhash` library for decoding and generates a compa
 
 ## Type Declarations
 
-```ts
-interface BlurHashOptions {
-  /**
-   * Aspect ratio (width / height) of the BlurHash image to be decoded.
-   *
-   * @default 1 (square aspect ratio)
-   */
-  ratio?: number
+<<< @/../packages/core/src/blurhash.ts#BlurHashOptions{ts}
 
-  /**
-   * The size of the longer edge (width or height) of the BlurHash image to be
-   * decoded, depending on the aspect ratio.
-   *
-   * @default 32
-   */
-  size?: number
-}
-
-function createPngDataUri(
-  hash: string,
-  options?: BlurhashOptions
-): string
-```
+<<< @/../packages/core/src/blurhash.ts#createPngDataUri{ts}
 
 ## Example
 

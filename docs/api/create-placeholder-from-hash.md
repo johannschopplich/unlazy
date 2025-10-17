@@ -4,20 +4,7 @@ Generates a PNG data URI placeholder from a BlurHash or ThumbHash string. This f
 
 ## Type Declarations
 
-```ts
-function createPlaceholderFromHash(options?: {
-  /** If present, hash and ratio are extracted from element's data attributes */
-  image?: HTMLImageElement
-  /** Hash string to decode */
-  hash?: string
-  /** Type of hash algorithm */
-  hashType?: 'blurhash' | 'thumbhash'
-  /** Size of longer edge for BlurHash decoding (ignored for ThumbHash) */
-  size?: number
-  /** Aspect ratio (width/height) for BlurHash */
-  ratio?: number
-}): string | undefined
-```
+<<< @/../packages/core/src/lazyLoad.ts#createPlaceholderFromHash{ts}
 
 ## Parameters
 

@@ -12,9 +12,4 @@ The function performs the following operations:
 
 ## Type Declarations
 
-```ts
-function loadImage(
-  image: HTMLImageElement,
-  onImageLoad?: (image: HTMLImageElement) => void
-): void
-```
+<<< @/../packages/core/src/lazyLoad.ts#loadImage{ts}

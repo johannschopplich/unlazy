@@ -8,7 +8,7 @@ const URI_DECODE_MAP: Record<string, string> = {
  * Generates an SVG with a Gaussian blur filter applied to the given image URI.
  * The resulting SVG serves as a blurry placeholder for the image.
  */
-export function createBlurryImageSvg(imageUri: string, width: number, height: number) {
+export function createBlurryImageSvg(imageUri: string, width: number, height: number): string {
   // Wrap the blurred image in a SVG to avoid rasterizing the filter
   return `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width.toFixed(2)} ${height.toFixed(2)}">
@@ -26,7 +26,7 @@ export function createBlurryImageSvg(imageUri: string, width: number, height: nu
  * Optimizes the input SVG string and encodes it as a URI-encoded data URI.
  * This function is useful for creating optimized and compliant SVG data URIs.
  */
-export function svgToDataUri(svg: string) {
+export function svgToDataUri(svg: string): string {
   let optimizedSvg = svg.trim()
 
   // Optimizes the SVG string by deleting line breaks and removing unnecessary spaces

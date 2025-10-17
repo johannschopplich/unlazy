@@ -2,6 +2,7 @@ import { addComponent, createResolver, defineNuxtModule, extendViteConfig } from
 import { defu } from 'defu'
 import { name, version } from '../package.json'
 
+// #region ModuleOptions
 export interface ModuleOptions {
   /**
    * Whether to generate the blurry placeholder on the server-side if a BlurHash
@@ -22,6 +23,7 @@ export interface ModuleOptions {
    */
   placeholderSize?: number
 }
+// #endregion ModuleOptions
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
