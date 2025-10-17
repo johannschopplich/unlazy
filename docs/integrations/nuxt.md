@@ -82,25 +82,36 @@ The `UnLazyImage` component is [globally available](https://nuxt.com/docs/guide/
 
 The `UnLazyImage` component accepts the following props:
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `src` | String | Image source URL to be lazy-loaded. |
-| `srcSet` | String | Image source set to be lazy-loaded. |
-| `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
-| `thumbhash` | String | A ThumbHash string representing the blurry placeholder image. |
-| `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
-| `placeholderSrc` | String | Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. |
-| `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
-| `placeholderRatio` | Number | Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. |
-| `lazyLoad` | Boolean | A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded. |
-| `preload` | Boolean | A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet. |
-| `ssr` | Boolean | Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `src` | String | - | Image source URL to be lazy-loaded. |
+| `srcSet` | String | - | Image source set to be lazy-loaded. |
+| `sources` | Array | - | Array of source objects for `<picture>` element. Each object should have `type`, `srcSet`, and optional `sizes` properties. |
+| `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
+| `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
+| `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
+| `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. |
+| `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
+| `placeholderRatio` | Number | - | Aspect ratio (width / height) for BlurHash decoding during SSR. |
+| `lazyLoad` | Boolean | `true` | Whether the image should be lazy-loaded. Set to `false` to defer loading until changed to `true`. |
+| `preload` | Boolean | `false` | Whether the image should be preloaded immediately, bypassing lazy loading. |
+| `ssr` | Boolean | `true` | Whether hashes should be decoded on the server. Overrides global module config. |
+| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). |
+
+The component also accepts all standard `<img>` HTML attributes via Nuxt's attribute inheritance.
 
 ### Emitted Events
 
-| Event | Description |
-| --- | --- |
-| `loaded` | Emitted when the image has been loaded. The event payload is the image element itself. |
+| Event | Payload | Description |
+| --- | --- | --- |
+| `loaded` | `HTMLImageElement` | Emitted when the image has been successfully loaded. |
+| `error` | `Event` | Emitted when an error occurs during image loading. |
+
+### Server-Side Rendering
+
+The Nuxt module decodes BlurHash and ThumbHash strings on the server during SSR, providing placeholder images before the HTML is sent to the client. This prevents layout shifts and improves perceived performance.
+
+The `ssr` option (enabled by default) can be overridden per-component or disabled globally in `nuxt.config.ts`.
 
 ## Examples
 

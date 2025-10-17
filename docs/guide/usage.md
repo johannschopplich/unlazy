@@ -2,7 +2,7 @@
 
 1. Add the `loading="lazy"` attribute to a `<img>` element that you want to lazily load. You can also use the `<picture>` element to lazily load images in different formats.
 
-2. Use the `data-src` or `data-srcset` attribute to specify the high-quality image.
+2. Use the `data-src` or `data-srcset` attribute to specify the high-quality image. These data attributes prevent browsers from loading images before they enter the viewport and are swapped to standard attributes by unlazy when loading occurs.
 
 3. If you have a pre-generated blurry placeholder image, use the `src` attribute to specify it. Otherwise, you can use a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) to generate a placeholder image on the fly.
 
@@ -45,8 +45,13 @@ Set `data-sizes="auto"` to automatically calculate the `sizes` attribute when us
 import { lazyLoad } from 'unlazy'
 
 // Lazily load all `img[loading="lazy"]` images
-lazyLoad()
+const cleanup = lazyLoad()
+
+// Optional: Call cleanup() to remove event listeners and observers
+// Useful when unmounting components or removing images dynamically
 ```
+
+The `lazyLoad` function returns a cleanup function that removes all event listeners and ResizeObservers. Call this function when unmounting components or when images are no longer needed to prevent memory leaks.
 
 ## Auto Calculation of the `sizes` Attribute
 

@@ -2,9 +2,9 @@
 
 unlazy supports client-side and server-side (SSR) decoding of [BlurHash](https://blurha.sh) strings. This allows you to use BlurHash placeholders for images that are not yet loaded.
 
-A BlurHash placeholder is a low-resolution, low-quality representation of the image, encoded as a string and decodable to a PNG image.
+A BlurHash is a compact string representation that encodes an image placeholder. It provides more detail than a solid color while remaining small enough to embed directly in HTML or JSON responses.
 
-## Client-Side BlurHash Decoding
+## Client-Side Decoding
 
 ### `data-blurhash` Attribute
 
@@ -52,7 +52,7 @@ lazyLoad('img[loading="lazy"]', {
 This will also disable [ThumbHash](/placeholders/thumbhash) decoding.
 :::
 
-## Server-Side BlurHash Decoding
+## Server-Side Decoding
 
 If you are using a server-side framework, you can use the [`createPngDataUri`](/api/blurhash-create-png-data-uri) function to create a PNG data URI from a BlurHash string. The resulting data URI can then be used as the `src` attribute of an image.
 

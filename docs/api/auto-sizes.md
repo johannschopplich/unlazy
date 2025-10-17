@@ -1,6 +1,8 @@
 # `autoSizes`
 
-The `autoSizes` function calculates the sizes attribute for a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements if the `data-sizes` attribute is set to `auto`.
+The `autoSizes` function calculates and sets the `sizes` attribute based on the current display width of image or source elements when `data-sizes="auto"` is present.
+
+The calculation uses the element's rendered width (`element.offsetWidth`) to determine the appropriate value for the `sizes` attribute, enabling browsers to select the optimal image from a `srcset`.
 
 To lazy load images, refer to the [`lazyLoad`](/api/lazy-load) method.
 

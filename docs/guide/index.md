@@ -10,9 +10,17 @@ Although the `loading="lazy"` attribute is supported in all major browsers, it i
 
 ## How It Works
 
-unlazy processes all images with a `loading="lazy"` attribute, calculates the sizes attribute if necessary, and checks if the image has a blurry placeholder (given that either a `data-src` or `data-srcset` attribute is present).
+unlazy enhances the native `loading="lazy"` attribute by processing images and managing their lifecycle:
 
-unlazy intends to offer a good balance between performance and user experience and works well for specific use cases where blurry placeholders are the preferred method for image loading.
+1. **Data Attribute Processing**: Uses `data-src`, `data-srcset`, and `data-sizes` attributes which are swapped to standard attributes when images load. This prevents browsers from eagerly loading images before they enter the viewport.
+
+2. **Placeholder Generation**: Decodes [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) strings (via `data-blurhash` or `data-thumbhash` attributes) into PNG data URIs for placeholders.
+
+3. **Chrome Workaround**: Generates unique indexed SVG placeholders to prevent Chrome's aggressive image loading behavior that can trigger load events prematurely.
+
+4. **Automatic Sizes Calculation**: Calculates the `sizes` attribute based on the image's display width when `data-sizes="auto"` is set.
+
+unlazy leverages native browser APIs rather than replacing them, offering a good balance between performance and user experience for image-heavy applications.
 
 ## SEO
 

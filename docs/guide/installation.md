@@ -38,13 +38,13 @@ unlazy can be used without a build step. Useful for prototyping or when you do n
 - ESM build: <CdnLink name="unlazy.js" />
   - Must be used with `<script type="module">`
 
-:::info
+::: info
+To keep the bundle size small, the standard global build excludes BlurHash and ThumbHash decoding algorithms. Use the `with-hashing` variant if you need client-side hash decoding:
 
-To keep the size of the bundle small, the global build does neither include BlurHash, nor ThumbHash decoding. If you want to use either of those, you must import the `unlazy.with-hashing.iife.js` or `unlazy.with-hashing.js` files instead:
+- Global build with hashing: <CdnLink name="unlazy.with-hashing.iife.js" />
+- ESM build with hashing: <CdnLink name="unlazy.with-hashing.js" />
 
-- Global build: <CdnLink name="unlazy.with-hashing.iife.js" />
-- ESM build: <CdnLink name="unlazy.with-hashing.js" />
-
+If you decode hashes on the server (e.g., during SSR), use the standard bundle instead.
 :::
 
 ### Auto-Initialization

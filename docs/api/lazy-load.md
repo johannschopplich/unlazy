@@ -15,12 +15,24 @@ The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM eleme
 
 ## Options
 
-Options can be passed to the function to customize its behavior. These options include:
+Options can be passed to the function to customize its behavior:
 
-- `hash`: Whether to use a hash for generating a blurry placeholder. Default is `true`.
-- `hashType`: The type of hash to use for generating a blurry placeholder. Possible values are `blurhash` and `thumbhash`. Default is `blurhash`.
-- `placeholderSize`: The size of the placeholder. Applies only to BlurHash strings. Default is `32`.
-- `onImageLoad`: A callback function that will be executed when the image is loaded.
+- `hash`: Whether to use a hash for generating a blurry placeholder. Can be a boolean or a string. Default is `true`. If `thumbhash` is provided, it takes precedence over `blurhash`.
+- `hashType`: The type of hash to use. Possible values are `blurhash` and `thumbhash`. Default is `blurhash`.
+- `placeholderSize`: The size of the longer edge for BlurHash decoding. Default is `32`. Ignored for ThumbHash.
+- `updateSizesOnResize`: Whether to update the `sizes` attribute on window resize events using a debounced ResizeObserver. Default is `false`.
+- `onImageLoad`: A callback function invoked when an image loads successfully.
+
+## Return Value
+
+The function returns a cleanup function that removes all event listeners and ResizeObservers created by `lazyLoad`. Call this function when images are no longer needed to prevent memory leaks:
+
+```ts
+const cleanup = lazyLoad()
+
+// Later, when cleaning up
+cleanup()
+```
 
 ## Type Declarations
 

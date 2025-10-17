@@ -1,6 +1,14 @@
 # `loadImage`
 
-The `loadImage` function takes an `HTMLImageElement` and an optional callback function to execute when the image is loaded. It updates the `src`, `srcset`, and `sizes` attributes of the image and its parent picture element's sources, if applicable.
+The `loadImage` function programmatically loads an image by updating its attributes from data attributes. It handles both standalone `<img>` elements and images within `<picture>` elements.
+
+The function performs the following operations:
+
+1. If the image is inside a `<picture>` element, updates all `<source>` elements by converting their `data-srcset` and `data-sizes` attributes to standard attributes
+2. Preloads the image in a temporary element to ensure proper loading
+3. Calculates the `sizes` attribute if `data-sizes="auto"` is set
+4. Swaps `data-src` and `data-srcset` to their standard counterparts
+5. Invokes the optional callback when loading completes
 
 ## Type Declarations
 

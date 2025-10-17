@@ -2,9 +2,10 @@
 
 unlazy provides a number of methods to help you with lazy loading images. The following methods are available:
 
-- [`lazyLoad`](/api/lazy-load) – Lazy load images
+- [`lazyLoad`](/api/lazy-load) – Lazy load images with automatic placeholder generation
 - [`autoSizes`](/api/auto-sizes) – Automatically calculate the `sizes` attribute
-- [`loadImage`](/api/load-image) – Manually load an image
+- [`loadImage`](/api/load-image) – Manually load an image before it enters the viewport
+- [`createPlaceholderFromHash`](/api/create-placeholder-from-hash) – Generate PNG data URI from BlurHash or ThumbHash
 
 ## Server-Side Rendering
 

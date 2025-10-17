@@ -1,8 +1,8 @@
 # Build Flags
 
-This guide will focus on build flags to enable bundlers like [Rollup](https://rollupjs.org) to tree-shake features that are not used in your project.
+unlazy uses build-time flags to enable tree-shaking of unused features, reducing bundle size. Bundlers replace these flags at build time, allowing dead code elimination for features your project doesn't use.
 
-Most bundlers provide a `define` option to set build flags:
+Common bundlers support the `define` option for setting build flags:
 
 - [Vite](https://vitejs.dev/config/shared-options.html#define)
 - [@rollup/plugin-replace](https://www.npmjs.com/package/@rollup/plugin-replace)
@@ -26,16 +26,17 @@ export default defineConfig({
 
 ## Disable Hash Decoding <Badge type="info" text="^0.10.0" />
 
-unlazy ships with the [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) decoding algorithms to decode the hash values into images.
+unlazy includes [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
 
-In case your project does not use these placeholders, you can disable the hash decoding algorithms to reduce the bundle size. Use the following build flags to tree-shake the hash decoding algorithms:
+- `__UNLAZY_HASH_DECODING__`: Set to `false` to tree-shake hash decoding code. Default is `true`.
 
-- `__UNLAZY_HASH_DECODING__`: This flag is set to `true` by default.
+When disabled, the bundler removes:
+- BlurHash and ThumbHash decoding libraries
+- Hash-related code paths in `lazyLoad()`
+- Associated dependencies from the final bundle
 
 ::: warning
-This will only tree-shake the BlurHash and ThumbHash decoding algorithms when using the [`lazyLoad`](/api/lazy-load) method.
-
-If you use either `unlazy/blurhash` or `unlazy/thumbhash` sub-path imports directly, the decoding algorithms will still be bundled.
+This flag only affects the main entry point. If you directly import `unlazy/blurhash` or `unlazy/thumbhash`, those modules will still be bundled regardless of this flag.
 :::
 
 ## Disable Client Logging <Badge type="info" text="^0.10.2" />

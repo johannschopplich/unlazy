@@ -1,11 +1,12 @@
 # Aspect Ratio for Blurry Placeholders
 
-In certain cases, the blurry placeholder might not have the full image width and height. To ensure that the layout does not change when the full-quality image loads and to maintain a consistent user experience, you can add the `aspect-ratio` CSS property to the `style` attribute to your images.
+When using blurry placeholders without explicit `width` and `height` attributes, the browser doesn't know the image dimensions until it loads, causing Cumulative Layout Shift (CLS). Setting the `aspect-ratio` CSS property reserves the correct space before the full-quality image loads.
 
-By setting the aspect ratio for your blurry placeholders, you can:
+This technique is especially important for:
 
-- Prevent layout shifts as the full-quality image loads.
-- Ensure that the image container maintains its dimensions even before the full-quality image is loaded.
+- Preventing CLS and improving Core Web Vitals scores
+- Maintaining consistent layouts during image loading
+- Supporting responsive images where dimensions vary by viewport
 
 ## Usage
 

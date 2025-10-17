@@ -1,12 +1,14 @@
 # `createPngDataUri`
 
-Especially when using a server-side rendering framework like [Nuxt](https://nuxt.com), you might want to generate the placeholder images for the `src` attribute during SSR. This can be done with the `createPngDataUri` function:
+Creates a PNG data URI from a ThumbHash string for server-side rendering. This function decodes the base64-encoded ThumbHash into RGBA pixel data and encodes it as a base64 PNG data URI.
 
 ```ts
 import { createPngDataUri } from 'unlazy/thumbhash'
 
 const pngDataUri = createPngDataUri(thumbhash)
 ```
+
+The function handles base64-url encoding by converting `-` to `+` and `_` to `/` before decoding. It uses the `thumbhash` library for decoding, which automatically determines the aspect ratio from the hash itself.
 
 ## Type Declarations
 

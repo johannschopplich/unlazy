@@ -59,20 +59,35 @@ The `UnLazyImage` component allows you to easily implement unlazy in your Vue ap
 
 The `UnLazyImage` component accepts the following props:
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `autoSizes` | Boolean | A flag to indicate whether the sizes attribute should be automatically calculated. |
-| `blurhash` | String | A BlurHash string representing the blurry placeholder image. |
-| `thumbhash` | String | A ThumbHash string representing the blurry placeholder image. |
-| `placeholderSrc` | String | Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. |
-| `placeholderSize` | Number | The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. |
-| `preload` | Boolean | A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet. |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `src` | String | - | Image source URL to be lazy-loaded. |
+| `srcSet` | String | - | Image source set to be lazy-loaded. |
+| `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
+| `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
+| `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
+| `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. |
+| `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
+| `preload` | Boolean | `false` | Whether the image should be preloaded immediately, bypassing lazy loading. |
+| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). |
+
+The component also accepts all standard `<img>` HTML attributes via Vue's attribute inheritance.
 
 ### Emitted Events
 
-| Event | Description |
-| --- | --- |
-| `loaded` | Emitted when the image has been loaded. The event payload is the image element itself. |
+| Event | Payload | Description |
+| --- | --- | --- |
+| `loaded` | `HTMLImageElement` | Emitted when the image has been successfully loaded. |
+| `error` | `Event` | Emitted when an error occurs during image loading. |
+
+### Reactivity
+
+The component uses Vue's `watchEffect` to handle reactive updates:
+
+- Automatically tracks changes to `src`, `srcSet`, and hash props
+- Re-initializes lazy loading when relevant props change
+- Cleans up previous listeners before setting up new ones
+- Bypasses lazy loading entirely when `preload` is `true`
 
 ## Examples
 

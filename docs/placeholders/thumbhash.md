@@ -2,14 +2,16 @@
 
 unlazy supports client-side and server-side (SSR) decoding of [ThumbHash](https://github.com/evanw/thumbhash) strings. This allows you to use ThumbHash placeholders for images that are not yet loaded.
 
-A ThumbHash is a very compact representation of a placeholder for an image. It is similar to [BlurHash](https://blurha.sh) but with the following advantages:
+A ThumbHash is a very compact representation of a placeholder for an image. Compared to [BlurHash](https://blurha.sh), it offers several advantages:
 
 - Encodes more detail in the same space
-- Also encodes the aspect ratio
-- Gives more accurate colors
+- Automatically encodes the aspect ratio (no need to specify separately)
+- Provides more accurate colors
 - Supports images with alpha channels
 
-## Client-Side BlurHash Decoding
+ThumbHash strings are typically shorter and produce higher quality placeholders, making them an excellent choice for modern web applications.
+
+## Client-Side Decoding
 
 ### `data-thumbhash` Attribute
 
@@ -53,7 +55,7 @@ lazyLoad('img[loading="lazy"]', {
 This will also disable [BlurHash](/placeholders/blurhash) decoding.
 :::
 
-## Server-Side ThumbHash Decoding
+## Server-Side Decoding
 
 If you are using a server-side framework, you can use the [`createPngDataUri`](/api/thumbhash-create-png-data-uri) function to create a PNG data URI from a ThumbHash string. The resulting data URI can then be used as the `src` attribute of an image.
 
