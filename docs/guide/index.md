@@ -30,6 +30,4 @@ unlazy ensures that search engines can index the full-quality images by detectin
 
 Head over to the [installation guide](/guide/installation) to learn how to install unlazy in your project. After that, you can check out the [usage guide](/guide/usage) and may take a look at the [API reference](/api/).
 
-If your project is using [BlurHash](https://blurha.sh), you can check out the [BlurHash guide](/placeholders/blurhash) to learn how to use it with unlazy.
-
-The shiny new [ThumbHash](https://github.com/evanw/thumbhash) by Evan Wallace is also supported. You can check out the [ThumbHash guide](/placeholders/thumbhash) to learn how to use it with unlazy.
+If you want to use hash-based placeholders like [BlurHash](https://blurha.sh) or [ThumbHash](https://github.com/evanw/thumbhash), check out the [hash-based placeholders guide](/placeholders/hash-based).

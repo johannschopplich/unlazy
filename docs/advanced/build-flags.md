@@ -26,7 +26,7 @@ export default defineConfig({
 
 ## Disable Hash Decoding <Badge type="info" text="^0.10.0" />
 
-unlazy includes [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
+unlazy includes [BlurHash](/placeholders/hash-based#blurhash) and [ThumbHash](/placeholders/hash-based#thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
 
 - `__UNLAZY_HASH_DECODING__`: Set to `false` to tree-shake hash decoding code. Default is `true`.
 
@@ -41,12 +41,12 @@ This flag only affects the main entry point. If you directly import `unlazy/blur
 
 ## Disable Client Logging <Badge type="info" text="^0.10.2" />
 
-unlazy will help you locate missing `data-src` or `data-srcset` attributes in your project by logging a warning in the browser console. An example warning message looks like this:
+unlazy helps you locate missing `data-src` or `data-srcset` attributes by logging warnings in the browser console. An example warning message looks like this:
 
 ```
 [unlazy] Missing `data-src` or `data-srcset` attribute: <img>
 ```
 
-If you want to disable these warnings, you can use the following build flag:
+To disable these warnings, use the following build flag:
 
-- `__UNLAZY_LOGGING__`: This flag is set to `true` by default.
+- `__UNLAZY_LOGGING__`: Set to `false` to disable warnings. Default is `true`.

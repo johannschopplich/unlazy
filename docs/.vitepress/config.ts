@@ -86,8 +86,8 @@ function nav(): DefaultTheme.NavItem[] {
         {
           text: 'Placeholders',
           items: [
-            { text: 'BlurHash', link: '/placeholders/blurhash' },
-            { text: 'ThumbHash', link: '/placeholders/thumbhash' },
+            { text: 'Overview', link: '/placeholders/' },
+            { text: 'Hash-Based', link: '/placeholders/hash-based' },
           ],
         },
       ],
@@ -119,8 +119,8 @@ function nav(): DefaultTheme.NavItem[] {
         {
           text: 'Advanced',
           items: [
-            { text: 'Build Flags', link: '/advanced/build-flags' },
             { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
+            { text: 'Build Flags', link: '/advanced/build-flags' },
           ],
         },
       ],
@@ -181,8 +181,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Placeholders',
       items: [
-        { text: 'BlurHash', link: '/placeholders/blurhash' },
-        { text: 'ThumbHash', link: '/placeholders/thumbhash' },
+        { text: 'Overview', link: '/placeholders/' },
+        { text: 'Hash-Based', link: '/placeholders/hash-based' },
       ],
     },
     {
@@ -199,8 +199,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Advanced',
       items: [
-        { text: 'Build Flags', link: '/advanced/build-flags' },
         { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
+        { text: 'Build Flags', link: '/advanced/build-flags' },
       ],
     },
     { text: 'Playground', link: 'https://github.com/johannschopplich/unlazy/tree/main/packages/nuxt/playground' },

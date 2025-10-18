@@ -31,20 +31,16 @@ For more use cases, head over to the [Usage](/guide/usage) guide.
 
 ## Without a Build Step
 
-unlazy can be used without a build step. Useful for prototyping or when you do not want to add a build step to your project. Simply load it from a CDN:
+unlazy can be used without a build step from a CDN. Useful for prototyping or projects without bundlers.
 
-- Global build: <CdnLink name="unlazy.iife.js" />
-  - Exposes `UnLazy` global property, supports auto initializing
-- ESM build: <CdnLink name="unlazy.js" />
-  - Must be used with `<script type="module">`
+**Available Builds:**
+- **Standard Global**: <CdnLink name="unlazy.iife.js" /> - Exposes `UnLazy` global, supports auto-initialization
+- **Standard ESM**: <CdnLink name="unlazy.js" /> - Requires `<script type="module">`
+- **With Hashing Global**: <CdnLink name="unlazy.with-hashing.iife.js" /> - Includes BlurHash/ThumbHash decoders
+- **With Hashing ESM**: <CdnLink name="unlazy.with-hashing.js" /> - ESM with hash decoding
 
 ::: info
-To keep the bundle size small, the standard global build excludes BlurHash and ThumbHash decoding algorithms. Use the `with-hashing` variant if you need client-side hash decoding:
-
-- Global build with hashing: <CdnLink name="unlazy.with-hashing.iife.js" />
-- ESM build with hashing: <CdnLink name="unlazy.with-hashing.js" />
-
-If you decode hashes on the server (e.g., during SSR), use the standard bundle instead.
+Use standard builds if you decode hashes on the server (SSR). Use `with-hashing` builds only if you need client-side hash decoding.
 :::
 
 ### Auto-Initialization
@@ -59,12 +55,12 @@ When using the global build, you can use the `init` attribute to automatically i
 - The `init` attribute tells the library to automatically initialize and watch all elements that have a `loading="lazy"` attribute.
 
 ::: info
-The short CDN URLs are meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect cost:
+The short CDN URLs are meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect costs, for example: `https://unpkg.com/unlazy@1.0.0/dist/unlazy.iife.js`.
 :::
 
 ### Manual Initialization
 
-If you do not want the auto-initialize the library, remove the `init` attribute and move the scripts to end of the `<body>` tag:
+If you do not want to auto-initialize the library, remove the `init` attribute and move the scripts to end of the `<body>` tag:
 
 ```html
 <script src="https://unpkg.com/unlazy"></script>
@@ -74,7 +70,7 @@ If you do not want the auto-initialize the library, remove the `init` attribute 
 ```
 
 ::: info
-The short CDN URLs are meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect cost:
+The short CDN URLs are meant for prototyping. For production usage, use a fully resolved CDN URL to avoid resolving and redirect costs, for example: `https://unpkg.com/unlazy@1.0.0/dist/unlazy.iife.js`.
 :::
 
 ## Example

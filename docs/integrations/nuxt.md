@@ -1,8 +1,6 @@
 # `@unlazy/nuxt`
 
-unlazy is not only framework-agnostic, but also provides a Nuxt module that you can use in your Nuxt application.
-
-The auto-imported `UnLazyImage` component is a drop-in replacement for the native `<img>` element and `<picture>` element respectively if you provide the `sources` prop.
+The Nuxt module provides an auto-imported `UnLazyImage` component as a drop-in replacement for native `<img>` and `<picture>` elements (when using the `sources` prop).
 
 ## Installation
 
@@ -50,7 +48,7 @@ export default defineNuxtConfig({
 ```
 
 ::: warning
-Disabling server-side rendering of the blurry placeholder image will result in a flash of the original image on the initial page load and kinda defeats the purpose of the SSR abilities from Nuxt.
+Disabling server-side rendering of the blurry placeholder image will result in a flash of the original image on the initial page load and largely defeats the purpose of the SSR abilities from Nuxt.
 :::
 
 ## `UnLazyImage` Component

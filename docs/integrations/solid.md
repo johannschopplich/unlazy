@@ -1,6 +1,6 @@
 # `@unlazy/solid`
 
-unlazy is not only framework-agnostic, but also provides a Solid component that you can use in your Solid application.
+The Solid integration provides an `UnLazyImage` component for your Solid 1.9+ application.
 
 ## Installation
 

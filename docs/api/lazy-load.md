@@ -9,7 +9,7 @@ The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM eleme
    - The `data-src` attribute will be converted to `src`.
 2. Processes all images with a `loading="lazy"` attribute.
    - Calculates the image's `sizes` attribute if `data-sizes="auto"` is set.
-   - Generates a blurry placeholder from a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) string if applicable.
+   - Generates a blurry placeholder from a [hash-based placeholder](/placeholders/hash-based) (BlurHash or ThumbHash) string if applicable.
 3. If the image has a blurry placeholder and is already in the viewport or the visitor is a crawler, it immediately loads the full-quality image.
 4. If the image is not yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
 

@@ -2,9 +2,9 @@
 
 unlazy supports lazy loading images in your framework of choice. Each package provides a `UnLazyImage` component as a drop-in replacement for the native `<img>` element.
 
-## Generic How-To
+## Creating Custom Integrations
 
-To create a component for the framework of your choice, keep the following in mind:
+To create a component for your framework, keep the following in mind:
 
 1. The component should wrap a native `<img>` element with the `loading="lazy"` attribute set.
 2. The component should support at least a `src` or `srcset` attribute.
@@ -60,7 +60,7 @@ The following integrations are available as of now:
 ### Meta-Frameworks
 
 ::: tip
-These include SSR-decoding of [BlurHash](/placeholders/blurhash) and [ThumbHash](/placeholders/thumbhash) strings.
+These include SSR-decoding of [hash-based placeholders](/placeholders/hash-based) (BlurHash and ThumbHash).
 :::
 
 - [Nuxt](/integrations/nuxt)

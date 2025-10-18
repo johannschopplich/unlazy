@@ -1,10 +1,6 @@
 # `@unlazy/svelte`
 
-unlazy is not only framework-agnostic, but also provides a Svelte component that you can use in your Svelte application.
-
-::: info
-The component is written for Svelte 5 and above using runes.
-:::
+The Svelte integration provides an `UnLazyImage` component for Svelte 5+ applications using runes.
 
 ## Installation
 

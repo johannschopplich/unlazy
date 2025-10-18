@@ -1,6 +1,6 @@
 # `@unlazy/react`
 
-unlazy is not only framework-agnostic, but also provides a React component that you can use in your React application.
+The React integration provides an `UnLazyImage` component for your React 19+ application.
 
 ## Installation
 

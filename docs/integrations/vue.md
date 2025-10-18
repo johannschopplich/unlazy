@@ -1,6 +1,6 @@
 # `@unlazy/vue`
 
-unlazy is not only framework-agnostic, but also provides a Vue component that you can use in your Vue application.
+The Vue integration provides an `UnLazyImage` component for your Vue 3 application.
 
 ## Installation
 
@@ -38,7 +38,7 @@ import { UnLazyImage } from '@unlazy/vue/components'
 
 ### Global Registration
 
-If you prefer to make the `LazyImage` component globally available, you can register it in your `main.ts` file across your entire Vue application:
+If you prefer to make the `UnLazyImage` component globally available, you can register it in your `main.ts` file across your entire Vue application:
 
 ```ts
 // src/main.ts

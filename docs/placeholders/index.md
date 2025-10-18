@@ -1,10 +1,12 @@
 # Placeholder Images
 
-The primary goal of unlazy is to provide a smooth transition from a placeholder image to the actual image. A common approach is to use a blurred version of the actual image as a placeholder.
+The primary goal of unlazy is to provide a smooth transition from a placeholder image to the actual image. A common approach is to use a blurry version of the actual image as a placeholder.
 
-Inlining a blurred version of the actual image is not always possible, e.g. when the image is loaded from a CDN. In this case, you can use a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) placeholder instead. Both are very compact representations of a placeholder for an image.
+Inlining a blurry placeholder is not always practical, e.g. when loading images from a CDN. In this case, you can use [hash-based placeholders](/placeholders/hash-based) like BlurHash or ThumbHash. Both are compact string representations of placeholder images.
 
-The following placeholder formats are supported:
+unlazy supports the following hash-based formats:
 
-- [BlurHash](/placeholders/blurhash)
-- [ThumbHash](/placeholders/thumbhash)
+- **[BlurHash](/placeholders/hash-based#blurhash)** – Compact string representation with good blur quality
+- **[ThumbHash](/placeholders/hash-based#thumbhash)** – More compact with better quality and automatic aspect ratio encoding
+
+Learn more about [hash-based placeholders](/placeholders/hash-based).

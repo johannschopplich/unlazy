@@ -2,9 +2,9 @@
 
 1. Add the `loading="lazy"` attribute to a `<img>` element that you want to lazily load. You can also use the `<picture>` element to lazily load images in different formats.
 
-2. Use the `data-src` or `data-srcset` attribute to specify the high-quality image. These data attributes prevent browsers from loading images before they enter the viewport and are swapped to standard attributes by unlazy when loading occurs.
+2. Use `data-src` or `data-srcset` attributes to specify the high-quality image. These prevent browsers from loading images before they enter the viewport and are swapped to standard attributes when loading occurs.
 
-3. If you have a pre-generated blurry placeholder image, use the `src` attribute to specify it. Otherwise, you can use a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) to generate a placeholder image on the fly.
+3. Set the `src` attribute with a pre-generated blurry placeholder, or use [hash-based placeholders](/placeholders/hash-based) (BlurHash or ThumbHash) to generate placeholders on the fly.
 
 ::: code-group
   ```html [Image tag]
@@ -51,7 +51,7 @@ const cleanup = lazyLoad()
 // Useful when unmounting components or removing images dynamically
 ```
 
-The `lazyLoad` function returns a cleanup function that removes all event listeners and ResizeObservers. Call this function when unmounting components or when images are no longer needed to prevent memory leaks.
+The `lazyLoad` function returns a cleanup function that removes event listeners and ResizeObservers. Call this when unmounting components or removing images to prevent memory leaks.
 
 ## Auto Calculation of the `sizes` Attribute
 
@@ -68,9 +68,9 @@ The automatic sizes calculation uses the display width of the image.
 >
 ```
 
-When calling [`lazyLoad`](/api/lazy-load), the library will automatically calculate the `sizes` attribute for all images with `data-sizes="auto"`.
+When calling [`lazyLoad`](/api/lazy-load), the library automatically calculates the `sizes` attribute for all images with `data-sizes="auto"`.
 
-Alternatively, you can use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute for all images with `data-sizes="auto"`, without lazy loading the images.
+Alternatively, use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute without lazy loading.
 
 To do so, import the [`autoSizes`](/api/auto-sizes) function from the library and call it:
 
@@ -113,5 +113,5 @@ loadImage(coolImage)
 ```
 
 ::: tip
-Keep in mind that manually loading images might negatively affect the perceived performance, as it will force the full-quality image to load immediately, even if it is not visible on the viewport.
+Manually loading images may negatively affect perceived performance by forcing immediate load, even when not visible in the viewport.
 :::

@@ -1,6 +1,10 @@
 # Advanced Usage
 
-This is a collection of recipes for common use cases, since unlazy is a flexible library that can be used in many ways. If you have a use case that is not covered here, please [open an issue](https://github.com/johannschopplich/unlazy/issues).
+This section covers advanced configuration options and optimization techniques for unlazy. These topics help you fine-tune performance and behavior for production applications.
 
-- [Aspect Ratio for Blurry Placeholders](/advanced/aspect-ratio)
-- [Build Flags to Tree-Shake Unused Code](/advanced/build-flags)
+## Topics
+
+- **[Aspect Ratio](/advanced/aspect-ratio)** – Prevent CLS with aspect ratio settings for blurry placeholders
+- **[Build Flags](/advanced/build-flags)** – Tree-shake unused features to reduce bundle size
+
+If you have a use case not covered here, please [open an issue](https://github.com/johannschopplich/unlazy/issues).
