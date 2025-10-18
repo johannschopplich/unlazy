@@ -1,6 +1,6 @@
 # What Is unlazy?
 
-unlazy is a universal lazy loading library leveraging native browser APIs. It is intended to be used with inlined (blurry) placeholder images or a placeholder image representation like a [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) alongside the native `loading="lazy"` attribute.
+unlazy is a universal lazy loading library leveraging native browser APIs. It is intended to be used with inlined (blurry) placeholder images or a placeholder image representation like a [BlurHash](/placeholders/hash-based#blurhash) or [ThumbHash](/placeholders/hash-based#thumbhash) alongside the native `loading="lazy"` attribute.
 
 Images are initially rendered with blurry placeholders, giving the user an impression of the page layout and content. As the images enter the viewport, they are replaced with the full-quality versions, providing a smoother experience. This approach prioritizes the initial rendering of the page and improves the perceived performance for users, especially when the connection is slow or unstable.
 
@@ -14,7 +14,7 @@ unlazy enhances the native `loading="lazy"` attribute by processing images and m
 
 1. **Data Attribute Processing**: Uses `data-src`, `data-srcset`, and `data-sizes` attributes which are swapped to standard attributes when images load. This prevents browsers from eagerly loading images before they enter the viewport.
 
-2. **Placeholder Generation**: Decodes [BlurHash](/placeholders/blurhash) or [ThumbHash](/placeholders/thumbhash) strings (via `data-blurhash` or `data-thumbhash` attributes) into PNG data URIs for placeholders.
+2. **Placeholder Generation**: Decodes [BlurHash](/placeholders/hash-based#blurhash) or [ThumbHash](/placeholders/hash-based#thumbhash) strings (via `data-blurhash` or `data-thumbhash` attributes) into PNG data URIs for placeholders.
 
 3. **Chrome Workaround**: Generates unique indexed SVG placeholders to prevent Chrome's aggressive image loading behavior that can trigger load events prematurely.
 

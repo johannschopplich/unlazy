@@ -5,7 +5,7 @@
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
 
-Universal lazy loading library leveraging native browser APIs. It is intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images and with a [BlurHash](https://unlazy.byjohann.dev/placeholders/blurhash) or [ThumbHash](https://unlazy.byjohann.dev/placeholders/thumbhash) string.
+Universal lazy loading library leveraging native browser APIs. It is intended to be used with the `loading="lazy"` attribute alongside (blurry) placeholder images and with a [BlurHash](https://unlazy.byjohann.dev/placeholders/hash-based#blurhash) or [ThumbHash](https://unlazy.byjohann.dev/placeholders/hash-based#thumbhash) string.
 
 ## Features
 
