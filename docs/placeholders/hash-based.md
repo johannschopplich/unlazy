@@ -25,15 +25,23 @@ ThumbHash strings are typically shorter and produce higher quality placeholders,
 
 By default, unlazy automatically decodes hash strings when a `data-blurhash` or `data-thumbhash` attribute is present on an `<img>` tag.
 
+::: warning
+For optimal performance when using BlurHash, always set explicit `width` and `height` attributes on your images. Without these attributes, the library falls back to the rendered dimensions (`offsetWidth`/`offsetHeight`), which can cause BlurHash to decode at full image size instead of the default 32px. This may result in significant performance delays on large images.
+:::
+
 ::: code-group
   ```html [BlurHash]
   <img
+    width="800"
+    height="600"
     data-src="image.jpg"
     data-blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
   >
   ```
   ```html [ThumbHash]
   <img
+    width="800"
+    height="600"
     data-src="image.jpg"
     data-thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
   >
@@ -68,7 +76,7 @@ When initializing unlazy for single images (e.g., in a framework component), you
 :::
 
 ::: info
-The `hashType` defaults to `blurhash` if not specified.
+The `hashType` defaults to `blurhash` if not specified. For BlurHash, ensure the image element has `width` and `height` attributes set for optimal performance.
 :::
 
 ### Disabling Hash Decoding
@@ -106,3 +114,19 @@ For a complete list of options, see the API documentation:
 
 - BlurHash [`createPngDataUri`](/api/blurhash-create-png-data-uri)
 - ThumbHash [`createPngDataUri`](/api/thumbhash-create-png-data-uri)
+
+## Hash Decoding Strategies
+
+Both approaches have distinct characteristics that affect bundle size and user experience:
+
+### Client-Side Decoding
+
+Requires including the hash decoding library in your JavaScript bundle, which increases bundle size. However, placeholders are visible immediately on page load, providing instant visual feedback to users.
+
+### Server-Side Decoding
+
+Generates PNG data URIs on the server, keeping your client bundle smaller. The placeholder image is embedded directly in the HTML as a data URI. This approach is ideal when minimizing client-side JavaScript is a priority.
+
+::: tip
+ThumbHash is more efficient for both approaches due to its smaller hash size and faster decoding performance compared to BlurHash.
+:::

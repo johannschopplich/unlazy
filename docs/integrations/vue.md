@@ -94,6 +94,8 @@ The component uses Vue's `watchEffect` to handle reactive updates:
 ::: code-group
   ```html [BlurHash]
   <UnLazyImage
+    width="800"
+    height="600"
     blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
@@ -101,6 +103,8 @@ The component uses Vue's `watchEffect` to handle reactive updates:
   ```
   ```html [ThumbHash]
   <UnLazyImage
+    width="800"
+    height="600"
     thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
@@ -108,6 +112,8 @@ The component uses Vue's `watchEffect` to handle reactive updates:
   ```
   ```html [Inlined placeholder image]
   <UnLazyImage
+    width="800"
+    height="600"
     placeholder-src="data:image/svg+xml, ..."
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
@@ -117,6 +123,10 @@ The component uses Vue's `watchEffect` to handle reactive updates:
 
 ::: tip
 In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
+:::
+
+::: info
+When using BlurHash, set explicit `width` and `height` attributes for optimal performance. Without these, BlurHash decoding falls back to rendered dimensions, which may cause performance delays on large images.
 :::
 
 ### Preload Image

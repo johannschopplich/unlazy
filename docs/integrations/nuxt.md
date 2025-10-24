@@ -174,6 +174,8 @@ const exampleSources = [
 
 <template>
   <UnLazyImage
+    width="800"
+    height="600"
     :src="exampleImgSrc"
     :sources="exampleSources"
     blurhash="LEHV6nWB2yk8pyo0adR*.7kCMdnj"
@@ -189,9 +191,16 @@ Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload th
 ```vue
 <template>
   <UnLazyImage
+    width="640"
+    height="320"
     :blurhash="blurhash"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     auto-sizes
     preload
   />
 </template>
+```
+
+::: info
+When using client-side BlurHash decoding (`:ssr="false"`), set explicit `width` and `height` attributes for optimal performance. Server-side rendering (enabled by default) is less affected by this, but including these attributes is still recommended as a best practice.
+:::

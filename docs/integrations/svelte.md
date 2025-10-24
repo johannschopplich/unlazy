@@ -68,6 +68,8 @@ This component is built using Svelte 5's modern runes syntax:
 ::: code-group
   ```svelte [BlurHash]
   <UnLazyImage
+    width={800}
+    height={600}
     blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
     srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
     autoSizes
@@ -75,6 +77,8 @@ This component is built using Svelte 5's modern runes syntax:
   ```
   ```svelte [ThumbHash]
   <UnLazyImage
+    width={800}
+    height={600}
     thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
     srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
     autoSizes
@@ -82,11 +86,17 @@ This component is built using Svelte 5's modern runes syntax:
   ```
   ```svelte [Inlined placeholder image]
   <UnLazyImage
+    width={800}
+    height={600}
     placeholderSrc="data:image/svg+xml, ..."
     srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
     autoSizes
   />
   ```
+:::
+
+::: info
+When using BlurHash, set explicit `width` and `height` props for optimal performance. Without these, BlurHash decoding falls back to rendered dimensions, which may cause performance delays on large images.
 :::
 
 ::: tip
