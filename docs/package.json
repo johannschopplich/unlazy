@@ -9,8 +9,8 @@
     "serve": "vitepress serve"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.2.14",
-    "unocss": "^66.5.4",
+    "@iconify-json/carbon": "^1.2.18",
+    "unocss": "^66.6.0",
     "vitepress": "^1.6.4"
   }
 }

@@ -28,7 +28,7 @@ const image = document.querySelector('.priority-image')
 // Load immediately with callbacks
 triggerLoad(
   image,
-  (img) => console.log('Loaded:', img.src),
+  img => console.log('Loaded:', img.src),
   (img, error) => console.error('Failed to load:', img)
 )
 ```

@@ -51,7 +51,10 @@ The `UnLazyImage` component accepts the following props:
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
 | `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. |
 | `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
+| `preload` | Boolean | `false` | Whether the image should be preloaded immediately, bypassing lazy loading. |
 | `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). |
+| `onImageLoad` | Function | - | Callback function invoked when the image has been successfully loaded. Receives the `HTMLImageElement` as an argument. |
+| `onImageError` | Function | - | Callback function invoked when an error occurs during image loading. Receives the `HTMLImageElement` and `Event` as arguments. |
 
 The component also accepts all standard `<img>` HTML attributes.
 
@@ -102,3 +105,16 @@ When using BlurHash, set explicit `width` and `height` props for optimal perform
 ::: tip
 In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
 :::
+
+### Preload Image
+
+Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
+
+```svelte
+<UnLazyImage
+  blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
+  srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+  autoSizes
+  preload
+/>
+```
