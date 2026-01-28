@@ -1,104 +1,127 @@
 <script setup lang="ts">
-import { PlaygroundDivider, UnLazyImage } from '#components'
+import { UnLazyImage } from '#components'
 import { ref, useHead } from '#imports'
-import '@unocss/reset/tailwind.css'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
 const thumbhash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
-const logoUrl = new URL('../../../docs/public/logo.svg', import.meta.url).href
 
 const shouldLoadImage = ref(false)
 
 useHead({
   title: '@unlazy/nuxt',
-  link: [
-    { rel: 'icon', href: logoUrl, type: 'image/svg+xml' },
-  ],
 })
 
-function loadImage() {
-  shouldLoadImage.value = true
+function onLoaded(image: HTMLImageElement) {
+  console.log('Image loaded:', image.src)
 }
 </script>
 
 <template>
-  <main class="mx-auto max-w-prose px-4 py-12 sm:px-6 lg:px-8">
-    <div class="space-y-12">
-      <div class="grid grid-cols-2 gap-6">
-        <div class="space-y-2">
-          <PlaygroundDivider><strong>SSR</strong>-decoded BlurHash</PlaygroundDivider>
-          <UnLazyImage
-            :blurhash="blurhash"
-            src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-            width="640"
-            height="320"
-            style="aspect-ratio: 1/1;"
-          />
-          <p class="text-sm text-gray-500">
-            The image above is inlined as a PNG data URI.
-          </p>
-        </div>
-        <div class="space-y-2">
-          <PlaygroundDivider><strong>Client-side</strong> decoded BlurHash</PlaygroundDivider>
-          <UnLazyImage
-            :ssr="false"
-            :blurhash="blurhash"
-            src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-            width="640"
-            height="320"
-            style="aspect-ratio: 1/1;"
-          />
-          <p class="text-sm text-gray-500">
-            The client-side decoded BlurHash will infer the image dimensions from the <code>width</code> and <code>height</code> attributes.
-          </p>
-        </div>
-      </div>
+  <main>
+    <h1>@unlazy/nuxt Playground</h1>
 
-      <div class="grid grid-cols-2 gap-6">
-        <div class="space-y-2">
-          <PlaygroundDivider><strong>SSR</strong>-decoded ThumbHash</PlaygroundDivider>
-          <UnLazyImage
-            :thumbhash="thumbhash"
-            src="/images/sunrise-evan-wallace.jpg"
-            width="480"
-            height="640"
-            style="aspect-ratio: 3/4;"
-          />
-          <p class="text-sm text-gray-500">
-            The image above is inlined as a PNG data URI.
-          </p>
-        </div>
+    <div class="grid">
+      <section>
+        <h2>SSR-decoded BlurHash</h2>
+        <UnLazyImage
+          :blurhash="blurhash"
+          src="/images/fall-evan-wallace.jpg"
+          width="640"
+          height="427"
+          @loaded="onLoaded"
+        />
+      </section>
 
-        <div class="space-y-2">
-          <PlaygroundDivider><strong>Client-side</strong> decoded ThumbHash</PlaygroundDivider>
-          <UnLazyImage
-            :ssr="false"
-            :thumbhash="thumbhash"
-            src="/images/sunrise-evan-wallace.jpg"
-            width="480"
-            height="640"
-            style="aspect-ratio: 3/4;"
-          />
-        </div>
-      </div>
+      <section>
+        <h2>Client-side BlurHash</h2>
+        <UnLazyImage
+          :ssr="false"
+          :blurhash="blurhash"
+          src="/images/fall-evan-wallace.jpg"
+          width="640"
+          height="427"
+        />
+      </section>
+    </div>
 
-      <div class="grid grid-cols-2 gap-6">
-        <div class="space-y-2">
-          <PlaygroundDivider>Lazy load on click</PlaygroundDivider>
-          <UnLazyImage
-            thumbhash="HBkSHYSIeHiPiHh8eJd4eTN0EEQG"
-            :lazy-load="shouldLoadImage"
-            src="/images/fall-evan-wallace.jpg"
-            width="480"
-            height="640"
-            style="aspect-ratio: 3/2;"
-            @click="loadImage"
-          />
-          <p class="text-sm text-gray-500">
-            Lazy loading will only be triggered when the image is clicked.
-          </p>
-        </div>
-      </div>
+    <div class="grid">
+      <section>
+        <h2>SSR-decoded ThumbHash</h2>
+        <UnLazyImage
+          :thumbhash="thumbhash"
+          src="/images/sunrise-evan-wallace.jpg"
+          width="480"
+          height="640"
+        />
+      </section>
+
+      <section>
+        <h2>Client-side ThumbHash</h2>
+        <UnLazyImage
+          :ssr="false"
+          :thumbhash="thumbhash"
+          src="/images/sunrise-evan-wallace.jpg"
+          width="480"
+          height="640"
+        />
+      </section>
+    </div>
+
+    <div class="grid">
+      <section>
+        <h2>Preload (immediate)</h2>
+        <UnLazyImage
+          blurhash="HBkSHYSIeHiPiHh8eJd4eTN0EEQG"
+          src="/images/fall-evan-wallace.jpg"
+          width="640"
+          height="427"
+          preload
+        />
+      </section>
+
+      <section>
+        <h2>Lazy load on click</h2>
+        <UnLazyImage
+          thumbhash="HBkSHYSIeHiPiHh8eJd4eTN0EEQG"
+          :lazy-load="shouldLoadImage"
+          src="/images/fall-evan-wallace.jpg"
+          width="640"
+          height="427"
+          style="cursor: pointer;"
+          @click="shouldLoadImage = true"
+        />
+        <p>Click image to load</p>
+      </section>
     </div>
   </main>
 </template>
+
+<style>
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+h1 { margin-bottom: 2rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #666;
+}
+section p {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #999;
+}
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+</style>

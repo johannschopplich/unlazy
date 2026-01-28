@@ -5,13 +5,11 @@ import { defineNuxtConfig } from 'nuxt/config'
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineNuxtConfig({
-  modules: ['@unocss/nuxt', '../src/module'],
+  modules: ['../src/module'],
 
-  compatibilityDate: '2025-09-01',
+  compatibilityDate: '2026-01-01',
 
   vite: {
-    // Custom alias for unlazy until Jiti issue is resolved
-    // https://github.com/unjs/jiti/issues/136
     resolve: {
       alias: {
         '@unlazy/core': `${resolve(currentDir, '../../core/src')}/`,
