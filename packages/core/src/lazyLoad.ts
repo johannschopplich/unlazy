@@ -125,17 +125,21 @@ export function loadImage(
   onImageLoad?: (image: HTMLImageElement) => void,
   onImageError?: (image: HTMLImageElement, error: Event) => void,
 ): void {
-  // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
+  // For picture elements, swap attributes directly without preloading
+  // (browser handles source selection, no separate load event to wait for)
   if (isDescendantOfPicture(image)) {
     updatePictureSources(image)
     updateImageSrcset(image)
     updateImageSrc(image)
-    onImageLoad?.(image)
     return
   }
 
-  const temporaryImage = new Image()
   const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
+
+  if (!dataSrcset && !dataSrc)
+    return
+
+  const temporaryImage = new Image()
 
   // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
   if (dataSizes === 'auto') {

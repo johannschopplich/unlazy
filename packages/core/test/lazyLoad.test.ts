@@ -43,7 +43,7 @@ describe('loadImage', () => {
     expect(img.src).toContain('image.jpg')
   })
 
-  it('invokes onImageLoad callback synchronously for picture elements', () => {
+  it('does not invoke onImageLoad for picture elements (no network load)', () => {
     const picture = document.createElement('picture')
     const img = document.createElement('img')
     img.dataset.src = 'image.jpg'
@@ -52,8 +52,18 @@ describe('loadImage', () => {
 
     loadImage(img, onLoad)
 
-    expect(onLoad).toHaveBeenCalledOnce()
-    expect(onLoad).toHaveBeenCalledWith(img)
+    expect(onLoad).not.toHaveBeenCalled()
+  })
+
+  it('does not invoke callbacks when no data attributes present', () => {
+    const img = document.createElement('img')
+    const onLoad = vi.fn()
+    const onError = vi.fn()
+
+    loadImage(img, onLoad, onError)
+
+    expect(onLoad).not.toHaveBeenCalled()
+    expect(onError).not.toHaveBeenCalled()
   })
 
   it('preloads standalone image without throwing', () => {
