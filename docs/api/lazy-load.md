@@ -1,6 +1,6 @@
 # `lazyLoad`
 
-The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load. By default, it processes all images with the `loading="lazy"` attribute
+The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load. By default, it processes all images with the `loading="lazy"` attribute.
 
 ## How It Works
 
@@ -17,11 +17,14 @@ The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM eleme
 
 Options can be passed to the function to customize its behavior:
 
-- `hash`: Whether to use a hash for generating a blurry placeholder. Can be a boolean or a string. Default is `true`. If `thumbhash` is provided, it takes precedence over `blurhash`.
-- `hashType`: The type of hash to use. Possible values are `blurhash` and `thumbhash`. Default is `blurhash`.
-- `placeholderSize`: The size of the longer edge for BlurHash decoding. Default is `32`. Ignored for ThumbHash.
-- `updateSizesOnResize`: Whether to update the `sizes` attribute on window resize events using a debounced ResizeObserver. Default is `false`.
-- `onImageLoad`: A callback function invoked when an image loads successfully.
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `hash` | `boolean \| string` | `true` | Whether to use a hash for generating a blurry placeholder. Can be `true` (auto-detect from `data-blurhash`/`data-thumbhash`), `false` (disabled), or a hash string. |
+| `hashType` | `'blurhash' \| 'thumbhash'` | `'blurhash'` | The type of hash to use. Ignored when `hash` is boolean (auto-detected from data attributes). |
+| `placeholderSize` | `number` | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
+| `updateSizesOnResize` | `boolean` | `false` | Whether to update the `sizes` attribute on resize events using a debounced ResizeObserver. Useful for responsive layouts where image display size changes. |
+| `onImageLoad` | `(image: HTMLImageElement) => void` | - | Callback invoked when an image loads successfully. |
+| `onImageError` | `(image: HTMLImageElement, error: Event) => void` | - | Callback invoked when an image fails to load. |
 
 ## Return Value
 

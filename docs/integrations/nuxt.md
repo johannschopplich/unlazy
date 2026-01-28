@@ -111,7 +111,7 @@ In every `srcSet` example, the `sizes` attribute is automatically calculated giv
   ```html [SSR-decoded BlurHash]
   <UnLazyImage
     :blurhash="blurhash"
-    :blurhash-ratio="2"
+    :placeholder-ratio="2"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
     width="640"
     height="320"
