@@ -1,6 +1,6 @@
 <script lang='ts'>
   import type { HTMLImgAttributes } from 'svelte/elements'
-  import { lazyLoad } from 'unlazy'
+  import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
   const {
     src,
@@ -10,7 +10,10 @@
     thumbhash,
     placeholderSrc,
     placeholderSize,
+    preload = false,
     loading = 'lazy',
+    onImageLoad,
+    onImageError,
     ...restProps
   }: {
     /** Image source URL to be lazy-loaded. */
@@ -31,10 +34,19 @@
     /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
     placeholderSize?: number
     /**
+     * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+     * @default false
+     */
+    preload?: boolean
+    /**
      * Allows to specify the loading strategy of the image.
      * @default 'lazy'
      */
     loading?: HTMLImgAttributes['loading']
+    /** A callback function to run when the image is loaded. */
+    onImageLoad?: (image: HTMLImageElement) => void
+    /** A callback function to run when the image fails to load. */
+    onImageError?: (image: HTMLImageElement, error: Event) => void
   } & Omit<HTMLImgAttributes, 'srcset'> = $props()
 
   let target = $state<HTMLImageElement | undefined>()
@@ -43,10 +55,19 @@
     if (!target)
       return
 
+    if (preload) {
+      if (autoSizes)
+        _autoSizes(target)
+      triggerLoad(target, onImageLoad, onImageError)
+      return
+    }
+
     const cleanup = lazyLoad(target, {
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
+      onImageLoad,
+      onImageError,
     })
 
     return () => {
