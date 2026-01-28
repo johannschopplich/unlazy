@@ -31,8 +31,6 @@ onMounted(() => {
 })
 ```
 
-That's it!
-
 ## Server-Side Rendering
 
 unlazy supports server-side rendering for BlurHash and ThumbHash strings. This means that you can generate the placeholder images for the `src` attribute during SSR and avoid the [Cumulative Layout Shift](https://web.dev/cls/) (CLS) caused by the images loading after the page has been rendered.
@@ -60,7 +58,7 @@ The following integrations are available as of now:
 ### Meta-Frameworks
 
 ::: tip
-These include SSR-decoding of [hash-based placeholders](/placeholders/hash-based) (BlurHash and ThumbHash).
+These include SSR-decoding of [hash-based placeholders](/guide/placeholders) (BlurHash and ThumbHash).
 :::
 
 - [Nuxt](/integrations/nuxt)

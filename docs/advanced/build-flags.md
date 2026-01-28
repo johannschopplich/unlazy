@@ -26,7 +26,7 @@ export default defineConfig({
 
 ## Disable Hash Decoding <Badge type="info" text="^0.10.0" />
 
-unlazy includes [BlurHash](/placeholders/hash-based#blurhash) and [ThumbHash](/placeholders/hash-based#thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
+unlazy includes [BlurHash](/guide/placeholders#blurhash) and [ThumbHash](/guide/placeholders#thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
 
 - `__UNLAZY_HASH_DECODING__`: Set to `false` to tree-shake hash decoding code. Default is `true`.
 

@@ -4,7 +4,7 @@
 
 2. Use `data-src` or `data-srcset` attributes to specify the high-quality image. These prevent browsers from loading images before they enter the viewport and are swapped to standard attributes when loading occurs.
 
-3. Set the `src` attribute with a pre-generated blurry placeholder, or use [hash-based placeholders](/placeholders/hash-based) (BlurHash or ThumbHash) to generate placeholders on the fly.
+3. Set the `src` attribute with a pre-generated blurry placeholder, or use [hash-based placeholders](/guide/placeholders) (BlurHash or ThumbHash) to generate placeholders on the fly.
 
 ::: code-group
   ```html [Image tag]

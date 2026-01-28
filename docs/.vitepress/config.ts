@@ -41,10 +41,9 @@ export default defineConfig({
 
     sidebar: {
       '/guide/': sidebarGuide(),
-      '/placeholders/': sidebarGuide(),
       '/integrations/': sidebarGuide(),
-      '/advanced/': sidebarGuide(),
       '/api/': sidebarApi(),
+      '/advanced/': sidebarGuide(),
     },
 
     socialLinks: [
@@ -74,20 +73,8 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'Getting Started', link: '/guide/' },
             { text: 'Installation', link: '/guide/installation' },
             { text: 'Usage', link: '/guide/usage' },
+            { text: 'Placeholders', link: '/guide/placeholders' },
             { text: 'SEO Considerations', link: '/guide/seo-considerations' },
-          ],
-        },
-      ],
-    },
-    {
-      text: 'Placeholders',
-      activeMatch: '^/placeholders/',
-      items: [
-        {
-          text: 'Placeholders',
-          items: [
-            { text: 'Overview', link: '/placeholders/' },
-            { text: 'Hash-Based', link: '/placeholders/hash-based' },
           ],
         },
       ],
@@ -113,19 +100,6 @@ function nav(): DefaultTheme.NavItem[] {
       ],
     },
     {
-      text: 'Advanced',
-      activeMatch: '^/advanced/',
-      items: [
-        {
-          text: 'Advanced',
-          items: [
-            { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
-            { text: 'Build Flags', link: '/advanced/build-flags' },
-          ],
-        },
-      ],
-    },
-    {
       text: 'API',
       activeMatch: '^/api/',
       items: [
@@ -139,6 +113,7 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'lazyLoad', link: '/api/lazy-load' },
             { text: 'autoSizes', link: '/api/auto-sizes' },
             { text: 'loadImage', link: '/api/load-image' },
+            { text: 'createPlaceholderFromHash', link: '/api/create-placeholder-from-hash' },
           ],
         },
         {
@@ -151,6 +126,19 @@ function nav(): DefaultTheme.NavItem[] {
           text: 'ThumbHash',
           items: [
             { text: 'createPngDataUri', link: '/api/thumbhash-create-png-data-uri' },
+          ],
+        },
+      ],
+    },
+    {
+      text: 'Advanced',
+      activeMatch: '^/advanced/',
+      items: [
+        {
+          text: 'Advanced',
+          items: [
+            { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
+            { text: 'Build Flags', link: '/advanced/build-flags' },
           ],
         },
       ],
@@ -175,14 +163,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Getting Started', link: '/guide/' },
         { text: 'Installation', link: '/guide/installation' },
         { text: 'Usage', link: '/guide/usage' },
+        { text: 'Placeholders', link: '/guide/placeholders' },
         { text: 'SEO Considerations', link: '/guide/seo-considerations' },
-      ],
-    },
-    {
-      text: 'Placeholders',
-      items: [
-        { text: 'Overview', link: '/placeholders/' },
-        { text: 'Hash-Based', link: '/placeholders/hash-based' },
       ],
     },
     {
@@ -219,6 +201,7 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
         { text: 'lazyLoad', link: '/api/lazy-load' },
         { text: 'autoSizes', link: '/api/auto-sizes' },
         { text: 'loadImage', link: '/api/load-image' },
+        { text: 'createPlaceholderFromHash', link: '/api/create-placeholder-from-hash' },
       ],
     },
     {

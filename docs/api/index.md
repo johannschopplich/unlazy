@@ -1,10 +1,10 @@
 # Overview
 
-unlazy provides a number of methods to help you with lazy loading images:
-
-- [`lazyLoad`](/api/lazy-load) – Lazy load images with automatic placeholder generation
-- [`autoSizes`](/api/auto-sizes) – Automatically calculate the `sizes` attribute
-- [`loadImage`](/api/load-image) – Manually load an image before it enters the viewport
-- [`createPlaceholderFromHash`](/api/create-placeholder-from-hash) – Generate PNG data URI from BlurHash or ThumbHash
-- BlurHash [`createPngDataUri`](/api/blurhash-create-png-data-uri) – Generate PNG data URI for SSR
-- ThumbHash [`createPngDataUri`](/api/thumbhash-create-png-data-uri) – Generate PNG data URI for SSR
+| Function | Import | Purpose |
+|----------|--------|---------|
+| [`lazyLoad`](/api/lazy-load) | `unlazy` | Initialize lazy loading with placeholder generation |
+| [`autoSizes`](/api/auto-sizes) | `unlazy` | Calculate `sizes` attribute without lazy loading |
+| [`loadImage`](/api/load-image) | `unlazy` | Programmatically load an image immediately |
+| [`createPlaceholderFromHash`](/api/create-placeholder-from-hash) | `unlazy` | Generate PNG data URI from hash (client-side) |
+| [`createPngDataUri`](/api/blurhash-create-png-data-uri) | `unlazy/blurhash` | Generate PNG data URI from BlurHash (SSR) |
+| [`createPngDataUri`](/api/thumbhash-create-png-data-uri) | `unlazy/thumbhash` | Generate PNG data URI from ThumbHash (SSR) |

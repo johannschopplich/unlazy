@@ -75,10 +75,6 @@ When initializing unlazy for single images (e.g., in a framework component), you
   ```
 :::
 
-::: info
-The `hashType` defaults to `blurhash` if not specified. For BlurHash, ensure the image element has `width` and `height` attributes set for optimal performance.
-:::
-
 ### Disabling Hash Decoding
 
 To disable hash decoding altogether, pass `false` to the `hash` option. This disables both BlurHash and ThumbHash decoding.
