@@ -34,7 +34,7 @@ For more use cases, head over to the [Usage](/guide/usage) guide.
 unlazy can be used without a build step from a CDN. Useful for prototyping or projects without bundlers.
 
 | Build | File | When to Use |
-|-------|------|-------------|
+| --- | --- | --- |
 | Standard Global | <CdnLink name="unlazy.iife.js" /> | SSR hash decoding, exposes `UnLazy` global |
 | Standard ESM | <CdnLink name="unlazy.js" /> | SSR hash decoding, `<script type="module">` |
 | With Hashing Global | <CdnLink name="unlazy.with-hashing.iife.js" /> | Client-side hash decoding |

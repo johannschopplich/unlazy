@@ -1,7 +1,7 @@
 # Overview
 
 | Function | Import | Purpose |
-|----------|--------|---------|
+| --- | --- | --- |
 | [`lazyLoad`](/api/lazy-load) | `unlazy` | Initialize lazy loading with placeholder generation |
 | [`autoSizes`](/api/auto-sizes) | `unlazy` | Calculate `sizes` attribute without lazy loading |
 | [`loadImage`](/api/load-image) | `unlazy` | Programmatically load an image immediately |

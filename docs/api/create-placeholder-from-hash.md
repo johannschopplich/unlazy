@@ -9,7 +9,7 @@ Generates a PNG data URI placeholder from a BlurHash or ThumbHash string. This f
 ## Parameters
 
 | Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `image` | `HTMLImageElement` | - | If provided, extracts hash from `data-blurhash` or `data-thumbhash` and calculates ratio from element dimensions |
 | `hash` | `string` | - | Hash string to decode. Takes precedence over `image` attributes |
 | `hashType` | `'blurhash' \| 'thumbhash'` | `'blurhash'` | Hash format. Auto-detected when `image` is provided |

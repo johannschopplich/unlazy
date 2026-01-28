@@ -8,9 +8,9 @@ unlazy includes an exported `isCrawler` function that detects bots and crawlers,
 
 The detection mechanism works by:
 
-1. **User Agent Check**: Scans for common bot identifiers (e.g., `bot`, `crawler`, `spider`, `googlebot`)
-2. **onscroll Support Detection**: Checks if the browser supports the `onscroll` event, which is typically absent in headless browsers and crawlers
-3. **Immediate Loading**: If detected as a crawler, `data-srcset` and `data-src` attributes are immediately converted to their standard counterparts
+1. **User Agent Check**: Scans for common bot identifiers (e.g., `bot`, `crawler`, `spider`, `googlebot`).
+2. **onscroll Support Detection**: Checks if the browser supports the `onscroll` event, which is typically absent in headless browsers and crawlers.
+3. **Immediate Loading**: If detected as a crawler, `data-srcset` and `data-src` attributes are immediately converted to their standard counterparts.
 
 The library trusts that bots and crawlers can evaluate the `srcset` attribute and select appropriate image sources for indexing.
 

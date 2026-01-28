@@ -61,11 +61,11 @@ The component also accepts all standard `<img>` HTML attributes (e.g., `alt`, `c
 
 The component uses React's `useEffect` hook to initialize lazy loading when mounted:
 
-1. Renders with placeholder image or hash-generated placeholder
-2. Sets up lazy loading via `lazyLoad()` from the core library
-3. Decodes BlurHash/ThumbHash if provided (thumbhash takes precedence)
-4. Swaps `data-src` to `src` when image enters viewport
-5. Cleans up event listeners on unmount or when props change
+1. Renders with placeholder image or hash-generated placeholder.
+2. Sets up lazy loading via `lazyLoad()` from the core library.
+3. Decodes BlurHash/ThumbHash if provided (thumbhash takes precedence).
+4. Swaps `data-src` to `src` when image enters viewport.
+5. Cleans up event listeners on unmount or when props change.
 
 ## Examples
 
