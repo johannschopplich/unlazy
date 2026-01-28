@@ -12,7 +12,7 @@ export function lazyLoad<T extends HTMLImageElement>(
    * @default 'img[loading="lazy"]'
    */
   selectorsOrElements?: string | T | NodeListOf<T> | T[],
-  options?: UnLazyLoadOptions
+  options?: UnLazyLoadOptions,
 ): () => void
 // #endregion lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
@@ -103,7 +103,7 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
    *
    * @default 'img[data-sizes="auto"], source[data-sizes="auto"]'
    */
-  selectorsOrElements?: string | T | NodeListOf<T> | T[]
+  selectorsOrElements?: string | T | NodeListOf<T> | T[],
 ): void
 // #endregion autoSizes
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
@@ -128,7 +128,7 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 export function triggerLoad(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
-  onImageError?: (image: HTMLImageElement, error: Event) => void
+  onImageError?: (image: HTMLImageElement, error: Event) => void,
 ): void
 // #endregion triggerLoad
 export function triggerLoad(

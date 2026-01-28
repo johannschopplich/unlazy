@@ -24,7 +24,7 @@ export interface BlurHashOptions {
 // #region createPngDataUri
 export function createPngDataUri(
   hash: string,
-  options?: BlurHashOptions
+  options?: BlurHashOptions,
 ): string
 // #endregion createPngDataUri
 export function createPngDataUri(

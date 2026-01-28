@@ -61,4 +61,3 @@ describe('createPngDataUri (BlurHash)', () => {
     expect(result).toMatch(/^data:image\/png;base64,/)
   })
 })
-
