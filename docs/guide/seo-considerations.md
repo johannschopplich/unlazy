@@ -4,7 +4,7 @@ When implementing lazy loading with blurry placeholders, consider the SEO impact
 
 ## Detects Bots and Crawlers
 
-unlazy includes an exported `isCrawler` function that detects bots and crawlers, ensuring full-quality images are loaded and indexed by search engines.
+unlazy exports an `isCrawler` constant that indicates whether the current visitor is detected as a bot or crawler, ensuring full-quality images are loaded and indexed by search engines.
 
 The detection mechanism works by:
 

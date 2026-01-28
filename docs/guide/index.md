@@ -16,6 +16,10 @@ unlazy enhances `loading="lazy"` by processing images and managing their lifecyc
 
 4. **Auto Sizes**: Calculates the `sizes` attribute based on display width when `data-sizes="auto"` is set.
 
+## Browser Compatibility
+
+unlazy works in all evergreen browsers (Chrome, Firefox, Safari, Edge). For browsers without native lazy loading support, images load immediately as a graceful fallback. You can check support programmatically using the exported `isLazyLoadingSupported` constant.
+
 ## SEO
 
 unlazy detects bots and crawlers, loading full-quality images immediately for proper indexing. See [SEO considerations](/guide/seo-considerations).

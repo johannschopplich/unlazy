@@ -99,19 +99,51 @@ The `loading="lazy"` attribute is still required for the images to be lazy loade
 
 ## Manually Loading Images
 
-If you want to load an image before it enters the viewport, you can call the [`loadImage`](/api/load-image) function directly. It accepts a `HTMLImageElement` as an argument.
+If you want to load an image before it enters the viewport, you can call the [`triggerLoad`](/api/trigger-load) function directly. It accepts a `HTMLImageElement` as an argument.
 
-Import the `loadImage` function from the library and call it:
+Import the `triggerLoad` function from the library and call it:
 
 ```ts
-import { loadImage } from 'unlazy'
+import { triggerLoad } from 'unlazy'
 
 const coolImage = document.querySelector('.image-to-load-first')
 
 // Trigger the load before the image enters the viewport
-loadImage(coolImage)
+triggerLoad(coolImage)
 ```
 
 ::: tip
 Manually loading images may negatively affect perceived performance by forcing immediate load, even when not visible in the viewport.
+:::
+
+## Using with `<picture>` Elements
+
+unlazy fully supports the `<picture>` element for art direction and format selection. Each `<source>` element should use `data-srcset` instead of `srcset`:
+
+```html
+<picture>
+  <source
+    type="image/avif"
+    data-srcset="image-320w.avif 320w, image-640w.avif 640w"
+    data-sizes="auto"
+  />
+  <source
+    type="image/webp"
+    data-srcset="image-320w.webp 320w, image-640w.webp 640w"
+    data-sizes="auto"
+  />
+  <img
+    loading="lazy"
+    src="data:image/svg+xml, ..."
+    data-src="image.jpg"
+    data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
+    data-sizes="auto"
+  />
+</picture>
+```
+
+When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`.
+
+::: info
+For `<picture>` elements, the `onImageLoad` and `onImageError` callbacks passed to `lazyLoad` are not invoked, as the browser handles source selection internally.
 :::

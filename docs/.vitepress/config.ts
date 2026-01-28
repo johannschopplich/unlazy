@@ -112,7 +112,7 @@ function nav(): DefaultTheme.NavItem[] {
           items: [
             { text: 'lazyLoad', link: '/api/lazy-load' },
             { text: 'autoSizes', link: '/api/auto-sizes' },
-            { text: 'loadImage', link: '/api/load-image' },
+            { text: 'triggerLoad', link: '/api/trigger-load' },
             { text: 'createPlaceholderFromHash', link: '/api/create-placeholder-from-hash' },
           ],
         },
@@ -200,7 +200,7 @@ function sidebarApi(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'lazyLoad', link: '/api/lazy-load' },
         { text: 'autoSizes', link: '/api/auto-sizes' },
-        { text: 'loadImage', link: '/api/load-image' },
+        { text: 'triggerLoad', link: '/api/trigger-load' },
         { text: 'createPlaceholderFromHash', link: '/api/create-placeholder-from-hash' },
       ],
     },
