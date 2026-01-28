@@ -1,10 +1,10 @@
 import type { ImgHTMLAttributes } from 'react'
 import type { UnLazyLoadOptions } from 'unlazy'
 import { useEffect, useRef } from 'react'
-import { lazyLoad } from 'unlazy'
+import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
 interface Props
-  extends ImgHTMLAttributes<HTMLImageElement>,
+  extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'onLoad' | 'onError'>,
   Pick<UnLazyLoadOptions, 'placeholderSize'> {
   /** Image source URL to be lazy-loaded. */
   src?: ImgHTMLAttributes<HTMLImageElement>['src']
@@ -22,10 +22,19 @@ interface Props
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
   /**
+   * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+   * @default false
+   */
+  preload?: boolean
+  /**
    * Allows to specify the loading strategy of the image.
    * @default 'lazy'
    */
   loading?: ImgHTMLAttributes<HTMLImageElement>['loading']
+  /** A callback function to run when the image is loaded. */
+  onLoaded?: (image: HTMLImageElement) => void
+  /** A callback function to run when the image fails to load. */
+  onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 
 export function UnLazyImage({
@@ -36,7 +45,10 @@ export function UnLazyImage({
   thumbhash,
   placeholderSrc,
   placeholderSize,
+  preload = false,
   loading = 'lazy',
+  onLoaded,
+  onImageError,
   ...rest
 }: Props) {
   const target = useRef<HTMLImageElement | null>(null)
@@ -45,16 +57,25 @@ export function UnLazyImage({
     if (!target.current)
       return
 
+    if (preload) {
+      if (autoSizes)
+        _autoSizes(target.current)
+      triggerLoad(target.current, onLoaded, onImageError)
+      return
+    }
+
     const cleanup = lazyLoad(target.current, {
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
+      onImageLoad: onLoaded,
+      onImageError,
     })
 
     return () => {
       cleanup()
     }
-  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize])
+  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onLoaded, onImageError])
 
   return (
     <img
