@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
 interface Props
-  extends Omit<ImgHTMLAttributes<HTMLImageElement>, 'onLoad' | 'onError'>,
+  extends ImgHTMLAttributes<HTMLImageElement>,
   Pick<UnLazyLoadOptions, 'placeholderSize'> {
   /** Image source URL to be lazy-loaded. */
   src?: ImgHTMLAttributes<HTMLImageElement>['src']
@@ -32,7 +32,7 @@ interface Props
    */
   loading?: ImgHTMLAttributes<HTMLImageElement>['loading']
   /** A callback function to run when the image is loaded. */
-  onLoaded?: (image: HTMLImageElement) => void
+  onImageLoad?: (image: HTMLImageElement) => void
   /** A callback function to run when the image fails to load. */
   onImageError?: (image: HTMLImageElement, error: Event) => void
 }
@@ -47,7 +47,7 @@ export function UnLazyImage({
   placeholderSize,
   preload = false,
   loading = 'lazy',
-  onLoaded,
+  onImageLoad,
   onImageError,
   ...rest
 }: Props) {
@@ -60,7 +60,7 @@ export function UnLazyImage({
     if (preload) {
       if (autoSizes)
         _autoSizes(target.current)
-      triggerLoad(target.current, onLoaded, onImageError)
+      triggerLoad(target.current, onImageLoad, onImageError)
       return
     }
 
@@ -68,14 +68,14 @@ export function UnLazyImage({
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
-      onImageLoad: onLoaded,
+      onImageLoad,
       onImageError,
     })
 
     return () => {
       cleanup()
     }
-  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onLoaded, onImageError])
+  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onImageLoad, onImageError])
 
   return (
     <img

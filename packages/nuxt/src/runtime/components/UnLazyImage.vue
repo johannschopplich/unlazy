@@ -2,7 +2,7 @@
 import type { ImgHTMLAttributes } from 'vue'
 import type { ModuleOptions } from '../../module'
 import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
-import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, loadImage } from 'unlazy'
+import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, triggerLoad } from 'unlazy'
 
 defineOptions({
   inheritAttrs: false,
@@ -121,7 +121,7 @@ watchEffect(() => {
   if (props.preload) {
     if (props.autoSizes)
       _autoSizes(target.value)
-    loadImage(target.value, image => emit('loaded', image))
+    triggerLoad(target.value, image => emit('loaded', image))
     return
   }
 

@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 import type { UnLazyLoadOptions } from 'unlazy'
 import { createEffect, createSignal, onCleanup, splitProps } from 'solid-js'
-import { lazyLoad } from 'unlazy'
+import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
 interface Props
   extends JSX.ImgHTMLAttributes<HTMLImageElement>,
@@ -22,16 +22,25 @@ interface Props
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
   /**
+   * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+   * @default false
+   */
+  preload?: boolean
+  /**
    * Allows to specify the loading strategy of the image.
    * @default 'lazy'
    */
   loading?: JSX.ImgHTMLAttributes<HTMLImageElement>['loading']
+  /** A callback function to run when the image is loaded. */
+  onImageLoad?: (image: HTMLImageElement) => void
+  /** A callback function to run when the image fails to load. */
+  onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 
 export function UnLazyImage(props: Props) {
   const [local, rest] = splitProps(
     props,
-    ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'loading'],
+    ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'preload', 'loading', 'onImageLoad', 'onImageError'],
   )
 
   const [target, setTarget] = createSignal<HTMLImageElement>()
@@ -41,10 +50,19 @@ export function UnLazyImage(props: Props) {
     if (!el)
       return
 
+    if (local.preload) {
+      if (local.autoSizes)
+        _autoSizes(el)
+      triggerLoad(el, local.onImageLoad, local.onImageError)
+      return
+    }
+
     const cleanup = lazyLoad(el, {
       hash: local.thumbhash || local.blurhash,
       hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize: local.placeholderSize,
+      onImageLoad: local.onImageLoad,
+      onImageError: local.onImageError,
     })
 
     onCleanup(() => {
