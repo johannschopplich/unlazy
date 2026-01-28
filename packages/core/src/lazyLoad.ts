@@ -63,8 +63,8 @@ export function lazyLoad<T extends HTMLImageElement>(
     // does not support lazy loading
     if (isCrawler || !isLazyLoadingSupported) {
       updatePictureSources(image)
-      updateImageSrcset(image)
-      updateImageSrc(image)
+      swapDataAttribute(image, 'srcset')
+      swapDataAttribute(image, 'src')
       continue
     }
 
@@ -77,12 +77,12 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      loadImage(image, onImageLoad, onImageError)
+      triggerLoad(image, onImageLoad, onImageError)
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    const loadHandler = () => loadImage(image, onImageLoad, onImageError)
+    const loadHandler = () => triggerLoad(image, onImageLoad, onImageError)
     image.addEventListener('load', loadHandler, { once: true })
 
     cleanupHandlers.add(
@@ -113,14 +113,25 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
     updateSizesAttribute(image)
 }
 
-// #region loadImage
-export function loadImage(
+// #region triggerLoad
+/**
+ * Triggers the loading of a lazy image by swapping `data-src`/`data-srcset` to `src`/`srcset`.
+ *
+ * @remarks
+ * For standalone `<img>` elements, the image is preloaded via a temporary Image before
+ * swapping attributes, and callbacks are invoked accordingly.
+ *
+ * For `<img>` elements inside `<picture>`, attributes are swapped synchronously without
+ * preloading (the browser handles source selection). In this case, `onImageLoad` and
+ * `onImageError` callbacks are **not invoked**.
+ */
+export function triggerLoad(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
   onImageError?: (image: HTMLImageElement, error: Event) => void
 ): void
-// #endregion loadImage
-export function loadImage(
+// #endregion triggerLoad
+export function triggerLoad(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
   onImageError?: (image: HTMLImageElement, error: Event) => void,
@@ -129,8 +140,8 @@ export function loadImage(
   // (browser handles source selection, no separate load event to wait for)
   if (isDescendantOfPicture(image)) {
     updatePictureSources(image)
-    updateImageSrcset(image)
-    updateImageSrc(image)
+    swapDataAttribute(image, 'srcset')
+    swapDataAttribute(image, 'src')
     return
   }
 
@@ -157,8 +168,8 @@ export function loadImage(
     temporaryImage.src = dataSrc
 
   temporaryImage.addEventListener('load', () => {
-    updateImageSrcset(image)
-    updateImageSrc(image)
+    swapDataAttribute(image, 'srcset')
+    swapDataAttribute(image, 'src')
     onImageLoad?.(image)
   }, { once: true })
 
@@ -166,6 +177,11 @@ export function loadImage(
     onImageError?.(image, error)
   }, { once: true })
 }
+
+/**
+ * @deprecated Use `triggerLoad` instead. This alias will be removed in the next major version.
+ */
+export const loadImage = triggerLoad
 
 // #region createPlaceholderFromHash
 export function createPlaceholderFromHash(options?: {
@@ -233,7 +249,6 @@ function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
   options?: {
     updateOnResize?: boolean
-    processSourceElements?: boolean
   },
 ): (() => void) | undefined {
   if (element.dataset.sizes !== 'auto')
@@ -243,13 +258,6 @@ function updateSizesAttribute(
 
   if (width)
     element.sizes = `${width}px`
-
-  // Calculate the `sizes` attribute for sources inside a `<picture>` element
-  if (isDescendantOfPicture(element) && options?.processSourceElements) {
-    for (const sourceElement of [...element.parentElement.getElementsByTagName('source')]) {
-      updateSizesAttribute(sourceElement, { processSourceElements: true })
-    }
-  }
 
   if (options?.updateOnResize) {
     if (!resizeObserverCache.has(element)) {
@@ -269,26 +277,25 @@ function updateSizesAttribute(
   }
 }
 
-function updateImageSrc(image: HTMLImageElement | HTMLSourceElement) {
-  if (image.dataset.src) {
-    image.src = image.dataset.src
-    image.removeAttribute('data-src')
-  }
-}
+function swapDataAttribute(
+  element: HTMLImageElement | HTMLSourceElement,
+  attr: 'src' | 'srcset',
+) {
+  const value = element.dataset[attr]
+  if (!value)
+    return
 
-function updateImageSrcset(image: HTMLImageElement | HTMLSourceElement) {
-  if (image.dataset.srcset) {
-    image.srcset = image.dataset.srcset
-    image.removeAttribute('data-srcset')
-  }
+  element[attr] = value
+  element.removeAttribute(`data-${attr}`)
 }
 
 function updatePictureSources(image: HTMLImageElement) {
   const pictureElement = image.parentElement as HTMLPictureElement
 
   if (pictureElement?.tagName.toLowerCase() === 'picture') {
-    [...pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')].forEach(updateImageSrcset);
-    [...pictureElement.querySelectorAll<HTMLSourceElement>('source[data-src]')].forEach(updateImageSrc)
+    for (const source of pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
+      swapDataAttribute(source, 'srcset')
+    }
   }
 }
 

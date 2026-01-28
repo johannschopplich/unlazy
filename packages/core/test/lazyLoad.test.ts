@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import { loadImage } from '../src/lazyLoad'
+import { triggerLoad } from '../src/lazyLoad'
 
-describe('loadImage', () => {
+describe('triggerLoad', () => {
   it('swaps data-src to src for picture element child', () => {
     const picture = document.createElement('picture')
     const img = document.createElement('img')
     img.dataset.src = 'image.jpg'
     picture.appendChild(img)
 
-    loadImage(img)
+    triggerLoad(img)
 
     expect(img.src).toContain('image.jpg')
     expect(img.dataset.src).toBeUndefined()
@@ -20,7 +20,7 @@ describe('loadImage', () => {
     img.dataset.srcset = 'image-1x.jpg 1x, image-2x.jpg 2x'
     picture.appendChild(img)
 
-    loadImage(img)
+    triggerLoad(img)
 
     expect(img.srcset).toBe('image-1x.jpg 1x, image-2x.jpg 2x')
     expect(img.dataset.srcset).toBeUndefined()
@@ -36,7 +36,7 @@ describe('loadImage', () => {
     img.dataset.src = 'image.jpg'
     picture.append(avifSource, webpSource, img)
 
-    loadImage(img)
+    triggerLoad(img)
 
     expect(webpSource.srcset).toBe('image.webp')
     expect(avifSource.srcset).toBe('image.avif')
@@ -50,7 +50,7 @@ describe('loadImage', () => {
     picture.appendChild(img)
     const onLoad = vi.fn()
 
-    loadImage(img, onLoad)
+    triggerLoad(img, onLoad)
 
     expect(onLoad).not.toHaveBeenCalled()
   })
@@ -60,7 +60,7 @@ describe('loadImage', () => {
     const onLoad = vi.fn()
     const onError = vi.fn()
 
-    loadImage(img, onLoad, onError)
+    triggerLoad(img, onLoad, onError)
 
     expect(onLoad).not.toHaveBeenCalled()
     expect(onError).not.toHaveBeenCalled()
@@ -70,6 +70,6 @@ describe('loadImage', () => {
     const img = document.createElement('img')
     img.dataset.src = 'image.jpg'
 
-    expect(() => loadImage(img)).not.toThrow()
+    expect(() => triggerLoad(img)).not.toThrow()
   })
 })
