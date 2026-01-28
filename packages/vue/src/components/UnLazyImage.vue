@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ImgHTMLAttributes } from 'vue'
-import { autoSizes as _autoSizes, lazyLoad, loadImage } from 'unlazy'
+import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 import { onBeforeUnmount, ref, watchEffect } from 'vue'
 
 const props = defineProps<{
@@ -50,7 +50,7 @@ watchEffect(() => {
   if (props.preload) {
     if (props.autoSizes)
       _autoSizes(target.value)
-    loadImage(target.value, image => emit('loaded', image))
+    triggerLoad(target.value, image => emit('loaded', image))
     return
   }
 
