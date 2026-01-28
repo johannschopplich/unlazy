@@ -6,3 +6,9 @@ export default antfu({
   svelte: true,
   ignores: ['.svelte-kit'],
 })
+  .append({
+    files: ['**/routes/**'],
+    rules: {
+      'no-console': 'off',
+    },
+  })

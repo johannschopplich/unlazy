@@ -5,3 +5,9 @@ export default antfu({
   vue: false,
   solid: true,
 })
+  .append({
+    files: ['**/playground/**'],
+    rules: {
+      'no-console': 'off',
+    },
+  })

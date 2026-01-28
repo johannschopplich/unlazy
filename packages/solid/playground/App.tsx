@@ -2,11 +2,11 @@
 import { UnLazyImage } from '../src'
 
 const styles = {
-  main: { 'max-width': '800px', margin: '0 auto', padding: '2rem' },
+  main: { 'max-width': '800px', 'margin': '0 auto', 'padding': '2rem' },
   h1: { 'margin-bottom': '2rem' },
   section: { 'margin-bottom': '2rem' },
-  h2: { 'margin-bottom': '0.5rem', 'font-size': '1rem', color: '#666' },
-  img: { display: 'block', 'max-width': '100%', height: 'auto' },
+  h2: { 'margin-bottom': '0.5rem', 'font-size': '1rem', 'color': '#666' },
+  img: { 'display': 'block', 'max-width': '100%', 'height': 'auto' },
 }
 
 function App() {
