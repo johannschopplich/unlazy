@@ -47,5 +47,10 @@ export interface UnLazyLoadOptions {
    * A callback function to run when an image is loaded.
    */
   onImageLoad?: (image: HTMLImageElement) => void
+
+  /**
+   * A callback function to run when an image fails to load.
+   */
+  onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 // #endregion UnLazyLoadOptions
