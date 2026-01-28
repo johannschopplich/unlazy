@@ -1,5 +1,5 @@
 import { thumbHashToRGBA } from 'thumbhash'
-import { rgbaToDataUri } from './utils/dataUri'
+import { rgbaToDataUri } from './utils'
 
 export function createPngDataUri(hash: string): string {
   const hashArray = base64ToUint8Array(hash)

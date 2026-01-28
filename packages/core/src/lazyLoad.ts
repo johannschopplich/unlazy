@@ -23,6 +23,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
     updateSizesOnResize = false,
     onImageLoad,
+    onImageError,
   }: UnLazyLoadOptions = {},
 ): () => void {
   const cleanupHandlers = new Set<() => void>()
@@ -76,12 +77,12 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      loadImage(image, onImageLoad)
+      loadImage(image, onImageLoad, onImageError)
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    const loadHandler = () => loadImage(image, onImageLoad)
+    const loadHandler = () => loadImage(image, onImageLoad, onImageError)
     image.addEventListener('load', loadHandler, { once: true })
 
     cleanupHandlers.add(
@@ -115,12 +116,14 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 // #region loadImage
 export function loadImage(
   image: HTMLImageElement,
-  onImageLoad?: (image: HTMLImageElement) => void
+  onImageLoad?: (image: HTMLImageElement) => void,
+  onImageError?: (image: HTMLImageElement, error: Event) => void
 ): void
 // #endregion loadImage
 export function loadImage(
   image: HTMLImageElement,
   onImageLoad?: (image: HTMLImageElement) => void,
+  onImageError?: (image: HTMLImageElement, error: Event) => void,
 ): void {
   // Skip preloading its `data-src` or `data-srcset` to avoid unnecessary requests
   if (isDescendantOfPicture(image)) {
@@ -153,6 +156,10 @@ export function loadImage(
     updateImageSrcset(image)
     updateImageSrc(image)
     onImageLoad?.(image)
+  }, { once: true })
+
+  temporaryImage.addEventListener('error', (error) => {
+    onImageError?.(image, error)
   }, { once: true })
 }
 

@@ -1,6 +1,6 @@
 import { decodeBlurHash } from 'fast-blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
-import { rgbaToDataUri } from './utils/dataUri'
+import { rgbaToDataUri } from './utils'
 
 // #region BlurHashOptions
 export interface BlurHashOptions {

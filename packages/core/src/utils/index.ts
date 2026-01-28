@@ -1,5 +1,7 @@
 import { DEFAULT_IMAGE_PLACEHOLDER } from '../constants'
 
+export * from './png'
+
 export const isSSR = typeof window === 'undefined'
 export const isLazyLoadingSupported = !isSSR && 'loading' in HTMLImageElement.prototype
 export const isCrawler = !isSSR && (!('onscroll' in window) || /(?:gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
