@@ -40,14 +40,14 @@ describe('createPngDataUri (BlurHash)', () => {
     expect(large.length).toBeGreaterThan(small.length)
   })
 
-  it('uses default size of 32', () => {
+  it('defaults to size 32 when size option omitted', () => {
     const withDefault = createPngDataUri(VALID_HASH)
     const withExplicit = createPngDataUri(VALID_HASH, { size: 32 })
 
     expect(withDefault).toBe(withExplicit)
   })
 
-  it('matches snapshot for regression testing', () => {
+  it('matches snapshot', () => {
     const result = createPngDataUri(VALID_HASH)
 
     expect(result).toMatchSnapshot()

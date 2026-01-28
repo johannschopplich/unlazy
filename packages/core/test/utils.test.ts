@@ -16,7 +16,7 @@ describe('toElementArray', () => {
     expect(result[1]).toBeInstanceOf(HTMLImageElement)
   })
 
-  it('wraps single element in array', () => {
+  it('returns single element wrapped in array', () => {
     const img = document.createElement('img')
 
     const result = toElementArray(img)

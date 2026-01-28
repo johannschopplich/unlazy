@@ -56,11 +56,10 @@ describe('loadImage', () => {
     expect(onLoad).toHaveBeenCalledWith(img)
   })
 
-  it('preloads standalone image asynchronously without throwing', () => {
+  it('preloads standalone image without throwing', () => {
     const img = document.createElement('img')
     img.dataset.src = 'image.jpg'
 
     expect(() => loadImage(img)).not.toThrow()
   })
 })
-

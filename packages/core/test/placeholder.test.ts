@@ -23,7 +23,7 @@ describe('createPlaceholderFromHash', () => {
     expect(result).toMatch(/^data:image\/png;base64,/)
   })
 
-  it('defaults to blurhash type when hashType omitted', () => {
+  it('defaults to blurhash when hashType is omitted', () => {
     const result = createPlaceholderFromHash({ hash: BLURHASH })
 
     expect(result).toMatch(/^data:image\/png;base64,/)

@@ -27,11 +27,11 @@ describe('createPngDataUri (ThumbHash)', () => {
   it('handles URL-safe base64 input', () => {
     // ThumbHash can use URL-safe base64 (- instead of +, _ instead of /)
     const urlSafeHash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
-    
+
     expect(() => createPngDataUri(urlSafeHash)).not.toThrow()
   })
 
-  it('matches snapshot for regression testing', () => {
+  it('matches snapshot', () => {
     const result = createPngDataUri(VALID_HASH)
 
     expect(result).toMatchSnapshot()
