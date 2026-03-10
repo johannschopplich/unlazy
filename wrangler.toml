@@ -1,6 +1,9 @@
 name = "unlazy"
 compatibility_date = "2025-09-01"
-routes = [ { pattern = "unlazy.byjohann.dev", custom_domain = true } ]
+
+[[routes]]
+pattern = "unlazy.byjohann.dev"
+custom_domain = true
 
 [assets]
 directory = "./docs/.vitepress/dist/"
