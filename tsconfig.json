@@ -3,6 +3,7 @@
     "target": "ESNext",
     "jsx": "preserve",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "moduleDetection": "force",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "paths": {
@@ -16,8 +17,6 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noEmit": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
