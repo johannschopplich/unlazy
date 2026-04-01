@@ -61,7 +61,7 @@ The short CDN URLs are meant for prototyping. For production, use a fully resolv
 
 ### Manual Initialization
 
-If you do not want to auto-initialize the library, remove the `init` attribute and move the scripts to end of the `<body>` tag:
+If you don't want to auto-initialize the library, remove the `init` attribute and move the scripts to end of the `<body>` tag:
 
 ```html
 <script src="https://unpkg.com/unlazy"></script>

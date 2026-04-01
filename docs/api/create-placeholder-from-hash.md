@@ -25,7 +25,7 @@ For BlurHash, set explicit `width` and `height` attributes on images. See [place
 Returns a PNG data URI string if the hash is successfully decoded, or `undefined` if:
 - No hash is provided
 - The hash decoding fails
-- The required decoding library is not available
+- The required decoding library isn't available
 
 ## Examples
 

@@ -89,7 +89,7 @@ lazyLoad('img[loading="lazy"]', {
 
 ## Server-Side Decoding
 
-If you are using a server-side framework, you can use the `createPngDataUri` function to create a PNG data URI from a hash string. The resulting data URI can then be used as the `src` attribute of an image.
+If you're using a server-side framework, you can use the `createPngDataUri` function to create a PNG data URI from a hash string. The resulting data URI can then be used as the `src` attribute of an image.
 
 ::: code-group
   ```ts [BlurHash]

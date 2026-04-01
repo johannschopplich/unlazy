@@ -4,7 +4,7 @@ The `triggerLoad` function programmatically loads an image by updating its attri
 
 The function performs the following operations:
 
-1. If the image is inside a `<picture>` element, updates all `<source>` elements by converting their `data-srcset` and `data-sizes` attributes to standard attributes synchronously (callbacks are not invoked for picture elements).
+1. If the image is inside a `<picture>` element, updates all `<source>` elements by converting their `data-srcset` and `data-sizes` attributes to standard attributes synchronously (callbacks aren't invoked for picture elements).
 2. For standalone `<img>` elements, preloads the image in a temporary element to ensure proper loading.
 3. Calculates the `sizes` attribute if `data-sizes="auto"` is set.
 4. Swaps `data-src` and `data-srcset` to their standard counterparts.

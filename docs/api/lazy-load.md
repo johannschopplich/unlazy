@@ -11,7 +11,7 @@ The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM eleme
    - Calculates the image's `sizes` attribute if `data-sizes="auto"` is set.
    - Generates a blurry placeholder from a [hash-based placeholder](/guide/placeholders) (BlurHash or ThumbHash) string if applicable.
 3. If the image has a blurry placeholder and is already in the viewport or the visitor is a crawler, it immediately loads the full-quality image.
-4. If the image is not yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
+4. If the image isn't yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
 
 ## Options
 

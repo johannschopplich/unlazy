@@ -145,5 +145,5 @@ unlazy fully supports the `<picture>` element for art direction and format selec
 When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`.
 
 ::: info
-For `<picture>` elements, the `onImageLoad` and `onImageError` callbacks passed to `lazyLoad` are not invoked, as the browser handles source selection internally.
+For `<picture>` elements, the `onImageLoad` and `onImageError` callbacks passed to `lazyLoad` aren't invoked, as the browser handles source selection internally.
 :::
