@@ -51,20 +51,20 @@ export function UnLazyImage({
   onImageError,
   ...rest
 }: Props) {
-  const target = useRef<HTMLImageElement | null>(null)
+  const targetRef = useRef<HTMLImageElement | null>(null)
 
   useEffect(() => {
-    if (!target.current)
+    if (!targetRef.current)
       return
 
     if (preload) {
       if (autoSizes)
-        _autoSizes(target.current)
-      triggerLoad(target.current, onImageLoad, onImageError)
+        _autoSizes(targetRef.current)
+      triggerLoad(targetRef.current, onImageLoad, onImageError)
       return
     }
 
-    const cleanup = lazyLoad(target.current, {
+    const cleanup = lazyLoad(targetRef.current, {
       hash: thumbhash || blurhash,
       hashType: thumbhash ? 'thumbhash' : 'blurhash',
       placeholderSize,
@@ -79,7 +79,7 @@ export function UnLazyImage({
 
   return (
     <img
-      ref={target}
+      ref={targetRef}
       src={placeholderSrc}
       data-src={src}
       data-srcset={srcSet}

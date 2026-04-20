@@ -21,13 +21,13 @@ Install the `@unlazy/svelte` package using your favorite package manager:
 Import the `UnLazyImage` component in your component file:
 
 ```svelte
-<script lang="ts">
+<script lang='ts'>
   import { UnLazyImage } from '@unlazy/svelte'
 </script>
 
 <UnLazyImage
-  blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
-  srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+  blurhash='LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
+  srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
   autoSizes
 />
 ```
@@ -73,8 +73,8 @@ This component is built using Svelte 5's modern runes syntax:
   <UnLazyImage
     width={800}
     height={600}
-    blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
-    srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+    blurhash='LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
+    srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
     autoSizes
   />
   ```
@@ -82,8 +82,8 @@ This component is built using Svelte 5's modern runes syntax:
   <UnLazyImage
     width={800}
     height={600}
-    thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
-    srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+    thumbhash='1QcSHQRnh493V4dIh4eXh1h4kJUI'
+    srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
     autoSizes
   />
   ```
@@ -91,8 +91,8 @@ This component is built using Svelte 5's modern runes syntax:
   <UnLazyImage
     width={800}
     height={600}
-    placeholderSrc="data:image/svg+xml, ..."
-    srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+    placeholderSrc='data:image/svg+xml, ...'
+    srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
     autoSizes
   />
   ```
@@ -112,8 +112,8 @@ Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload th
 
 ```svelte
 <UnLazyImage
-  blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
-  srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+  blurhash='LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
+  srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
   autoSizes
   preload
 />

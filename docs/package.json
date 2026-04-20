@@ -6,11 +6,12 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
-    "serve": "vitepress serve"
+    "serve": "vitepress serve",
+    "test:types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@iconify-json/carbon": "^1.2.18",
-    "unocss": "^66.6.0",
+    "@iconify-json/carbon": "^1.2.20",
+    "unocss": "^66.6.8",
     "vitepress": "^1.6.4"
   }
 }

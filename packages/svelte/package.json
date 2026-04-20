@@ -2,7 +2,7 @@
   "name": "@unlazy/svelte",
   "type": "module",
   "version": "1.1.0",
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@10.33.0",
   "description": "Svelte lazy loading library for placeholder images",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
@@ -55,13 +55,12 @@
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "^7.0.0",
-    "@sveltejs/kit": "^2.50.1",
+    "@sveltejs/adapter-auto": "^7.0.1",
+    "@sveltejs/kit": "^2.57.1",
     "@sveltejs/package": "^2.5.7",
-    "@sveltejs/vite-plugin-svelte": "~6.2.4",
-    "eslint-plugin-svelte": "^3.14.0",
-    "svelte": "^5.48.5",
-    "svelte-check": "^4.3.5",
+    "@sveltejs/vite-plugin-svelte": "~7.0.0",
+    "svelte": "^5.55.4",
+    "svelte-check": "^4.4.6",
     "tslib": "^2.8.1"
   }
 }
