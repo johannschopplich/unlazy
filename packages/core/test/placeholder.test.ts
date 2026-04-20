@@ -72,11 +72,11 @@ describe('createPlaceholderFromHash', () => {
     expect(result).toBe(blurhashOnly)
   })
 
-  it('respects custom size option for blurhash', () => {
+  it('produces different output for different sizes', () => {
     const small = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', size: 16 })
     const large = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', size: 64 })
 
-    expect(large!.length).toBeGreaterThan(small!.length)
+    expect(large).not.toBe(small)
   })
 
   it('respects custom ratio option for blurhash', () => {

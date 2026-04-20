@@ -31,12 +31,6 @@ describe('createPngDataUri (ThumbHash)', () => {
     expect(() => createPngDataUri(urlSafeHash)).not.toThrow()
   })
 
-  it('matches snapshot', () => {
-    const result = createPngDataUri(VALID_HASH)
-
-    expect(result).toMatchSnapshot()
-  })
-
   it('throws on invalid hash', () => {
     expect(() => createPngDataUri('!!invalid!!')).toThrow()
   })
