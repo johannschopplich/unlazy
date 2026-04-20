@@ -1,11 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    /* Limit global types to those in the current package */
-    "typeRoots": ["./node_modules/@types"]
+    "jsxImportSource": "solid-js"
   },
-  "include": ["src", "playground"],
-  "exclude": ["**/dist"]
+  "include": ["src", "playground", "build.config.ts"],
+  "exclude": ["dist"]
 }

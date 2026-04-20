@@ -1,36 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "jsx": "preserve",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "moduleDetection": "force",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@unlazy/core": ["./packages/core/src/index.ts"],
-      "@unlazy/core/*": ["./packages/core/src/*"],
-      "unlazy": ["./packages/unlazy/src/index.ts"],
-      "unlazy/*": ["./packages/unlazy/src/*"]
-    },
-    "resolveJsonModule": true,
-    "allowImportingTsExtensions": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "noEmit": true,
-    "verbatimModuleSyntax": true,
-    "skipLibCheck": true
-  },
-  "include": [
-    "packages"
-  ],
-  "exclude": [
-    "node_modules",
-    "packages/nuxt",
-    "packages/react",
-    "packages/solid",
-    "packages/svelte",
-    "packages/vue",
-    "**/*.md",
-    "**/dist"
-  ]
+  "extends": "./tsconfig.base.json",
+  "exclude": ["node_modules", "packages", "**/dist"]
 }
