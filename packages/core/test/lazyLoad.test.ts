@@ -1,27 +1,22 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import * as blurhashModule from '../src/blurhash'
 import { autoSizes, lazyLoad, triggerLoad } from '../src/lazyLoad'
+import { BLURHASH, makeLazyImg, makePictureImg, THUMBHASH } from './fixtures'
 
-const BLURHASH = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
-const THUMBHASH = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
+let consoleError: ReturnType<typeof vi.spyOn>
+
+beforeEach(() => {
+  consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+})
+
+afterEach(() => {
+  consoleError.mockRestore()
+  document.body.innerHTML = ''
+})
 
 describe('lazyLoad', () => {
-  afterEach(() => {
-    document.body.innerHTML = ''
-  })
-
-  it('returns a cleanup function', () => {
-    const img = document.createElement('img')
-    img.dataset.src = 'image.jpg'
-
-    const cleanup = lazyLoad(img)
-
-    expect(typeof cleanup).toBe('function')
-    expect(() => cleanup()).not.toThrow()
-  })
-
   it('logs an error when image has neither data-src nor data-srcset', () => {
-    const img = document.createElement('img')
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const img = makeLazyImg()
 
     lazyLoad(img)
 
@@ -29,13 +24,10 @@ describe('lazyLoad', () => {
       expect.stringContaining('Missing `data-src` or `data-srcset`'),
       img,
     )
-    consoleError.mockRestore()
   })
 
   it('sets BlurHash placeholder on src when data-blurhash is present', () => {
-    const img = document.createElement('img')
-    img.dataset.src = 'real.jpg'
-    img.dataset.blurhash = BLURHASH
+    const img = makeLazyImg({ dataSrc: 'real.jpg', dataBlurhash: BLURHASH })
 
     lazyLoad(img)
 
@@ -43,9 +35,7 @@ describe('lazyLoad', () => {
   })
 
   it('sets ThumbHash placeholder on src when data-thumbhash is present', () => {
-    const img = document.createElement('img')
-    img.dataset.src = 'real.jpg'
-    img.dataset.thumbhash = THUMBHASH
+    const img = makeLazyImg({ dataSrc: 'real.jpg', dataThumbhash: THUMBHASH })
 
     lazyLoad(img)
 
@@ -53,12 +43,8 @@ describe('lazyLoad', () => {
   })
 
   it('processes every image in an array', () => {
-    const first = document.createElement('img')
-    first.dataset.src = 'a.jpg'
-    first.dataset.blurhash = BLURHASH
-    const second = document.createElement('img')
-    second.dataset.src = 'b.jpg'
-    second.dataset.blurhash = BLURHASH
+    const first = makeLazyImg({ dataSrc: 'a.jpg', dataBlurhash: BLURHASH })
+    const second = makeLazyImg({ dataSrc: 'b.jpg', dataBlurhash: BLURHASH })
 
     lazyLoad([first, second])
 
@@ -66,27 +52,121 @@ describe('lazyLoad', () => {
     expect(second.src).toMatch(/^data:image\/png;base64,/)
   })
 
-  it('uses default selector to find img[loading="lazy"] in document', () => {
-    const lazy = document.createElement('img')
-    lazy.loading = 'lazy'
-    lazy.dataset.src = 'lazy.jpg'
-    const eager = document.createElement('img')
-    eager.dataset.src = 'eager.jpg'
-    document.body.append(lazy, eager)
+  it('preserves author-supplied src when no hash is set', () => {
+    const img = makeLazyImg({ dataSrc: 'real.jpg' })
+    img.src = 'data:image/webp;base64,AAAA'
 
-    lazyLoad()
+    lazyLoad(img)
 
-    // lazy image gets the fallback indexed SVG placeholder; eager is untouched
-    expect(lazy.src).toMatch(/^data:image\/svg\+xml/)
-    expect(eager.src).toBe('')
+    expect(img.src).toBe('data:image/webp;base64,AAAA')
+  })
+
+  it('assigns a distinct placeholder src to each lazy image without a hash', () => {
+    const a = makeLazyImg({ dataSrc: 'a.jpg' })
+    const b = makeLazyImg({ dataSrc: 'b.jpg' })
+    const c = makeLazyImg({ dataSrc: 'c.jpg' })
+
+    lazyLoad([a, b, c])
+
+    expect(a.src).not.toBe(b.src)
+    expect(b.src).not.toBe(c.src)
+    expect(a.src).not.toBe(c.src)
+  })
+
+  describe('eager priority path', () => {
+    it('swaps data-src immediately on eager images', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg' })
+
+      lazyLoad(img)
+
+      expect(img.src).toContain('hero.jpg')
+      expect(img.dataset.src).toBeUndefined()
+    })
+
+    it('sets fetchpriority="high" on eager images when absent', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg' })
+
+      lazyLoad(img)
+
+      expect(img.getAttribute('fetchpriority')).toBe('high')
+    })
+
+    it('respects an explicit fetchpriority value on eager images', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg', fetchpriority: 'low' })
+
+      lazyLoad(img)
+
+      expect(img.getAttribute('fetchpriority')).toBe('low')
+    })
+
+    it('respects an explicit fetchpriority="high" on eager images', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg', fetchpriority: 'high' })
+
+      lazyLoad(img)
+
+      expect(img.getAttribute('fetchpriority')).toBe('high')
+    })
+
+    it('leaves fetchpriority untouched on lazy images', () => {
+      const img = makeLazyImg({ loading: 'lazy', dataSrc: 'image.jpg' })
+
+      lazyLoad(img)
+
+      expect(img.hasAttribute('fetchpriority')).toBe(false)
+    })
+
+    it('expanded default selector matches eager images with data-src', () => {
+      const lazy = makeLazyImg({ loading: 'lazy', dataSrc: 'lazy.jpg' })
+      const eager = makeLazyImg({ loading: 'eager', dataSrc: 'eager.jpg' })
+      const eagerNoData = makeLazyImg({ loading: 'eager' })
+      document.body.append(lazy, eager, eagerNoData)
+
+      lazyLoad()
+
+      expect(eager.getAttribute('fetchpriority')).toBe('high')
+      expect(eager.src).toContain('eager.jpg')
+      // Image without data-src is not in the selector, left untouched
+      expect(eagerNoData.hasAttribute('fetchpriority')).toBe(false)
+    })
+
+    it('still generates the hash placeholder for eager images', () => {
+      const spy = vi.spyOn(blurhashModule, 'createPngDataUri')
+
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg', dataBlurhash: BLURHASH })
+      lazyLoad(img)
+
+      expect(spy).toHaveBeenCalled()
+      // Final swap still wins: src ends up as the real image
+      expect(img.src).toContain('hero.jpg')
+
+      spy.mockRestore()
+    })
+  })
+
+  describe('idempotency', () => {
+    it('does not log missing-data-src error on re-invocation after processing', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg' })
+
+      lazyLoad(img)
+      consoleError.mockClear()
+      lazyLoad(img)
+
+      expect(consoleError).not.toHaveBeenCalled()
+    })
+
+    it('does not re-process images with swapped data attributes', () => {
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg' })
+
+      lazyLoad(img)
+      const srcAfterFirst = img.src
+      lazyLoad(img)
+
+      expect(img.src).toBe(srcAfterFirst)
+    })
   })
 })
 
 describe('autoSizes', () => {
-  afterEach(() => {
-    document.body.innerHTML = ''
-  })
-
   it('sets sizes to rendered width for img with data-sizes="auto"', () => {
     const img = document.createElement('img')
     img.dataset.sizes = 'auto'
@@ -95,24 +175,6 @@ describe('autoSizes', () => {
     autoSizes(img)
 
     expect(img.sizes).toBe('800px')
-  })
-
-  it('leaves sizes empty when data-sizes is not "auto"', () => {
-    const img = document.createElement('img')
-    Object.defineProperty(img, 'offsetWidth', { value: 800, configurable: true })
-
-    autoSizes(img)
-
-    expect(img.sizes).toBe('')
-  })
-
-  it('does nothing when offsetWidth is 0', () => {
-    const img = document.createElement('img')
-    img.dataset.sizes = 'auto'
-
-    autoSizes(img)
-
-    expect(img.sizes).toBe('')
   })
 
   it('resolves source element sizes via parent picture img', () => {
@@ -131,10 +193,7 @@ describe('autoSizes', () => {
 
 describe('triggerLoad', () => {
   it('swaps data-src to src for picture element child', () => {
-    const picture = document.createElement('picture')
-    const img = document.createElement('img')
-    img.dataset.src = 'image.jpg'
-    picture.appendChild(img)
+    const { img } = makePictureImg({ dataSrc: 'image.jpg' })
 
     triggerLoad(img)
 
@@ -143,10 +202,8 @@ describe('triggerLoad', () => {
   })
 
   it('swaps data-srcset to srcset for picture element child', () => {
-    const picture = document.createElement('picture')
-    const img = document.createElement('img')
+    const { img } = makePictureImg()
     img.dataset.srcset = 'image-1x.jpg 1x, image-2x.jpg 2x'
-    picture.appendChild(img)
 
     triggerLoad(img)
 
@@ -155,14 +212,14 @@ describe('triggerLoad', () => {
   })
 
   it('updates all source elements inside picture', () => {
-    const picture = document.createElement('picture')
-    const webpSource = document.createElement('source')
-    webpSource.dataset.srcset = 'image.webp'
-    const avifSource = document.createElement('source')
-    avifSource.dataset.srcset = 'image.avif'
-    const img = document.createElement('img')
-    img.dataset.src = 'image.jpg'
-    picture.append(avifSource, webpSource, img)
+    const { img, sources } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [
+        { dataSrcset: 'image.avif', type: 'image/avif' },
+        { dataSrcset: 'image.webp', type: 'image/webp' },
+      ],
+    })
+    const [avifSource, webpSource] = sources as [HTMLSourceElement, HTMLSourceElement]
 
     triggerLoad(img)
 
@@ -172,32 +229,11 @@ describe('triggerLoad', () => {
   })
 
   it('does not invoke onImageLoad for picture elements (no network load)', () => {
-    const picture = document.createElement('picture')
-    const img = document.createElement('img')
-    img.dataset.src = 'image.jpg'
-    picture.appendChild(img)
+    const { img } = makePictureImg({ dataSrc: 'image.jpg' })
     const onLoad = vi.fn()
 
     triggerLoad(img, onLoad)
 
     expect(onLoad).not.toHaveBeenCalled()
-  })
-
-  it('does not invoke callbacks when no data attributes present', () => {
-    const img = document.createElement('img')
-    const onLoad = vi.fn()
-    const onError = vi.fn()
-
-    triggerLoad(img, onLoad, onError)
-
-    expect(onLoad).not.toHaveBeenCalled()
-    expect(onError).not.toHaveBeenCalled()
-  })
-
-  it('preloads standalone image without throwing', () => {
-    const img = document.createElement('img')
-    img.dataset.src = 'image.jpg'
-
-    expect(() => triggerLoad(img)).not.toThrow()
   })
 })

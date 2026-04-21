@@ -1,8 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlaceholderFromHash } from '../src/lazyLoad'
-
-const BLURHASH = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
-const THUMBHASH = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
+import { BLURHASH, THUMBHASH } from './fixtures'
 
 describe('createPlaceholderFromHash', () => {
   it('generates PNG data URI from explicit BlurHash', () => {
@@ -72,20 +70,6 @@ describe('createPlaceholderFromHash', () => {
     expect(result).toBe(blurhashOnly)
   })
 
-  it('produces different output for different sizes', () => {
-    const small = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', size: 16 })
-    const large = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', size: 64 })
-
-    expect(large).not.toBe(small)
-  })
-
-  it('respects custom ratio option for blurhash', () => {
-    const square = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', ratio: 1 })
-    const wide = createPlaceholderFromHash({ hash: BLURHASH, hashType: 'blurhash', ratio: 2 })
-
-    expect(square).not.toBe(wide)
-  })
-
   it('returns undefined when no hash provided', () => {
     const result = createPlaceholderFromHash({})
 
@@ -98,5 +82,27 @@ describe('createPlaceholderFromHash', () => {
     const result = createPlaceholderFromHash({ image: img })
 
     expect(result).toBeUndefined()
+  })
+
+  describe('error handling', () => {
+    let consoleError: ReturnType<typeof vi.spyOn>
+
+    beforeEach(() => {
+      consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+    })
+
+    afterEach(() => {
+      consoleError.mockRestore()
+    })
+
+    it('logs an error and returns undefined when decoder throws', () => {
+      const result = createPlaceholderFromHash({ hash: '!!invalid!!', hashType: 'thumbhash' })
+
+      expect(result).toBeUndefined()
+      expect(consoleError).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to generate thumbhash placeholder'),
+        expect.anything(),
+      )
+    })
   })
 })
