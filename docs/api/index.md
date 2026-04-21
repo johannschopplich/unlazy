@@ -14,16 +14,9 @@
 | Constant | Import | Purpose |
 | --- | --- | --- |
 | `isCrawler` | `unlazy` | Boolean indicating if the current visitor is detected as a bot or crawler |
-| `isLazyLoadingSupported` | `unlazy` | Boolean indicating if the browser supports native lazy loading |
 
 ## Types
 
 | Type | Import | Purpose |
 | --- | --- | --- |
 | `UnLazyLoadOptions` | `unlazy` | Options for the `lazyLoad` function |
-
-## Deprecated
-
-| Function | Replacement | Notes |
-| --- | --- | --- |
-| `loadImage` | [`triggerLoad`](/api/trigger-load) | Alias that will be removed in the next major version |

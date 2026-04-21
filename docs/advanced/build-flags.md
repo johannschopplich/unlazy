@@ -41,12 +41,12 @@ This flag only affects the main entry point. If you directly import `unlazy/blur
 
 ## Disable Client Logging <Badge type="info" text="^0.10.2" />
 
-unlazy helps you locate missing `data-src` or `data-srcset` attributes by logging warnings in the browser console. An example warning message looks like this:
+unlazy emits dev-time console output to help you catch configuration mistakes. Set `__UNLAZY_LOGGING__` to `false` to strip all of it from production builds. Default is `true`.
 
-```
-[unlazy] Missing `data-src` or `data-srcset` attribute: <img>
-```
+When disabled, the bundler removes:
 
-To disable these warnings, use the following build flag:
+- **Missing `data-src` / `data-srcset` errors**: logged when an image passed to `lazyLoad` is missing both attributes.
+- **Hash decoder failure errors**: logged when a BlurHash or ThumbHash string cannot be decoded.
+- **Largest Contentful Paint warning**: logged when the LCP element is still configured for lazy loading.
 
-- `__UNLAZY_LOGGING__`: Set to `false` to disable warnings. Default is `true`.
+This is recommended for production IIFE bundles.

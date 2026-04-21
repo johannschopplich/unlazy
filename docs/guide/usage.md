@@ -1,6 +1,6 @@
 # Usage
 
-1. Add the `loading="lazy"` attribute to a `<img>` element that you want to lazily load. You can also use the `<picture>` element to lazily load images in different formats.
+1. Add the `loading="lazy"` attribute to an `<img>` element that you want to lazily load. You can also use the `<picture>` element to lazily load images in different formats.
 
 2. Use `data-src` or `data-srcset` attributes to specify the high-quality image. These prevent browsers from loading images before they enter the viewport and are swapped to standard attributes when loading occurs.
 
@@ -14,6 +14,9 @@
     src="blurry placeholder ..."
     data-srcset="image.png"
     data-sizes="auto"
+    alt="Descriptive text"
+    width="1200"
+    height="800"
   >
   ```
   ```html [Picture tag]
@@ -22,7 +25,7 @@
     <source
       type="image/webp"
       data-srcset="image-320w.webp 320w, image-640w.webp 640w"
-      data-sizes="100w"
+      data-sizes="auto"
     />
     <img
       loading="lazy"
@@ -30,6 +33,9 @@
       data-src="lazy.jpg"
       data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
       data-sizes="auto"
+      alt="Descriptive text"
+      width="1200"
+      height="800"
     />
   </picture>
   ```
@@ -53,6 +59,22 @@ const cleanup = lazyLoad()
 
 The `lazyLoad` function returns a cleanup function that removes event listeners and ResizeObservers. Call this when unmounting components or removing images to prevent memory leaks.
 
+## Above-the-Fold Images
+
+Images that are visible in the initial viewport – your hero / LCP image in particular – should **not** be lazy-loaded. Mark them `loading="eager"` instead:
+
+```html
+<img
+  loading="eager"
+  data-src="hero.jpg"
+  alt="Sunset over the ocean"
+  width="1600"
+  height="900"
+>
+```
+
+unlazy swaps the real source immediately and applies `fetchpriority="high"` on your behalf – see [`lazyLoad`](/api/lazy-load#how-it-works) for the exact behavior and the [Core Web Vitals guide](/guide/core-web-vitals) for when to reach for it.
+
 ## Auto Calculation of the `sizes` Attribute
 
 unlazy supports setting the `sizes` attribute automatically, corresponding to the current size of your image – just set the value of `data-sizes` to `auto`.
@@ -65,6 +87,9 @@ The automatic sizes calculation uses the display width of the image.
   src="data:image/svg+xml, ..."
   data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
   data-sizes="auto"
+  alt="Descriptive text"
+  width="640"
+  height="360"
 >
 ```
 
@@ -138,6 +163,9 @@ unlazy fully supports the `<picture>` element for art direction and format selec
     data-src="image.jpg"
     data-srcset="image-320w.jpg 320w, image-640w.jpg 640w"
     data-sizes="auto"
+    alt="Descriptive text"
+    width="640"
+    height="360"
   />
 </picture>
 ```

@@ -108,7 +108,7 @@ This component uses Solid.js's fine-grained reactivity primitives:
 :::
 
 ::: info
-When using BlurHash, set explicit `width` and `height` props for optimal performance. Without these, BlurHash decoding falls back to rendered dimensions, which may cause performance delays on large images.
+When using BlurHash, set explicit `width` and `height` props. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
 :::
 
 ::: tip

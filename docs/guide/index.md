@@ -18,7 +18,7 @@ unlazy enhances `loading="lazy"` by processing images and managing their lifecyc
 
 ## Browser Compatibility
 
-unlazy works in all evergreen browsers (Chrome, Firefox, Safari, Edge). For browsers without native lazy loading support, images load immediately as a graceful fallback. You can check support programmatically using the exported `isLazyLoadingSupported` constant.
+unlazy targets [Baseline Widely Available](https://web.dev/baseline) browsers. The eager-priority path applies the `fetchpriority` attribute as progressive enhancement: browsers that don't yet recognize it ignore the attribute and still load the image correctly, just without the priority hint.
 
 ## SEO
 

@@ -10,10 +10,6 @@ The function performs the following operations:
 4. Swaps `data-src` and `data-srcset` to their standard counterparts.
 5. Invokes the optional `onImageLoad` callback when loading completes, or `onImageError` if loading fails.
 
-::: info
-The `loadImage` function is a deprecated alias for `triggerLoad` and will be removed in the next major version.
-:::
-
 ## Type Declarations
 
 <<< @/../packages/core/src/lazyLoad.ts#triggerLoad{ts}

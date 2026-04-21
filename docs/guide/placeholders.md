@@ -126,3 +126,22 @@ Generates PNG data URIs on the server, keeping your client bundle smaller. The p
 ::: tip
 ThumbHash is more efficient for both approaches due to its smaller hash size and faster decoding performance compared to BlurHash.
 :::
+
+## Using Your Own Placeholder
+
+Hash-based placeholders are convenient when you only have a compact string on hand, but they are not the only option. If your image pipeline already produces a tiny WebP, JPEG, or AVIF preview – as Sharp, imgix, Cloudinary, and most modern CDNs do – put that data URL directly into `src`:
+
+```html
+<img
+  src="data:image/webp;base64,UklGRi..."
+  data-src="real.jpg"
+  alt="Article cover"
+  width="1200"
+  height="800"
+  loading="lazy"
+>
+```
+
+When no `data-blurhash` or `data-thumbhash` attribute is present on the image, unlazy leaves `src` alone. The browser decodes the placeholder natively – no library code runs on the placeholder path, and no extra JavaScript ships to the client.
+
+The pattern works for any data URL – WebP, JPEG, AVIF, or an inline SVG dominant-color fill. Pick whichever placeholder fits your pipeline; unlazy's hash decoders are an option, not a requirement.

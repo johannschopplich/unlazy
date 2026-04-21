@@ -126,7 +126,7 @@ In each example, the `sizes` attribute is automatically calculated given the `au
 :::
 
 ::: info
-When using BlurHash, set explicit `width` and `height` attributes for optimal performance. Without these, BlurHash decoding falls back to rendered dimensions, which may cause performance delays on large images.
+When using BlurHash, set explicit `width` and `height` attributes. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
 :::
 
 ### Preload Image

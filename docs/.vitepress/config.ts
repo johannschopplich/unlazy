@@ -74,7 +74,9 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'Installation', link: '/guide/installation' },
             { text: 'Usage', link: '/guide/usage' },
             { text: 'Placeholders', link: '/guide/placeholders' },
+            { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
             { text: 'SEO Considerations', link: '/guide/seo-considerations' },
+            { text: 'Migrating to v2', link: '/guide/migration' },
           ],
         },
       ],
@@ -138,6 +140,7 @@ function nav(): DefaultTheme.NavItem[] {
           text: 'Advanced',
           items: [
             { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
+            { text: 'Server-Side Rendering', link: '/advanced/ssr' },
             { text: 'Build Flags', link: '/advanced/build-flags' },
           ],
         },
@@ -164,7 +167,9 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Installation', link: '/guide/installation' },
         { text: 'Usage', link: '/guide/usage' },
         { text: 'Placeholders', link: '/guide/placeholders' },
+        { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
         { text: 'SEO Considerations', link: '/guide/seo-considerations' },
+        { text: 'Migrating to v2', link: '/guide/migration' },
       ],
     },
     {
@@ -182,6 +187,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: 'Advanced',
       items: [
         { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
+        { text: 'Server-Side Rendering', link: '/advanced/ssr' },
         { text: 'Build Flags', link: '/advanced/build-flags' },
       ],
     },

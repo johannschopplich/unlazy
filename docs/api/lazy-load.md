@@ -1,17 +1,25 @@
 # `lazyLoad`
 
-The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load. By default, it processes all images with the `loading="lazy"` attribute.
+The `lazyLoad` function takes a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
+
+By default it matches:
+
+```
+img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-srcset]
+```
+
+This means both lazy images and above-the-fold images (marked `loading="eager"`) are processed – the eager ones just skip the viewport wait.
 
 ## How It Works
 
-1. Detects whether the visitor is a bot or a crawler. This ensures that the full-quality image is loaded and indexed by search engines.
-   - The `data-srcset` attribute will be converted to `srcset`.
-   - The `data-src` attribute will be converted to `src`.
-2. Processes all images with a `loading="lazy"` attribute.
-   - Calculates the image's `sizes` attribute if `data-sizes="auto"` is set.
-   - Generates a blurry placeholder from a [hash-based placeholder](/guide/placeholders) (BlurHash or ThumbHash) string if applicable.
-3. If the image has a blurry placeholder and is already in the viewport or the visitor is a crawler, it immediately loads the full-quality image.
-4. If the image isn't yet in the viewport, an event listener is added to load the full-quality image when it enters the viewport.
+1. **Eager images get the priority path.** For `loading="eager"` images with a `data-src` or `data-srcset`:
+   - `data-src` / `data-srcset` swap into `src` / `srcset` immediately.
+   - `fetchpriority="high"` is set if no value is already present.
+   - A hash placeholder is still generated when `data-blurhash` or `data-thumbhash` is present, giving you an instant placeholder while the real image fetches.
+2. **Crawlers** get the same immediate-swap treatment so search engines and social-preview scrapers see the real image.
+3. **Lazy images** get a blurry placeholder from [hash-based placeholders](/guide/placeholders) (BlurHash / ThumbHash) if applicable, and `data-sizes="auto"` is expanded to a real `sizes` value.
+4. **Viewport timing is handled by the browser** via the native `loading="lazy"` attribute – lazy images are swapped to their real sources when the browser fetches them.
+5. **During development**, unlazy warns if your LCP element is configured for lazy loading. See the [Core Web Vitals guide](/guide/core-web-vitals).
 
 ## Options
 

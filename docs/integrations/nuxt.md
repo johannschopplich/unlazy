@@ -96,7 +96,7 @@ The `ssr` option (enabled by default) can be overridden per-component or disable
 In every `srcSet` example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
 :::
 
-### Inlined placeholder image
+### Inlined Placeholder Image
 
 ```html [Inlined placeholder image]
 <UnLazyImage
@@ -153,7 +153,7 @@ In every `srcSet` example, the `sizes` attribute is automatically calculated giv
   ```
 :::
 
-### Multiple image sources
+### Multiple Image Sources
 
 In this example, we're using the `UnLazyImage` component with an `exampleImgSrc` for the default image source, and an array of objects named `exampleSources` for the `sources` prop. Each object in the array includes a `type` and a `srcSet` property. In addition, the `blurhash` attribute is set to a predefined BlurHash string, and the `autoSizes` attribute is set to `true`, which will enable automatic calculation of the `sizes` attribute.
 
