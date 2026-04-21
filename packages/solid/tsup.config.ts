@@ -8,5 +8,8 @@ const presetOptions: PresetOptions = {
 
 export default defineConfig(() => {
   const resolvedOptions = parsePresetOptions(presetOptions)
-  return generateTsupOptions(resolvedOptions)
+  return generateTsupOptions(resolvedOptions).map(config => ({
+    ...config,
+    dts: false,
+  }))
 })

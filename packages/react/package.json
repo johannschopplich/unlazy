@@ -28,21 +28,34 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.mjs"
-    }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc --noEmit",
+    "test:build": "publint --strict && attw --pack --profile node16"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
   },
   "dependencies": {
     "unlazy": "workspace:*"

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "jsx": "react-jsx"
   },
-  "include": ["src", "playground", "build.config.ts"],
+  "include": ["src", "playground", "tsdown.config.ts"],
   "exclude": ["dist"]
 }

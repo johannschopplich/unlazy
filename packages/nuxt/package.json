@@ -38,11 +38,12 @@
     "dist"
   ],
   "scripts": {
-    "prepack": "nuxt-module-build build",
+    "build": "nuxt-module-build build",
     "dev": "nuxt dev playground",
     "dev:build": "nuxt build playground",
     "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
-    "test:types": "vue-tsc -b --noEmit"
+    "test:types": "vue-tsc -b --noEmit",
+    "test:build": "publint --strict"
   },
   "dependencies": {
     "@nuxt/kit": "^4.4.2",

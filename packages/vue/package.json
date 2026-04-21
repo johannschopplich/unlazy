@@ -27,31 +27,25 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.mjs"
-    },
-    "./components": {
-      "types": "./dist/components/index.d.ts",
-      "default": "./dist/components/index.mjs"
-    }
+    ".": "./dist/index.js",
+    "./components": "./dist/components/index.js",
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/*"
-      ]
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
-    "test:types": "vue-tsc --noEmit"
+    "test:types": "vue-tsc --noEmit",
+    "test:build": "publint --strict"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
   },
   "dependencies": {
     "unlazy": "workspace:*"
@@ -59,6 +53,7 @@
   "devDependencies": {
     "@types/node": "^24.12.2",
     "@vitejs/plugin-vue": "^6.0.6",
+    "unplugin-vue": "^7.1.1",
     "vue": "^3.5.32"
   }
 }

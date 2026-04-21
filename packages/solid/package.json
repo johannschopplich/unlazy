@@ -29,24 +29,25 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "solid": "./dist/index.jsx",
       "default": "./dist/index.js"
     },
-    "./solid": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.jsx"
-    }
+    "./package.json": "./package.json"
   },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && tsc -p tsconfig.build.json",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc --noEmit",
+    "test:build": "publint --strict"
   },
   "peerDependencies": {
     "solid-js": "^1.7.3"

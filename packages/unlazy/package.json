@@ -27,60 +27,49 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
-      },
-      "default": "./dist/index.mjs"
+      }
     },
     "./blurhash": {
-      "types": "./dist/blurhash.d.ts",
       "import": {
-        "types": "./dist/blurhash.d.mts",
-        "default": "./dist/blurhash.mjs"
+        "types": "./dist/blurhash.d.ts",
+        "default": "./dist/blurhash.js"
       },
       "require": {
         "types": "./dist/blurhash.d.cts",
         "default": "./dist/blurhash.cjs"
-      },
-      "default": "./dist/blurhash.mjs"
+      }
     },
     "./thumbhash": {
-      "types": "./dist/thumbhash.d.ts",
       "import": {
-        "types": "./dist/thumbhash.d.mts",
-        "default": "./dist/thumbhash.mjs"
+        "types": "./dist/thumbhash.d.ts",
+        "default": "./dist/thumbhash.js"
       },
       "require": {
         "types": "./dist/thumbhash.d.cts",
         "default": "./dist/thumbhash.cjs"
-      },
-      "default": "./dist/thumbhash.mjs"
-    }
+      }
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "unpkg": "./dist/unlazy.iife.js",
   "jsdelivr": "./dist/unlazy.iife.js",
   "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/*"
-      ]
-    }
-  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "unbuild && vite build -c vite.config.bundle.ts && vite build -c vite.config.bundle.with-hashing.ts",
-    "dev:prepare": "unbuild --stub",
-    "test:types": "tsc --noEmit"
+    "build": "tsdown",
+    "test:types": "tsc --noEmit",
+    "test:build": "publint --strict && attw --pack --profile node16"
   },
   "dependencies": {
     "@unlazy/core": "workspace:*"
