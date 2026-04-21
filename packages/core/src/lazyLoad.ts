@@ -1,22 +1,26 @@
 import type { UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { installLcpWarning } from './lcpWarning'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
-import { createIndexedImagePlaceholder, debounce, isCrawler, isLazyLoadingSupported, toElementArray } from './utils'
+import { createIndexedImagePlaceholder, debounce, isCrawler, toElementArray } from './utils'
+
+const processedImages = new WeakSet<HTMLImageElement>()
+const resizeObserverCache = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 // #region lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
    *
-   * @default 'img[loading="lazy"]'
+   * @default 'img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-srcset]'
    */
   selectorsOrElements?: string | T | NodeListOf<T> | T[],
   options?: UnLazyLoadOptions,
 ): () => void
 // #endregion lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
-  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"]',
+  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-srcset]',
   {
     hash = true,
     hashType = 'blurhash',
@@ -28,7 +32,23 @@ export function lazyLoad<T extends HTMLImageElement>(
 ): () => void {
   const cleanupHandlers = new Set<() => void>()
 
+  // @ts-expect-error: Build-time variable
+  if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+    installLcpWarning()
+
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
+    // Skip images already processed in a prior call so callers can safely
+    // re-invoke `lazyLoad` after dynamic DOM insertions
+    if (processedImages.has(image))
+      continue
+
+    const isEager = image.loading === 'eager'
+
+    // Hint the browser to prioritize the fetch of above-the-fold images,
+    // but respect an explicit author value if present
+    if (isEager && !image.hasAttribute('fetchpriority'))
+      image.setAttribute('fetchpriority', 'high')
+
     // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
     const resizeObserverCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
 
@@ -59,9 +79,10 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
-    // Load the image immediately if the browser is considered a crawler or
-    // does not support lazy loading
-    if (isCrawler || !isLazyLoadingSupported) {
+    processedImages.add(image)
+
+    // Swap immediately for eager images (above-the-fold) and crawlers
+    if (isEager || isCrawler) {
       updatePictureSources(image)
       swapDataAttribute(image, 'srcset')
       swapDataAttribute(image, 'src')
@@ -178,11 +199,6 @@ export function triggerLoad(
   }, { once: true })
 }
 
-/**
- * @deprecated Use `triggerLoad` instead. This alias will be removed in the next major version.
- */
-export const loadImage = triggerLoad
-
 // #region createPlaceholderFromHash
 export function createPlaceholderFromHash(options?: {
   /** If present, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions. */
@@ -242,8 +258,6 @@ export function createPlaceholderFromHash(
       console.error(`[unlazy] Failed to generate ${hashType} placeholder:`, error)
   }
 }
-
-const resizeObserverCache = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 function updateSizesAttribute(
   element: HTMLImageElement | HTMLSourceElement,
