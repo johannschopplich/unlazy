@@ -32,7 +32,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install
-      - run: pnpm --filter=./packages/unlazy run build
+      - run: pnpm --filter=unlazy... run build
       - run: pnpm run test:types
 
   test:
@@ -45,4 +45,5 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install
+      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm run test
