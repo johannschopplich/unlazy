@@ -4,6 +4,14 @@
     "moduleDetection": "force",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "paths": {
+      "@unlazy/core": ["./packages/core/src/index.ts"],
+      "@unlazy/core/blurhash": ["./packages/core/src/blurhash.ts"],
+      "@unlazy/core/thumbhash": ["./packages/core/src/thumbhash.ts"],
+      "unlazy": ["./packages/unlazy/src/index.ts"],
+      "unlazy/blurhash": ["./packages/unlazy/src/blurhash.ts"],
+      "unlazy/thumbhash": ["./packages/unlazy/src/thumbhash.ts"]
+    },
     "resolveJsonModule": true,
     "types": ["node"],
     "noUncheckedIndexedAccess": true,

@@ -29,7 +29,6 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "solid": "./dist/index.jsx",
       "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
@@ -41,7 +40,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && tsc -p tsconfig.build.json",
+    "build": "tsdown",
     "dev": "pnpm -C playground run dev",
     "dev:build": "pnpm -C playground run build",
     "lint": "eslint .",
@@ -58,8 +57,8 @@
   "devDependencies": {
     "@types/node": "^24.12.2",
     "solid-js": "^1.9.12",
-    "tsup": "^8.5.1",
-    "tsup-preset-solid": "^2.2.0",
+    "tsdown": "^0.21.9",
+    "unplugin-solid": "^1.0.0",
     "vite-plugin-solid": "^2.11.12"
   }
 }
