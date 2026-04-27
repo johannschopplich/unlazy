@@ -1,4 +1,4 @@
-import type { UnLazyLoadOptions } from './types'
+import type { TriggerLoadOptions, UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { installLcpWarning } from './lcpWarning'
@@ -164,25 +164,17 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
  *
  * For `<img>` elements inside `<picture>`, the browser handles source selection. Listeners
  * are attached on the visible `<img>` before the swap so the queued `load` task is caught
- * once the browser resolves a source.
+ * once the browser resolves a source. If `data-src` resolves to the URL already on the
+ * `<img>`, the browser fires no `load` event and the callback never runs.
  */
 export function triggerLoad(
   image: HTMLImageElement,
-  options?: {
-    onImageLoad?: (image: HTMLImageElement) => void
-    onImageError?: (image: HTMLImageElement, error: Event) => void
-  },
+  options?: TriggerLoadOptions,
 ): () => void
 // #endregion triggerLoad
 export function triggerLoad(
   image: HTMLImageElement,
-  {
-    onImageLoad,
-    onImageError,
-  }: {
-    onImageLoad?: (image: HTMLImageElement) => void
-    onImageError?: (image: HTMLImageElement, error: Event) => void
-  } = {},
+  { onImageLoad, onImageError }: TriggerLoadOptions = {},
 ): () => void {
   const disposers: (() => void)[] = []
   const dispose = () => {

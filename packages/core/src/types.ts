@@ -54,3 +54,18 @@ export interface UnLazyLoadOptions {
   onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 // #endregion UnLazyLoadOptions
+
+// #region TriggerLoadOptions
+export interface TriggerLoadOptions {
+  /**
+   * A callback function to run when the image finishes loading.
+   */
+  onImageLoad?: (image: HTMLImageElement) => void
+
+  /**
+   * A callback function to run when the image fails to load. A synthetic
+   * `error` event is also dispatched on the visible `<img>` before this fires.
+   */
+  onImageError?: (image: HTMLImageElement, error: Event) => void
+}
+// #endregion TriggerLoadOptions

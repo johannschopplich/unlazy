@@ -51,7 +51,7 @@ describe('triggerLoad (browser)', () => {
     expect(img.dataset.src).toBe('data:image/png;base64,not-a-valid-png')
   })
 
-  it('cleanup prevents the onImageLoad callback from firing', async () => {
+  it('cleanup detaches lazy-path callbacks before they fire', async () => {
     const img = document.createElement('img')
     img.loading = 'lazy'
     img.dataset.src = TINY_PNG
@@ -59,6 +59,26 @@ describe('triggerLoad (browser)', () => {
     const onLoad = vi.fn()
 
     const cleanup = lazyLoad(img, { onImageLoad: onLoad })
+    cleanup()
+
+    await new Promise(resolve => setTimeout(resolve, 200))
+
+    expect(onLoad).not.toHaveBeenCalled()
+  })
+
+  it('cleanup cancels an in-flight lazy-path preload', async () => {
+    const img = document.createElement('img')
+    img.loading = 'lazy'
+    img.dataset.src = TINY_PNG
+    document.body.appendChild(img)
+    const onLoad = vi.fn()
+
+    const cleanup = lazyLoad(img, { onImageLoad: onLoad })
+
+    // unlazy registers its load listener first, so it runs before this one and
+    // starts triggerLoad's preload during the same dispatch.
+    await new Promise<void>(resolve => img.addEventListener('load', () => resolve(), { once: true }))
+
     cleanup()
 
     await new Promise(resolve => setTimeout(resolve, 200))
