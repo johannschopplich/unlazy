@@ -55,20 +55,21 @@
     if (!target)
       return
 
+    let cleanup: () => void
     if (preload) {
       if (autoSizes)
         _autoSizes(target)
-      triggerLoad(target, onImageLoad, onImageError)
-      return
+      cleanup = triggerLoad(target, { onImageLoad, onImageError })
     }
-
-    const cleanup = lazyLoad(target, {
-      hash: thumbhash || blurhash,
-      hashType: thumbhash ? 'thumbhash' : 'blurhash',
-      placeholderSize,
-      onImageLoad,
-      onImageError,
-    })
+    else {
+      cleanup = lazyLoad(target, {
+        hash: thumbhash || blurhash,
+        hashType: thumbhash ? 'thumbhash' : 'blurhash',
+        placeholderSize,
+        onImageLoad,
+        onImageError,
+      })
+    }
 
     return () => {
       cleanup()

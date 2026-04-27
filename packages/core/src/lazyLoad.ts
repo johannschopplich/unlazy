@@ -81,8 +81,20 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     processedImages.add(image)
 
-    // Swap immediately for eager images (above-the-fold) and crawlers
+    // Swap immediately for eager images (above-the-fold) and crawlers.
+    // Listeners are attached pre-swap so the spec-async `load` task is caught
+    // after the swap; cleanup detaches them if the consumer aborts early.
     if (isEager || isCrawler) {
+      if (onImageLoad) {
+        const loadHandler = () => onImageLoad(image)
+        image.addEventListener('load', loadHandler, { once: true })
+        cleanupHandlers.add(() => image.removeEventListener('load', loadHandler))
+      }
+      if (onImageError) {
+        const errorHandler = (event: Event) => onImageError(image, event)
+        image.addEventListener('error', errorHandler, { once: true })
+        cleanupHandlers.add(() => image.removeEventListener('error', errorHandler))
+      }
       updatePictureSources(image)
       swapDataAttribute(image, 'srcset')
       swapDataAttribute(image, 'src')
@@ -98,12 +110,14 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      triggerLoad(image, onImageLoad, onImageError)
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
-    const loadHandler = () => triggerLoad(image, onImageLoad, onImageError)
+    const loadHandler = () => {
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
+    }
     image.addEventListener('load', loadHandler, { once: true })
 
     cleanupHandlers.add(
@@ -138,40 +152,90 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 /**
  * Triggers the loading of a lazy image by swapping `data-src`/`data-srcset` to `src`/`srcset`.
  *
- * @remarks
- * For standalone `<img>` elements, the image is preloaded via a temporary Image before
- * swapping attributes, and callbacks are invoked accordingly.
+ * @returns A disposer that detaches listeners and, for standalone images, aborts any
+ * in-flight network fetch by clearing the temporary image's `src`. Calling it after the
+ * load completes is a no-op.
  *
- * For `<img>` elements inside `<picture>`, attributes are swapped synchronously without
- * preloading (the browser handles source selection). In this case, `onImageLoad` and
- * `onImageError` callbacks are **not invoked**.
+ * @remarks
+ * For standalone `<img>` elements, the image is preloaded via a temporary `Image` before
+ * the swap; `onImageLoad` fires on success and `onImageError` on failure. On failure unlazy
+ * also dispatches a synthetic `error` event on the visible `<img>` so consumers using
+ * native `addEventListener('error', …)` or framework-native `onError` / `@error` get notified.
+ *
+ * For `<img>` elements inside `<picture>`, the browser handles source selection. Listeners
+ * are attached on the visible `<img>` before the swap so the queued `load` task is caught
+ * once the browser resolves a source.
  */
 export function triggerLoad(
   image: HTMLImageElement,
-  onImageLoad?: (image: HTMLImageElement) => void,
-  onImageError?: (image: HTMLImageElement, error: Event) => void,
-): void
+  options?: {
+    onImageLoad?: (image: HTMLImageElement) => void
+    onImageError?: (image: HTMLImageElement, error: Event) => void
+  },
+): () => void
 // #endregion triggerLoad
 export function triggerLoad(
   image: HTMLImageElement,
-  onImageLoad?: (image: HTMLImageElement) => void,
-  onImageError?: (image: HTMLImageElement, error: Event) => void,
-): void {
-  // For picture elements, swap attributes directly without preloading
-  // (browser handles source selection, no separate load event to wait for)
+  {
+    onImageLoad,
+    onImageError,
+  }: {
+    onImageLoad?: (image: HTMLImageElement) => void
+    onImageError?: (image: HTMLImageElement, error: Event) => void
+  } = {},
+): () => void {
+  const disposers: (() => void)[] = []
+  const dispose = () => {
+    for (const d of disposers) d()
+    disposers.length = 0
+  }
+
   if (isDescendantOfPicture(image)) {
+    if (onImageLoad) {
+      const handler = () => onImageLoad(image)
+      image.addEventListener('load', handler, { once: true })
+      disposers.push(() => image.removeEventListener('load', handler))
+    }
+    if (onImageError) {
+      const handler = (event: Event) => onImageError(image, event)
+      image.addEventListener('error', handler, { once: true })
+      disposers.push(() => image.removeEventListener('error', handler))
+    }
+
     updatePictureSources(image)
     swapDataAttribute(image, 'srcset')
     swapDataAttribute(image, 'src')
-    return
+    return dispose
   }
 
   const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
 
   if (!dataSrcset && !dataSrc)
-    return
+    return dispose
 
   const temporaryImage = new Image()
+
+  const loadHandler = () => {
+    swapDataAttribute(image, 'srcset')
+    swapDataAttribute(image, 'src')
+    onImageLoad?.(image)
+  }
+  const errorHandler = (event: Event) => {
+    // Dispatch the synthetic error on the visible `<img>` first so the public
+    // contract (native error fires) is fulfilled before user code runs.
+    image.dispatchEvent(new Event('error'))
+    onImageError?.(image, event)
+  }
+
+  temporaryImage.addEventListener('load', loadHandler, { once: true })
+  temporaryImage.addEventListener('error', errorHandler, { once: true })
+
+  disposers.push(() => {
+    temporaryImage.removeEventListener('load', loadHandler)
+    temporaryImage.removeEventListener('error', errorHandler)
+    // Empty `src` aborts the pending fetch per HTML "update the image data".
+    temporaryImage.src = ''
+  })
 
   // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
   if (dataSizes === 'auto') {
@@ -188,15 +252,7 @@ export function triggerLoad(
   if (dataSrc)
     temporaryImage.src = dataSrc
 
-  temporaryImage.addEventListener('load', () => {
-    swapDataAttribute(image, 'srcset')
-    swapDataAttribute(image, 'src')
-    onImageLoad?.(image)
-  }, { once: true })
-
-  temporaryImage.addEventListener('error', (error) => {
-    onImageError?.(image, error)
-  }, { once: true })
+  return dispose
 }
 
 // #region createPlaceholderFromHash

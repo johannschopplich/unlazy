@@ -50,20 +50,24 @@ export function UnLazyImage(props: Props) {
     if (!el)
       return
 
+    let cleanup: () => void
     if (local.preload) {
       if (local.autoSizes)
         _autoSizes(el)
-      triggerLoad(el, local.onImageLoad, local.onImageError)
-      return
+      cleanup = triggerLoad(el, {
+        onImageLoad: local.onImageLoad,
+        onImageError: local.onImageError,
+      })
     }
-
-    const cleanup = lazyLoad(el, {
-      hash: local.thumbhash || local.blurhash,
-      hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
-      placeholderSize: local.placeholderSize,
-      onImageLoad: local.onImageLoad,
-      onImageError: local.onImageError,
-    })
+    else {
+      cleanup = lazyLoad(el, {
+        hash: local.thumbhash || local.blurhash,
+        hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
+        placeholderSize: local.placeholderSize,
+        onImageLoad: local.onImageLoad,
+        onImageError: local.onImageError,
+      })
+    }
 
     onCleanup(() => {
       cleanup()

@@ -12,10 +12,20 @@ The deprecated `loadImage` alias is gone. It has been marked `@deprecated` since
 - import { loadImage } from 'unlazy'
 - loadImage(image, onLoad, onError)
 + import { triggerLoad } from 'unlazy'
-+ triggerLoad(image, onLoad, onError)
++ triggerLoad(image, { onImageLoad: onLoad, onImageError: onError })
 ```
 
-Both functions have identical signatures – this is purely a rename.
+### `triggerLoad` Signature
+
+`triggerLoad` now takes an options object instead of positional callbacks, and returns a disposer that detaches listeners and (for standalone images) aborts the in-flight network fetch:
+
+```diff
+- triggerLoad(image, onLoad, onError)
++ const dispose = triggerLoad(image, { onImageLoad: onLoad, onImageError: onError })
++ // Optional: dispose() to cancel before the load completes
+```
+
+Calling the disposer after the load has already completed is a no-op. Framework adapters call the disposer on unmount, so component users need do nothing.
 
 ### `isLazyLoadingSupported` Has Been Removed
 
@@ -42,6 +52,20 @@ img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-s
 ```
 
 If you ever wrote `<img loading="eager" data-src="...">` in v1, unlazy silently ignored it. In v2, unlazy processes it through the new eager-priority path (see below). If you were relying on the silent no-op, pass a custom selector.
+
+### Native `<img>` `error` Now Fires on Preload Failure
+
+Previously, when unlazy's off-DOM preload failed (404, decode error), the visible `<img>` never saw it – only the `onImageError` callback did. v2 dispatches a synthetic `error` event on the visible `<img>`, so native `onerror` / `@error` / `onError` now work for setting a fallback `src`:
+
+```html
+<img data-src="hero.jpg" onerror="this.src='/fallback.jpg'">
+```
+
+The synthetic event has `event.isTrusted === false`. If you bind both `onImageError` and a native error listener, both fire – pick whichever surface fits your app.
+
+### Picture-Element Callbacks Now Fire
+
+In v1, `onImageLoad` and `onImageError` were silent for `<img>` elements inside `<picture>` (the browser handled source selection without unlazy preloading). v2 attaches listeners on the visible `<img>` so the callbacks fire exactly once when the browser resolves a source.
 
 ## New Behavior
 
@@ -78,13 +102,21 @@ Set `loading="eager"` to improve Largest Contentful Paint.
 
 The warning can be stripped from production builds via the [`__UNLAZY_LOGGING__`](/advanced/build-flags#disable-client-logging) build flag.
 
-## No Other Breaking Changes
+### Vue / Nuxt: `@loaded` Renamed to `@image-load`, New `@image-error` Emit
 
-- `lazyLoad`, `triggerLoad`, `autoSizes`, `createPlaceholderFromHash` – unchanged signatures.
-- SSR decoders (`unlazy/blurhash`, `unlazy/thumbhash`) – unchanged.
-- `isCrawler` – unchanged.
-- `UnLazyLoadOptions` – unchanged.
-- Framework component props – unchanged except that `priority`/`loading="eager"` now does what you'd expect.
+The Vue and Nuxt adapters now expose a symmetric pair of emits aligned with the core option names:
+
+| v1 | v2 |
+| --- | --- |
+| `@loaded="(image) => …"` | `@image-load="(image) => …"` |
+| – | `@image-error="(image, error) => …"` |
+
+```diff
+- <UnLazyImage @loaded="onLoaded" />
++ <UnLazyImage @image-load="onImageLoad" @image-error="onImageError" />
+```
+
+The previously declared `@error` emit has been removed. Existing `@error` listeners keep working: with no declared `error` emit, Vue's attribute fallthrough now routes `@error` straight to the underlying `<img>`. As a result, `@error` also fires for the synthetic preload failure dispatched on the visible `<img>` – reach for `@image-error` only when you want both the wrapped image element and the event.
 
 ## Upgrading
 
@@ -94,7 +126,8 @@ pnpm add unlazy@2
 
 Then:
 
-1. Replace `loadImage` with `triggerLoad` across your codebase.
+1. Replace `loadImage` with `triggerLoad`, and switch existing `triggerLoad` calls to the options-object form.
 2. Drop any imports of `isLazyLoadingSupported`; inline the one-line check if you still need it.
 3. If you were using `<img loading="eager" data-src="...">` as a no-op, either remove the `data-src` or switch to the new eager-priority path intentionally.
-4. Check the [Core Web Vitals guide](/guide/core-web-vitals) and mark your hero image with `loading="eager"` if you haven't already.
+4. On Vue / Nuxt, rename `@loaded` to `@image-load`. Bind `@image-error` for the `(image, error)` payload if you need it.
+5. Check the [Core Web Vitals guide](/guide/core-web-vitals) and mark your hero image with `loading="eager"` if you haven't already.

@@ -227,13 +227,4 @@ describe('triggerLoad', () => {
     expect(avifSource.srcset).toBe('image.avif')
     expect(img.src).toContain('image.jpg')
   })
-
-  it('does not invoke onImageLoad for picture elements (no network load)', () => {
-    const { img } = makePictureImg({ dataSrc: 'image.jpg' })
-    const onLoad = vi.fn()
-
-    triggerLoad(img, onLoad)
-
-    expect(onLoad).not.toHaveBeenCalled()
-  })
 })
