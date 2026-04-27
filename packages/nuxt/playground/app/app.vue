@@ -11,7 +11,7 @@ useHead({
   title: '@unlazy/nuxt',
 })
 
-function onLoaded(image: HTMLImageElement) {
+function onImageLoad(image: HTMLImageElement) {
   console.log('Image loaded:', image.src)
 }
 </script>
@@ -28,7 +28,7 @@ function onLoaded(image: HTMLImageElement) {
           src="/images/fall-evan-wallace.jpg"
           width="640"
           height="427"
-          @loaded="onLoaded"
+          @image-load="onImageLoad"
         />
       </section>
 

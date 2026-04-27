@@ -18,6 +18,13 @@ export default defineNuxtConfig({
     },
 
     optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'fast-blurhash',
+        'thumbhash',
+      ],
+
       exclude: [
         '@unlazy/core',
         'unlazy',

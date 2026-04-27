@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { UnLazyImage } from '../src/components'
 
-function onLoaded(image: HTMLImageElement) {
+function onImageLoad(image: HTMLImageElement) {
   console.log('Image loaded:', image.src)
 }
 
-function onError(error: Event) {
-  console.error('Image error:', error)
+function onImageError(image: HTMLImageElement, error: Event) {
+  console.error('Image error:', image.src, error)
 }
 </script>
 
@@ -21,8 +21,8 @@ function onError(error: Event) {
         src="/images/fall-evan-wallace.jpg"
         width="640"
         height="427"
-        @loaded="onLoaded"
-        @error="onError"
+        @image-load="onImageLoad"
+        @image-error="onImageError"
       />
     </section>
 

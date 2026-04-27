@@ -34,8 +34,8 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (event: 'loaded', image: HTMLImageElement): void
-  (event: 'error', error: Event): void
+  (event: 'imageLoad', image: HTMLImageElement): void
+  (event: 'imageError', image: HTMLImageElement, error: Event): void
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
@@ -50,7 +50,10 @@ watchEffect(() => {
   if (props.preload) {
     if (props.autoSizes)
       _autoSizes(target.value)
-    triggerLoad(target.value, image => emit('loaded', image))
+    cleanup = triggerLoad(target.value, {
+      onImageLoad: image => emit('imageLoad', image),
+      onImageError: (image, error) => emit('imageError', image, error),
+    })
     return
   }
 
@@ -58,7 +61,8 @@ watchEffect(() => {
     hash: props.thumbhash || props.blurhash,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     placeholderSize: props.placeholderSize,
-    onImageLoad: image => emit('loaded', image),
+    onImageLoad: image => emit('imageLoad', image),
+    onImageError: (image, error) => emit('imageError', image, error),
   })
 })
 
@@ -75,6 +79,5 @@ onBeforeUnmount(() => {
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
     :loading="loading || 'lazy'"
-    @error="emit('error', $event)"
   >
 </template>

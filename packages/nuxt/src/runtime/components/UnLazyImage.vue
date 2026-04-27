@@ -71,8 +71,8 @@ const props = withDefaults(
 )
 
 const emit = defineEmits<{
-  (event: 'loaded', image: HTMLImageElement): void
-  (event: 'error', error: Event): void
+  (event: 'imageLoad', image: HTMLImageElement): void
+  (event: 'imageError', image: HTMLImageElement, error: Event): void
 }>()
 
 const unlazy = useRuntimeConfig().public.unlazy as ModuleOptions
@@ -121,7 +121,10 @@ watchEffect(() => {
   if (props.preload) {
     if (props.autoSizes)
       _autoSizes(target.value)
-    triggerLoad(target.value, image => emit('loaded', image))
+    cleanup = triggerLoad(target.value, {
+      onImageLoad: image => emit('imageLoad', image),
+      onImageError: (image, error) => emit('imageError', image, error),
+    })
     return
   }
 
@@ -131,9 +134,8 @@ watchEffect(() => {
   // Placeholder is already decoded
   cleanup = lazyLoad(target.value, {
     hash: false,
-    onImageLoad(image) {
-      emit('loaded', image)
-    },
+    onImageLoad: image => emit('imageLoad', image),
+    onImageError: (image, error) => emit('imageError', image, error),
   })
 })
 
@@ -159,7 +161,6 @@ onBeforeUnmount(() => {
       :data-srcset="srcSet"
       :data-sizes="autoSizes ? 'auto' : undefined"
       :loading="loading || (props.lazyLoad ? 'lazy' : 'eager')"
-      @error="emit('error', $event)"
     >
   </picture>
   <img
@@ -171,6 +172,5 @@ onBeforeUnmount(() => {
     :data-srcset="srcSet"
     :data-sizes="autoSizes ? 'auto' : undefined"
     :loading="loading || (props.lazyLoad ? 'lazy' : 'eager')"
-    @error="emit('error', $event)"
   >
 </template>

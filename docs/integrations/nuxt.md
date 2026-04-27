@@ -81,8 +81,8 @@ The component also accepts all standard `<img>` HTML attributes via Nuxt's attri
 
 | Event | Payload | Description |
 | --- | --- | --- |
-| `loaded` | `HTMLImageElement` | Emitted when the image has been successfully loaded. |
-| `error` | `Event` | Emitted when an error occurs during image loading. |
+| `image-load` | `HTMLImageElement` | Fired once when the real image finishes loading. |
+| `image-error` | `HTMLImageElement, Event` | Fired when the preload fails. See [migration notes](/guide/migration#native-img-error-now-fires-on-preload-failure) for native `@error` behavior. |
 
 ### Server-Side Rendering
 
