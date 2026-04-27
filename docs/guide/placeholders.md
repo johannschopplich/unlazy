@@ -124,7 +124,7 @@ Requires including the hash decoding library in your JavaScript bundle, which in
 Generates PNG data URIs on the server, keeping your client bundle smaller. The placeholder image is embedded directly in the HTML as a data URI. This approach is ideal when minimizing client-side JavaScript is a priority.
 
 ::: tip
-ThumbHash is more efficient for both approaches due to its smaller hash size and faster decoding performance compared to BlurHash.
+ThumbHash strings are shorter than BlurHash – tighter `data-` attributes on the client, tighter API payloads on the server.
 :::
 
 ## Using Your Own Placeholder
