@@ -45,7 +45,7 @@ export function makeLazyImg(options: {
 
 export function makePictureImg(options: {
   dataSrc?: string
-  sources?: { dataSrcset: string, type?: string }[]
+  sources?: { dataSrcset: string, type?: string, dataSizes?: string }[]
   loading?: 'lazy' | 'eager'
 } = {}): {
   picture: HTMLPictureElement
@@ -53,12 +53,15 @@ export function makePictureImg(options: {
   sources: HTMLSourceElement[]
 } {
   const picture = document.createElement('picture')
-  const sources = (options.sources ?? []).map(({ dataSrcset, type }) => {
+  const sources = (options.sources ?? []).map(({ dataSrcset, type, dataSizes }) => {
     const source = document.createElement('source')
     source.dataset.srcset = dataSrcset
 
     if (type)
       source.type = type
+
+    if (dataSizes !== undefined)
+      source.dataset.sizes = dataSizes
 
     picture.appendChild(source)
     return source

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { UnLazySource } from 'unlazy'
 import { UnLazyImage } from '#components'
 import { ref, useHead } from '#imports'
 
@@ -6,6 +7,15 @@ const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
 const thumbhash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
 
 const shouldLoadImage = ref(false)
+
+const artDirectionSources: UnLazySource[] = [
+  {
+    srcSet: '/images/sunrise-evan-wallace.jpg',
+    media: '(max-width: 600px)',
+    width: 480,
+    height: 640,
+  },
+]
 
 useHead({
   title: '@unlazy/nuxt',
@@ -91,6 +101,30 @@ function onImageLoad(image: HTMLImageElement) {
           @click="shouldLoadImage = true"
         />
         <p>Click image to load</p>
+      </section>
+    </div>
+
+    <div class="grid">
+      <section>
+        <h2>Custom Placeholder</h2>
+        <UnLazyImage
+          placeholder-src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='640'%3E%3Crect fill='%23ccc' width='100%25' height='100%25'/%3E%3C/svg%3E"
+          src="/images/sunrise-evan-wallace.jpg"
+          width="480"
+          height="640"
+        />
+      </section>
+
+      <section>
+        <h2>Multiple Sources (Art Direction)</h2>
+        <UnLazyImage
+          :blurhash="blurhash"
+          src="/images/fall-evan-wallace.jpg"
+          :sources="artDirectionSources"
+          width="640"
+          height="427"
+        />
+        <p>Resize past 600px to switch between portrait and landscape sources.</p>
       </section>
     </div>
   </main>

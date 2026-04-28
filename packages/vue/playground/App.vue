@@ -1,5 +1,15 @@
 <script setup lang="ts">
+import type { UnLazySource } from 'unlazy'
 import { UnLazyImage } from '../src/components'
+
+const artDirectionSources: UnLazySource[] = [
+  {
+    srcSet: '/images/sunrise-evan-wallace.jpg',
+    media: '(max-width: 600px)',
+    width: 480,
+    height: 640,
+  },
+]
 
 function onImageLoad(image: HTMLImageElement) {
   console.log('Image loaded:', image.src)
@@ -55,6 +65,18 @@ function onImageError(image: HTMLImageElement, error: Event) {
         width="480"
         height="640"
       />
+    </section>
+
+    <section>
+      <h2>Multiple Sources (Art Direction)</h2>
+      <UnLazyImage
+        blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
+        src="/images/fall-evan-wallace.jpg"
+        :sources="artDirectionSources"
+        :width="640"
+        :height="427"
+      />
+      <p>Resize past 600px to switch between portrait and landscape sources.</p>
     </section>
   </main>
 </template>

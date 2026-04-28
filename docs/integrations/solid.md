@@ -48,6 +48,7 @@ The `UnLazyImage` component accepts the following props:
 | --- | --- | --- | --- |
 | `src` | String | - | Image source URL to be lazy-loaded. |
 | `srcSet` | String | - | Image source set to be lazy-loaded. |
+| `sources` | Array | - | Array of `UnLazySource` objects to render a `<picture>` element. |
 | `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
@@ -113,6 +114,37 @@ When using BlurHash, set explicit `width` and `height` props. See [Hash-Based Pl
 
 ::: tip
 In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
+:::
+
+### Multiple Image Sources
+
+Pass `sources` to render a `<picture>` element with format negotiation and art direction. Each entry becomes a `<source>` child:
+
+```tsx
+import type { UnLazySource } from 'unlazy'
+
+const sources: UnLazySource[] = [
+  { type: 'image/avif', srcSet: 'hero.avif 1x, hero@2x.avif 2x' },
+  {
+    media: '(max-width: 600px)',
+    srcSet: 'hero-mobile.jpg',
+    width: 480,
+    height: 640,
+  },
+]
+
+return (
+  <UnLazyImage
+    src="/hero.jpg"
+    sources={sources}
+    width={640}
+    height={427}
+  />
+)
+```
+
+::: tip
+Set `width` and `height` per source to prevent layout shift when the breakpoint changes. Modern browsers use the matched `<source>`'s dimensions for the rendered `<img>`'s aspect ratio.
 :::
 
 ### Preload Image

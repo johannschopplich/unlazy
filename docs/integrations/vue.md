@@ -63,6 +63,7 @@ The `UnLazyImage` component accepts the following props:
 | --- | --- | --- | --- |
 | `src` | String | - | Image source URL to be lazy-loaded. |
 | `srcSet` | String | - | Image source set to be lazy-loaded. |
+| `sources` | Array | - | Array of `UnLazySource` objects to render a `<picture>` element. |
 | `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
@@ -133,6 +134,40 @@ In each example, the `sizes` attribute is automatically calculated given the `au
 When using BlurHash, set explicit `width` and `height` attributes. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
 :::
 
+### Multiple Image Sources
+
+Pass `sources` to render a `<picture>` element with format negotiation and art direction. Each entry becomes a `<source>` child:
+
+```vue
+<script setup lang="ts">
+import type { UnLazySource } from 'unlazy'
+import { UnLazyImage } from '@unlazy/vue/components'
+
+const sources: UnLazySource[] = [
+  { type: 'image/avif', srcSet: 'hero.avif 1x, hero@2x.avif 2x' },
+  {
+    media: '(max-width: 600px)',
+    srcSet: 'hero-mobile.jpg',
+    width: 480,
+    height: 640,
+  },
+]
+</script>
+
+<template>
+  <UnLazyImage
+    src="/hero.jpg"
+    :sources="sources"
+    :width="640"
+    :height="427"
+  />
+</template>
+```
+
+::: tip
+Set `width` and `height` per source to prevent layout shift when the breakpoint changes. Modern browsers use the matched `<source>`'s dimensions for the rendered `<img>`'s aspect ratio.
+:::
+
 ### Preload Image
 
 Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
@@ -146,3 +181,4 @@ Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload th
     preload
   />
 </template>
+```

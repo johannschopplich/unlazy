@@ -95,7 +95,8 @@ export function lazyLoad<T extends HTMLImageElement>(
         image.addEventListener('error', errorHandler, { once: true })
         cleanupHandlers.add(() => image.removeEventListener('error', errorHandler))
       }
-      updatePictureSources(image)
+      for (const fn of updatePictureSources(image, { updateOnResize: updateSizesOnResize }))
+        cleanupHandlers.add(fn)
       swapDataAttribute(image, 'srcset')
       swapDataAttribute(image, 'src')
       continue
@@ -110,13 +111,13 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError, updateSizesOnResize }))
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
     const loadHandler = () => {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError, updateSizesOnResize }))
     }
     image.addEventListener('load', loadHandler, { once: true })
 
@@ -174,7 +175,7 @@ export function triggerLoad(
 // #endregion triggerLoad
 export function triggerLoad(
   image: HTMLImageElement,
-  { onImageLoad, onImageError }: TriggerLoadOptions = {},
+  { onImageLoad, onImageError, updateSizesOnResize = false }: TriggerLoadOptions = {},
 ): () => void {
   const disposers: (() => void)[] = []
   const dispose = () => {
@@ -194,7 +195,7 @@ export function triggerLoad(
       disposers.push(() => image.removeEventListener('error', handler))
     }
 
-    updatePictureSources(image)
+    disposers.push(...updatePictureSources(image, { updateOnResize: updateSizesOnResize }))
     swapDataAttribute(image, 'srcset')
     swapDataAttribute(image, 'src')
     return dispose
@@ -318,8 +319,12 @@ function updateSizesAttribute(
 
   const width = getOffsetWidth(element)
 
-  if (width)
-    element.sizes = `${width}px`
+  if (width) {
+    // Guard against no-op writes
+    const next = `${width}px`
+    if (element.sizes !== next)
+      element.sizes = next
+  }
 
   if (options?.updateOnResize) {
     if (!resizeObserverCache.has(element)) {
@@ -351,14 +356,41 @@ function swapDataAttribute(
   element.removeAttribute(`data-${attr}`)
 }
 
-function updatePictureSources(image: HTMLImageElement) {
+function updatePictureSources(
+  image: HTMLImageElement,
+  options?: { updateOnResize?: boolean },
+): (() => void)[] {
+  const cleanups: (() => void)[] = []
   const pictureElement = image.parentElement as HTMLPictureElement
 
-  if (pictureElement?.tagName.toLowerCase() === 'picture') {
-    for (const source of pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
-      swapDataAttribute(source, 'srcset')
-    }
+  if (pictureElement?.tagName.toLowerCase() !== 'picture')
+    return cleanups
+
+  const autoSources: HTMLSourceElement[] = []
+
+  for (const source of pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
+    // Resolve `data-sizes="auto"` to a numeric pixel width before swapping
+    // `srcset` so the browser sees a final `sizes` value at source-selection time.
+    updateSizesAttribute(source)
+    swapDataAttribute(source, 'srcset')
+
+    if (source.dataset.sizes === 'auto')
+      autoSources.push(source)
   }
+
+  // `<source>` elements have no layout box, so observe the visible `<img>`
+  // and re-resolve every auto source on each tick.
+  if (options?.updateOnResize && autoSources.length > 0) {
+    const update = debounce(() => {
+      for (const source of autoSources)
+        updateSizesAttribute(source)
+    }, 500)
+    const observer = new ResizeObserver(update)
+    observer.observe(image)
+    cleanups.push(() => observer.disconnect())
+  }
+
+  return cleanups
 }
 
 function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | undefined {
