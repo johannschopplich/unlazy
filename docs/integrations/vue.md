@@ -1,6 +1,6 @@
 # `@unlazy/vue`
 
-The Vue integration provides an `UnLazyImage` component for your Vue 3 application.
+The Vue integration provides an `UnLazyImage` component for your Vue application.
 
 ## Installation
 
