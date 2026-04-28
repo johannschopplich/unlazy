@@ -25,13 +25,13 @@ Requires **Svelte 5+** (uses runes).
 ## Quick Start
 
 ```svelte
-<script lang="ts">
+<script lang='ts'>
   import { UnLazyImage } from '@unlazy/svelte'
 </script>
 
 <UnLazyImage
-  blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
-  srcSet="image-320w.jpg 320w, image-640w.jpg 640w"
+  blurhash='LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
+  srcSet='image-320w.jpg 320w, image-640w.jpg 640w'
   autoSizes
   onImageLoad={img => console.log('Loaded:', img.src)}
 />

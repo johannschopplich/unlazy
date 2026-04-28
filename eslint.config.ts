@@ -7,7 +7,6 @@ export default antfu({
   .append(react({ files: ['packages/react/**/*.{ts,tsx}'] }))
   .append(solid({ files: ['packages/solid/**/*.{ts,tsx}'] }))
   .append({
-    files: ['packages/*/playground/**', 'packages/svelte/src/routes/**'],
     rules: {
       'no-console': 'off',
     },
