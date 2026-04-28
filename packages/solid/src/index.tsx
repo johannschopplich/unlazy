@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js'
-import type { UnLazyLoadOptions } from 'unlazy'
-import { createEffect, createSignal, onCleanup, splitProps } from 'solid-js'
+import type { UnLazyLoadOptions, UnLazySource } from 'unlazy'
+import { createEffect, createSignal, For, onCleanup, Show, splitProps } from 'solid-js'
 import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
 interface Props
@@ -10,6 +10,8 @@ interface Props
   src?: JSX.ImgHTMLAttributes<HTMLImageElement>['src']
   /** Image source set to be lazy-loaded. */
   srcSet?: JSX.ImgHTMLAttributes<HTMLImageElement>['srcSet']
+  /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
+  sources?: UnLazySource[]
   /**
    * A flag to indicate whether the sizes attribute should be automatically calculated.
    * @default false
@@ -40,7 +42,7 @@ interface Props
 export function UnLazyImage(props: Props) {
   const [local, rest] = splitProps(
     props,
-    ['src', 'srcSet', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'preload', 'loading', 'onImageLoad', 'onImageError'],
+    ['src', 'srcSet', 'sources', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'preload', 'loading', 'onImageLoad', 'onImageError'],
   )
 
   const [target, setTarget] = createSignal<HTMLImageElement>()
@@ -50,39 +52,72 @@ export function UnLazyImage(props: Props) {
     if (!el)
       return
 
-    let cleanup: () => void
     if (local.preload) {
-      if (local.autoSizes)
-        _autoSizes(el)
-      cleanup = triggerLoad(el, {
+      const disposeSizes = local.autoSizes
+        ? _autoSizes(el, { updateOnResize: true })
+        : undefined
+      const disposeLoad = triggerLoad(el, {
         onImageLoad: local.onImageLoad,
         onImageError: local.onImageError,
       })
-    }
-    else {
-      cleanup = lazyLoad(el, {
-        hash: local.thumbhash || local.blurhash,
-        hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
-        placeholderSize: local.placeholderSize,
-        onImageLoad: local.onImageLoad,
-        onImageError: local.onImageError,
+      onCleanup(() => {
+        disposeSizes?.()
+        disposeLoad()
       })
+      return
     }
 
+    const cleanup = lazyLoad(el, {
+      hash: local.thumbhash || local.blurhash,
+      hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize: local.placeholderSize,
+      updateSizesOnResize: local.autoSizes,
+      onImageLoad: local.onImageLoad,
+      onImageError: local.onImageError,
+    })
     onCleanup(() => {
       cleanup()
     })
   })
 
   return (
-    <img
-      ref={setTarget}
-      src={local.placeholderSrc}
-      data-src={local.src}
-      data-srcset={local.srcSet}
-      data-sizes={local.autoSizes ? 'auto' : undefined}
-      loading={local.loading || 'lazy'}
-      {...rest}
-    />
+    <Show
+      when={local.sources?.length}
+      fallback={(
+        <img
+          ref={setTarget}
+          src={local.placeholderSrc}
+          data-src={local.src}
+          data-srcset={local.srcSet}
+          data-sizes={local.autoSizes ? 'auto' : undefined}
+          loading={local.loading || 'lazy'}
+          {...rest}
+        />
+      )}
+    >
+      <picture>
+        <For each={local.sources}>
+          {source => (
+            <source
+              type={source.type}
+              media={source.media}
+              width={source.width}
+              height={source.height}
+              data-srcset={source.srcSet}
+              data-sizes={source.sizes || (local.autoSizes ? 'auto' : undefined)}
+            />
+          )}
+        </For>
+        <img
+          ref={setTarget}
+          src={local.placeholderSrc}
+          data-src={local.src}
+          data-srcset={local.srcSet}
+          data-sizes={local.autoSizes ? 'auto' : undefined}
+          loading={local.loading || 'lazy'}
+          {...rest}
+        />
+      </picture>
+    </Show>
   )
 }

@@ -1,5 +1,5 @@
 import type { ImgHTMLAttributes } from 'react'
-import type { UnLazyLoadOptions } from 'unlazy'
+import type { UnLazyLoadOptions, UnLazySource } from 'unlazy'
 import { useEffect, useRef } from 'react'
 import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
@@ -10,6 +10,8 @@ interface Props
   src?: ImgHTMLAttributes<HTMLImageElement>['src']
   /** Image source set to be lazy-loaded. */
   srcSet?: ImgHTMLAttributes<HTMLImageElement>['srcSet']
+  /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
+  sources?: UnLazySource[]
   /**
    * A flag to indicate whether the sizes attribute should be automatically calculated.
    * @default false
@@ -40,6 +42,7 @@ interface Props
 export function UnLazyImage({
   src,
   srcSet,
+  sources,
   autoSizes,
   blurhash,
   thumbhash,
@@ -57,28 +60,31 @@ export function UnLazyImage({
     if (!targetRef.current)
       return
 
-    let cleanup: () => void
     if (preload) {
-      if (autoSizes)
-        _autoSizes(targetRef.current)
-      cleanup = triggerLoad(targetRef.current, { onImageLoad, onImageError })
-    }
-    else {
-      cleanup = lazyLoad(targetRef.current, {
-        hash: thumbhash || blurhash,
-        hashType: thumbhash ? 'thumbhash' : 'blurhash',
-        placeholderSize,
-        onImageLoad,
-        onImageError,
-      })
+      const disposeSizes = autoSizes
+        ? _autoSizes(targetRef.current, { updateOnResize: true })
+        : undefined
+      const disposeLoad = triggerLoad(targetRef.current, { onImageLoad, onImageError })
+      return () => {
+        disposeSizes?.()
+        disposeLoad()
+      }
     }
 
+    const cleanup = lazyLoad(targetRef.current, {
+      hash: thumbhash || blurhash,
+      hashType: thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize,
+      updateSizesOnResize: autoSizes,
+      onImageLoad,
+      onImageError,
+    })
     return () => {
       cleanup()
     }
-  }, [src, srcSet, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onImageLoad, onImageError])
+  }, [src, srcSet, sources, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onImageLoad, onImageError])
 
-  return (
+  const img = (
     <img
       ref={targetRef}
       src={placeholderSrc}
@@ -88,5 +94,26 @@ export function UnLazyImage({
       loading={loading}
       {...rest}
     />
+  )
+
+  if (!sources?.length)
+    return img
+
+  return (
+    <picture>
+      {sources.map((source, index) => (
+        <source
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+          type={source.type}
+          media={source.media}
+          width={source.width}
+          height={source.height}
+          data-srcset={source.srcSet}
+          data-sizes={source.sizes || (autoSizes ? 'auto' : undefined)}
+        />
+      ))}
+      {img}
+    </picture>
   )
 }

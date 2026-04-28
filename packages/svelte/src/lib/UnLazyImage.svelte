@@ -1,10 +1,12 @@
 <script lang='ts'>
   import type { HTMLImgAttributes } from 'svelte/elements'
+  import type { UnLazySource } from 'unlazy'
   import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
 
   const {
     src,
     srcSet,
+    sources,
     autoSizes = false,
     blurhash,
     thumbhash,
@@ -20,6 +22,8 @@
     src?: HTMLImgAttributes['src']
     /** Image source set to be lazy-loaded. */
     srcSet?: HTMLImgAttributes['srcset']
+    /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
+    sources?: UnLazySource[]
     /**
      * A flag to indicate whether the sizes attribute should be automatically calculated.
      * @default false
@@ -55,34 +59,61 @@
     if (!target)
       return
 
-    let cleanup: () => void
     if (preload) {
-      if (autoSizes)
-        _autoSizes(target)
-      cleanup = triggerLoad(target, { onImageLoad, onImageError })
-    }
-    else {
-      cleanup = lazyLoad(target, {
-        hash: thumbhash || blurhash,
-        hashType: thumbhash ? 'thumbhash' : 'blurhash',
-        placeholderSize,
-        onImageLoad,
-        onImageError,
-      })
+      const disposeSizes = autoSizes
+        ? _autoSizes(target, { updateOnResize: true })
+        : undefined
+      const disposeLoad = triggerLoad(target, { onImageLoad, onImageError })
+      return () => {
+        disposeSizes?.()
+        disposeLoad()
+      }
     }
 
+    const cleanup = lazyLoad(target, {
+      hash: thumbhash || blurhash,
+      hashType: thumbhash ? 'thumbhash' : 'blurhash',
+      placeholderSize,
+      updateSizesOnResize: autoSizes,
+      onImageLoad,
+      onImageError,
+    })
     return () => {
       cleanup()
     }
   })
 </script>
 
-<img
-  bind:this={target}
-  src={placeholderSrc}
-  data-src={src}
-  data-srcset={srcSet}
-  data-sizes={autoSizes ? 'auto' : undefined}
-  {loading}
-  {...restProps}
-/>
+{#if sources?.length}
+  <picture>
+    {#each sources as source, index (index)}
+      <source
+        type={source.type}
+        media={source.media}
+        width={source.width}
+        height={source.height}
+        data-srcset={source.srcSet}
+        data-sizes={source.sizes || (autoSizes ? 'auto' : undefined)}
+      />
+    {/each}
+    <img
+      bind:this={target}
+      src={placeholderSrc}
+      data-src={src}
+      data-srcset={srcSet}
+      data-sizes={autoSizes ? 'auto' : undefined}
+      {loading}
+      {...restProps}
+    />
+  </picture>
+{:else}
+  <img
+    bind:this={target}
+    src={placeholderSrc}
+    data-src={src}
+    data-srcset={srcSet}
+    data-sizes={autoSizes ? 'auto' : undefined}
+    {loading}
+    {...restProps}
+  />
+{/if}

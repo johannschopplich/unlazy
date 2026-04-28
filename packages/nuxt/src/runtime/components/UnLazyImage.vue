@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { UnLazySource } from 'unlazy'
 import type { ImgHTMLAttributes } from 'vue'
 import type { ModuleOptions } from '../../module'
 import { autoSizes as _autoSizes, createPlaceholderFromHash, lazyLoad, triggerLoad } from 'unlazy'
-import { computed, onBeforeUnmount, ref, useRuntimeConfig, watchEffect } from '#imports'
+import { computed, ref, useRuntimeConfig, watchEffect } from '#imports'
 
 defineOptions({
   inheritAttrs: false,
@@ -15,11 +16,7 @@ const props = withDefaults(
     /** Image source set to be lazy-loaded. */
     srcSet?: ImgHTMLAttributes['srcset']
     /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
-    sources?: {
-      type: string
-      srcSet: string
-      sizes?: string
-    }[]
+    sources?: UnLazySource[]
     /**
      * A flag to indicate whether the sizes attribute should be automatically calculated.
      * @default false
@@ -89,12 +86,9 @@ const pngPlaceholder = (props.ssr ?? unlazy.ssr) && hash.value
   : undefined
 
 const target = ref<HTMLImageElement | undefined>()
-let cleanup: (() => void) | undefined
 let lastHash: string | undefined
 
-watchEffect(() => {
-  cleanup?.()
-
+watchEffect((onCleanup) => {
   if (!target.value)
     return
 
@@ -119,11 +113,16 @@ watchEffect(() => {
   }
 
   if (props.preload) {
-    if (props.autoSizes)
-      _autoSizes(target.value)
-    cleanup = triggerLoad(target.value, {
+    const disposeSizes = props.autoSizes
+      ? _autoSizes(target.value, { updateOnResize: true })
+      : undefined
+    const disposeLoad = triggerLoad(target.value, {
       onImageLoad: image => emit('imageLoad', image),
       onImageError: (image, error) => emit('imageError', image, error),
+    })
+    onCleanup(() => {
+      disposeSizes?.()
+      disposeLoad()
     })
     return
   }
@@ -132,15 +131,13 @@ watchEffect(() => {
     return
 
   // Placeholder is already decoded
-  cleanup = lazyLoad(target.value, {
+  const dispose = lazyLoad(target.value, {
     hash: false,
+    updateSizesOnResize: props.autoSizes,
     onImageLoad: image => emit('imageLoad', image),
     onImageError: (image, error) => emit('imageError', image, error),
   })
-})
-
-onBeforeUnmount(() => {
-  cleanup?.()
+  onCleanup(dispose)
 })
 </script>
 
@@ -150,8 +147,11 @@ onBeforeUnmount(() => {
       v-for="(source, index) in sources"
       :key="index"
       :type="source.type"
+      :media="source.media"
+      :width="source.width"
+      :height="source.height"
       :data-srcset="source.srcSet"
-      :data-sizes="source.sizes"
+      :data-sizes="source.sizes || (autoSizes ? 'auto' : undefined)"
     >
     <img
       ref="target"

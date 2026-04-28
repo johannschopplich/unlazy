@@ -5,4 +5,4 @@ export {
   lazyLoad,
   triggerLoad,
 } from '@unlazy/core'
-export type { TriggerLoadOptions, UnLazyLoadOptions } from '@unlazy/core'
+export type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions, UnLazySource } from '@unlazy/core'

@@ -141,6 +141,23 @@ describe('lazyLoad', () => {
 
       spy.mockRestore()
     })
+
+    it('populates numeric sizes on data-sizes="auto" sources for eager picture-wrapped images', () => {
+      const { img, sources } = makePictureImg({
+        loading: 'eager',
+        dataSrc: 'hero.jpg',
+        sources: [
+          { dataSrcset: 'hero.webp', type: 'image/webp', dataSizes: 'auto' },
+        ],
+      })
+      const [source] = sources as [HTMLSourceElement]
+      Object.defineProperty(img, 'offsetWidth', { value: 1200, configurable: true })
+
+      lazyLoad(img)
+
+      expect(source.srcset).toBe('hero.webp')
+      expect(source.sizes).toBe('1200px')
+    })
   })
 
   describe('idempotency', () => {
@@ -226,5 +243,142 @@ describe('triggerLoad', () => {
     expect(webpSource.srcset).toBe('image.webp')
     expect(avifSource.srcset).toBe('image.avif')
     expect(img.src).toContain('image.jpg')
+  })
+
+  it('populates numeric sizes on data-sizes="auto" sources after lazy swap', () => {
+    const { img, sources } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [
+        { dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' },
+      ],
+    })
+    const [source] = sources as [HTMLSourceElement]
+    Object.defineProperty(img, 'offsetWidth', { value: 800, configurable: true })
+
+    triggerLoad(img)
+
+    expect(source.srcset).toBe('image.webp')
+    expect(source.sizes).toBe('800px')
+  })
+
+  it('preserves explicit source-level sizes when data-sizes is not "auto"', () => {
+    const { img, sources } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [
+        { dataSrcset: 'image.webp', type: 'image/webp' },
+      ],
+    })
+    const [source] = sources as [HTMLSourceElement]
+    source.sizes = '50vw'
+
+    triggerLoad(img)
+
+    expect(source.srcset).toBe('image.webp')
+    expect(source.sizes).toBe('50vw')
+  })
+})
+
+describe('autoSizes resize tracking', () => {
+  let observers: Array<{ cb: ResizeObserverCallback, target: Element | null }>
+
+  beforeEach(() => {
+    vi.useFakeTimers()
+    observers = []
+    vi.stubGlobal('ResizeObserver', class FakeRO {
+      record: { cb: ResizeObserverCallback, target: Element | null }
+      constructor(cb: ResizeObserverCallback) {
+        this.record = { cb, target: null }
+        observers.push(this.record)
+      }
+
+      observe(target: Element) { this.record.target = target }
+      unobserve() { this.record.target = null }
+      disconnect() { this.record.target = null }
+    })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  function fireResize(target: Element) {
+    for (const o of observers) {
+      if (o.target === target)
+        o.cb([] as unknown as ResizeObserverEntry[], {} as ResizeObserver)
+    }
+  }
+
+  it('retracks picture source sizes on viewport resize when updateOnResize is enabled', () => {
+    const { picture, img, sources } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+    })
+    document.body.append(picture)
+    const [source] = sources as [HTMLSourceElement]
+    Object.defineProperty(img, 'offsetWidth', { value: 800, configurable: true })
+
+    autoSizes(img, { updateOnResize: true })
+    expect(source.sizes).toBe('800px')
+
+    Object.defineProperty(img, 'offsetWidth', { value: 1200, configurable: true })
+    fireResize(img)
+    vi.advanceTimersByTime(500)
+
+    expect(source.sizes).toBe('1200px')
+  })
+
+  it('stops retracking source sizes after the autoSizes cleanup runs', () => {
+    const { picture, img, sources } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+    })
+    document.body.append(picture)
+    const [source] = sources as [HTMLSourceElement]
+    Object.defineProperty(img, 'offsetWidth', { value: 800, configurable: true })
+
+    const cleanup = autoSizes(img, { updateOnResize: true })
+    cleanup()
+
+    Object.defineProperty(img, 'offsetWidth', { value: 1200, configurable: true })
+    fireResize(img)
+    vi.advanceTimersByTime(500)
+
+    expect(source.sizes).toBe('800px')
+  })
+
+  it('retracks source sizes on resize for eager picture-wrapped images via lazyLoad', () => {
+    const { picture, img, sources } = makePictureImg({
+      loading: 'eager',
+      dataSrc: 'image.jpg',
+      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+    })
+    document.body.append(picture)
+    const [source] = sources as [HTMLSourceElement]
+    Object.defineProperty(img, 'offsetWidth', { value: 800, configurable: true })
+
+    lazyLoad(img, { updateSizesOnResize: true })
+    expect(source.sizes).toBe('800px')
+
+    Object.defineProperty(img, 'offsetWidth', { value: 1200, configurable: true })
+    fireResize(img)
+    vi.advanceTimersByTime(500)
+
+    expect(source.sizes).toBe('1200px')
+  })
+
+  it('retracks standalone img sizes on resize when data-sizes="auto" is set', () => {
+    const img = makeLazyImg({ dataSrcset: 'image.jpg 1x, image@2x.jpg 2x', dataSizes: 'auto' })
+    document.body.append(img)
+    Object.defineProperty(img, 'offsetWidth', { value: 600, configurable: true })
+
+    autoSizes(img, { updateOnResize: true })
+    expect(img.sizes).toBe('600px')
+
+    Object.defineProperty(img, 'offsetWidth', { value: 900, configurable: true })
+    fireResize(img)
+    vi.advanceTimersByTime(500)
+
+    expect(img.sizes).toBe('900px')
   })
 })

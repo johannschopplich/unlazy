@@ -95,16 +95,25 @@ The automatic sizes calculation uses the display width of the image.
 
 When calling [`lazyLoad`](/api/lazy-load), the library automatically calculates the `sizes` attribute for all images with `data-sizes="auto"`.
 
-Alternatively, use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute without lazy loading.
-
-To do so, import the [`autoSizes`](/api/auto-sizes) function from the library and call it:
+Alternatively, use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute without lazy loading. Call it with an `<img>` inside a `<picture>` and it walks to every `<source data-sizes="auto">` sibling in the same call:
 
 ```ts
 import { autoSizes } from 'unlazy'
 
-// Automatically calculate the sizes attribute for all `img[data-sizes="auto"], source[data-sizes="auto"]` images, without lazy loading them
+// One-shot resolve for every matching element in the document
 autoSizes()
 ```
+
+For responsive layouts where the display width changes – fluid containers, breakpoint switches, orientation changes – pass `{ updateOnResize: true }` to keep `sizes` synced. `autoSizes` returns a disposer – call it when you no longer need the observer:
+
+```ts
+const dispose = autoSizes(undefined, { updateOnResize: true })
+
+// Later, when unmounting
+dispose()
+```
+
+The same behavior is available on [`lazyLoad`](/api/lazy-load) via `updateSizesOnResize: true`, which delegates to `autoSizes` internally and bundles the disposer into the same cleanup callback.
 
 ## Custom Selectors
 
@@ -170,8 +179,4 @@ unlazy fully supports the `<picture>` element for art direction and format selec
 </picture>
 ```
 
-When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`.
-
-::: info
-For `<picture>` elements, the `onImageLoad` and `onImageError` callbacks passed to `lazyLoad` aren't invoked, as the browser handles source selection internally.
-:::
+When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`. The `onImageLoad` and `onImageError` callbacks fire once the browser resolves a source on the visible `<img>`.

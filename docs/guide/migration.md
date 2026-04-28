@@ -25,6 +25,21 @@ The deprecated `loadImage` alias is gone. Replace every call site with `triggerL
 + // Optional: dispose() to cancel before the load completes
 ```
 
+### `autoSizes` Owns Ongoing Size Tracking
+
+`triggerLoad` is one-shot again – it no longer accepts `updateSizesOnResize`. Ongoing re-resolution of `data-sizes="auto"` lives on [`autoSizes`](/api/auto-sizes), which now accepts `{ updateOnResize: true }` and returns a disposer:
+
+```diff
+- triggerLoad(image, { updateSizesOnResize: true })
++ const disposeSizes = autoSizes(image, { updateOnResize: true })
++ const disposeLoad = triggerLoad(image)
++ // Later: disposeSizes(); disposeLoad()
+```
+
+For the common case, [`lazyLoad`](/api/lazy-load) keeps `updateSizesOnResize` and delegates to `autoSizes` internally – no caller change needed.
+
+`autoSizes` itself now always returns a function. With no options, the returned disposer is a no-op; with `updateOnResize: true`, it disconnects every `ResizeObserver` created by the call. Passing an `<img>` inside a `<picture>` walks to every `<source data-sizes="auto">` sibling in the same call, replacing the previous need to invoke `autoSizes` separately on each source.
+
 ### `isLazyLoadingSupported` Removal
 
 Native `loading="lazy"` is Baseline Widely Available; the feature-detect was used internally to fall back to immediate swap, and that branch is gone. If you imported the helper directly, replace it with:
@@ -92,6 +107,21 @@ Result: you can safely re-invoke `lazyLoad()` after inserting images into the DO
 ### Dev-Mode LCP Warning
 
 unlazy now warns in development when the LCP element is still configured for lazy loading. See the [Core Web Vitals guide](/guide/core-web-vitals#dev-mode-lcp-warning).
+
+### `sources` Prop Across Adapters
+
+The `sources` prop is no longer Nuxt-only. Every adapter now renders a `<picture>` when you pass an array of `UnLazySource` objects:
+
+```ts
+import type { UnLazySource } from 'unlazy'
+
+const sources: UnLazySource[] = [
+  { type: 'image/avif', srcSet: 'hero.avif 1x, hero@2x.avif 2x' },
+  { media: '(max-width: 600px)', srcSet: 'hero-mobile.jpg', width: 480, height: 640 },
+]
+```
+
+Each entry becomes a `<source>` child with `type`, `media`, `width`, `height`, and `data-sizes="auto"` support. Pass `updateSizesOnResize: true` to [`lazyLoad`](/api/lazy-load) (or `{ updateOnResize: true }` directly to [`autoSizes`](/api/auto-sizes)) to re-resolve `<source data-sizes="auto">` siblings on viewport resize.
 
 ### Vue / Nuxt: `@image-load` and `@image-error` Emits
 

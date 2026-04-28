@@ -37,7 +37,9 @@ export interface UnLazyLoadOptions {
   placeholderSize?: number
 
   /**
-   * Whether to update the `sizes` attribute on resize events with the current image width.
+   * Whether `data-sizes="auto"` should retrack the rendered image width on
+   * viewport resize. Applies to both `<img>` elements and their `<source>`
+   * siblings inside a `<picture>`. Internally delegates to `autoSizes`.
    *
    * @default false
    */
@@ -69,3 +71,48 @@ export interface TriggerLoadOptions {
   onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 // #endregion TriggerLoadOptions
+
+// #region AutoSizesOptions
+export interface AutoSizesOptions {
+  /**
+   * Whether `data-sizes="auto"` should retrack the rendered width on viewport
+   * resize. Sets up a debounced `ResizeObserver` per call; the returned
+   * disposer disconnects it.
+   *
+   * @default false
+   */
+  updateOnResize?: boolean
+}
+// #endregion AutoSizesOptions
+
+// #region UnLazySource
+export interface UnLazySource {
+  /** Image source set for the `<source>` element. Will be applied lazily via `data-srcset`. */
+  srcSet: string
+
+  /**
+   * Media query that selects this source, e.g. `(max-width: 600px)`. Use this for art
+   * direction across breakpoints.
+   */
+  media?: string
+
+  /** MIME type for format negotiation, e.g. `image/avif` or `image/webp`. */
+  type?: string
+
+  /**
+   * Explicit `sizes` value. When unset and the parent has automatic sizing enabled, the
+   * source falls back to `sizes="auto"` (resolved to a numeric pixel width).
+   */
+  sizes?: string
+
+  /**
+   * Intrinsic width in pixels. When the matching `<source>` is selected, the browser uses
+   * this together with `height` to set the rendered `<img>`'s aspect ratio. Prevents
+   * layout shift when the breakpoint changes.
+   */
+  width?: number
+
+  /** Intrinsic height in pixels. Pairs with `width` to prevent layout shift across breakpoints. */
+  height?: number
+}
+// #endregion UnLazySource

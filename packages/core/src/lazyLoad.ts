@@ -1,4 +1,4 @@
-import type { TriggerLoadOptions, UnLazyLoadOptions } from './types'
+import type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { installLcpWarning } from './lcpWarning'
@@ -6,7 +6,6 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { createIndexedImagePlaceholder, debounce, isCrawler, toElementArray } from './utils'
 
 const processedImages = new WeakSet<HTMLImageElement>()
-const resizeObserverCache = new WeakMap<HTMLImageElement | HTMLSourceElement, ResizeObserver>()
 
 // #region lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
@@ -49,11 +48,9 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (isEager && !image.hasAttribute('fetchpriority'))
       image.setAttribute('fetchpriority', 'high')
 
-    // Calculate the image's `sizes` attribute if `data-sizes="auto"` is set
-    const resizeObserverCleanup = updateSizesAttribute(image, { updateOnResize: updateSizesOnResize })
-
-    if (updateSizesOnResize && resizeObserverCleanup)
-      cleanupHandlers.add(resizeObserverCleanup)
+    // Resolve `data-sizes="auto"` for the img and any picture-source siblings,
+    // optionally installing a single `ResizeObserver` to retrack on resize
+    cleanupHandlers.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
@@ -95,8 +92,7 @@ export function lazyLoad<T extends HTMLImageElement>(
         image.addEventListener('error', errorHandler, { once: true })
         cleanupHandlers.add(() => image.removeEventListener('error', errorHandler))
       }
-      for (const fn of updatePictureSources(image, { updateOnResize: updateSizesOnResize }))
-        cleanupHandlers.add(fn)
+      swapPictureSources(image)
       swapDataAttribute(image, 'srcset')
       swapDataAttribute(image, 'src')
       continue
@@ -111,13 +107,13 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError, updateSizesOnResize }))
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
     const loadHandler = () => {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError, updateSizesOnResize }))
+      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
     }
     image.addEventListener('load', loadHandler, { once: true })
 
@@ -133,6 +129,15 @@ export function lazyLoad<T extends HTMLImageElement>(
 }
 
 // #region autoSizes
+/**
+ * Resolves `data-sizes="auto"` to a numeric pixel width. Given an `<img>`
+ * inside a `<picture>`, walks to every `<source data-sizes="auto">` sibling and
+ * resolves them too. With `{ updateOnResize: true }`, a debounced
+ * `ResizeObserver` retracks the rendered width on viewport changes.
+ *
+ * @returns A disposer that disconnects every observer created by this call.
+ * Calling it on a one-shot invocation is a no-op.
+ */
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to calculate the `sizes` attribute for.
@@ -140,13 +145,22 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
    * @default 'img[data-sizes="auto"], source[data-sizes="auto"]'
    */
   selectorsOrElements?: string | T | NodeListOf<T> | T[],
-): void
+  options?: AutoSizesOptions,
+): () => void
 // #endregion autoSizes
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
-): void {
-  for (const image of toElementArray<T>(selectorsOrElements))
-    updateSizesAttribute(image)
+  { updateOnResize = false }: AutoSizesOptions = {},
+): () => void {
+  const disposers: (() => void)[] = []
+
+  for (const element of toElementArray<T>(selectorsOrElements))
+    disposers.push(observeAutoSizes(element, updateOnResize))
+
+  return () => {
+    for (const fn of disposers) fn()
+    disposers.length = 0
+  }
 }
 
 // #region triggerLoad
@@ -167,6 +181,9 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
  * are attached on the visible `<img>` before the swap so the queued `load` task is caught
  * once the browser resolves a source. If `data-src` resolves to the URL already on the
  * `<img>`, the browser fires no `load` event and the callback never runs.
+ *
+ * `triggerLoad` does not install a `ResizeObserver`. Pair it with
+ * `autoSizes(img, { updateOnResize: true })` for ongoing source-size tracking.
  */
 export function triggerLoad(
   image: HTMLImageElement,
@@ -175,7 +192,7 @@ export function triggerLoad(
 // #endregion triggerLoad
 export function triggerLoad(
   image: HTMLImageElement,
-  { onImageLoad, onImageError, updateSizesOnResize = false }: TriggerLoadOptions = {},
+  { onImageLoad, onImageError }: TriggerLoadOptions = {},
 ): () => void {
   const disposers: (() => void)[] = []
   const dispose = () => {
@@ -195,7 +212,7 @@ export function triggerLoad(
       disposers.push(() => image.removeEventListener('error', handler))
     }
 
-    disposers.push(...updatePictureSources(image, { updateOnResize: updateSizesOnResize }))
+    swapPictureSources(image)
     swapDataAttribute(image, 'srcset')
     swapDataAttribute(image, 'src')
     return dispose
@@ -308,40 +325,67 @@ export function createPlaceholderFromHash(
   }
 }
 
-function updateSizesAttribute(
+function observeAutoSizes(
   element: HTMLImageElement | HTMLSourceElement,
-  options?: {
-    updateOnResize?: boolean
-  },
-): (() => void) | undefined {
+  updateOnResize: boolean,
+): () => void {
+  // Each call resolves the element itself plus, for an `<img>` inside a
+  // `<picture>`, every `<source data-sizes="auto">` sibling
+  const targets = collectAutoSizeTargets(element)
+  for (const target of targets)
+    updateSizesAttribute(target)
+
+  if (!updateOnResize || !targets.some(hasAutoSizes))
+    return noop
+
+  // `<source>` elements have no layout box, so observe the rendered `<img>`
+  const observedImage = element instanceof HTMLImageElement
+    ? element
+    : (element.parentElement?.getElementsByTagName('img')[0] ?? null)
+  if (!observedImage)
+    return noop
+
+  const update = debounce(() => {
+    for (const target of collectAutoSizeTargets(element))
+      updateSizesAttribute(target)
+  }, 500)
+  const observer = new ResizeObserver(update)
+  observer.observe(observedImage)
+
+  return () => observer.disconnect()
+}
+
+function hasAutoSizes(element: HTMLImageElement | HTMLSourceElement): boolean {
+  return element.dataset.sizes === 'auto'
+}
+
+function collectAutoSizeTargets(
+  element: HTMLImageElement | HTMLSourceElement,
+): (HTMLImageElement | HTMLSourceElement)[] {
+  const targets: (HTMLImageElement | HTMLSourceElement)[] = [element]
+  if (
+    element instanceof HTMLImageElement
+    && element.parentElement?.tagName.toLowerCase() === 'picture'
+  ) {
+    for (const source of element.parentElement.querySelectorAll<HTMLSourceElement>('source[data-sizes="auto"]'))
+      targets.push(source)
+  }
+
+  return targets
+}
+
+function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): void {
   if (element.dataset.sizes !== 'auto')
     return
 
   const width = getOffsetWidth(element)
+  if (!width)
+    return
 
-  if (width) {
-    // Guard against no-op writes
-    const next = `${width}px`
-    if (element.sizes !== next)
-      element.sizes = next
-  }
-
-  if (options?.updateOnResize) {
-    if (!resizeObserverCache.has(element)) {
-      const debouncedSizeUpdate = debounce(() => updateSizesAttribute(element), 500)
-      const observer = new ResizeObserver(debouncedSizeUpdate)
-      resizeObserverCache.set(element, observer)
-      observer.observe(element)
-    }
-
-    return () => {
-      const observer = resizeObserverCache.get(element)
-      if (observer) {
-        observer.disconnect()
-        resizeObserverCache.delete(element)
-      }
-    }
-  }
+  // Same-value writes still re-run source-set selection per HTML spec.
+  const next = `${width}px`
+  if (element.sizes !== next)
+    element.sizes = next
 }
 
 function swapDataAttribute(
@@ -356,41 +400,17 @@ function swapDataAttribute(
   element.removeAttribute(`data-${attr}`)
 }
 
-function updatePictureSources(
-  image: HTMLImageElement,
-  options?: { updateOnResize?: boolean },
-): (() => void)[] {
-  const cleanups: (() => void)[] = []
-  const pictureElement = image.parentElement as HTMLPictureElement
+function swapPictureSources(image: HTMLImageElement) {
+  const picture = image.parentElement
+  if (picture?.tagName.toLowerCase() !== 'picture')
+    return
 
-  if (pictureElement?.tagName.toLowerCase() !== 'picture')
-    return cleanups
-
-  const autoSources: HTMLSourceElement[] = []
-
-  for (const source of pictureElement.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
+  for (const source of picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
     // Resolve `data-sizes="auto"` to a numeric pixel width before swapping
-    // `srcset` so the browser sees a final `sizes` value at source-selection time.
+    // `srcset` so the browser sees a final value at source-selection time.
     updateSizesAttribute(source)
     swapDataAttribute(source, 'srcset')
-
-    if (source.dataset.sizes === 'auto')
-      autoSources.push(source)
   }
-
-  // `<source>` elements have no layout box, so observe the visible `<img>`
-  // and re-resolve every auto source on each tick.
-  if (options?.updateOnResize && autoSources.length > 0) {
-    const update = debounce(() => {
-      for (const source of autoSources)
-        updateSizesAttribute(source)
-    }, 500)
-    const observer = new ResizeObserver(update)
-    observer.observe(image)
-    cleanups.push(() => observer.disconnect())
-  }
-
-  return cleanups
 }
 
 function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | undefined {
@@ -402,3 +422,5 @@ function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | unde
 function isDescendantOfPicture(element: HTMLElement): element is HTMLElement & { parentElement: HTMLPictureElement } {
   return element.parentElement?.tagName.toLowerCase() === 'picture'
 }
+
+function noop() {}
