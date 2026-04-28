@@ -57,21 +57,21 @@ watchEffect((onCleanup) => {
   void props.sources
 
   if (props.preload) {
-    const disposeSizes = props.autoSizes
+    const cleanupSizes = props.autoSizes
       ? _autoSizes(target.value, { updateOnResize: true })
       : undefined
-    const disposeLoad = triggerLoad(target.value, {
+    const cleanupLoad = triggerLoad(target.value, {
       onImageLoad: image => emit('imageLoad', image),
       onImageError: (image, error) => emit('imageError', image, error),
     })
     onCleanup(() => {
-      disposeSizes?.()
-      disposeLoad()
+      cleanupSizes?.()
+      cleanupLoad()
     })
     return
   }
 
-  const dispose = lazyLoad(target.value, {
+  const cleanup = lazyLoad(target.value, {
     hash: props.thumbhash || props.blurhash,
     hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
     placeholderSize: props.placeholderSize,
@@ -79,7 +79,7 @@ watchEffect((onCleanup) => {
     onImageLoad: image => emit('imageLoad', image),
     onImageError: (image, error) => emit('imageError', image, error),
   })
-  onCleanup(dispose)
+  onCleanup(cleanup)
 })
 </script>
 

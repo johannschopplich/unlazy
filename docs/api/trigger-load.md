@@ -10,18 +10,18 @@ The function performs the following operations:
 4. Swaps `data-src` and `data-srcset` to their standard counterparts.
 5. Invokes the optional `onImageLoad` callback when loading completes, or `onImageError` if loading fails. On failure, a synthetic `error` event also fires on the visible `<img>`.
 
-`triggerLoad` returns a disposer that detaches its listeners and, for standalone images, aborts the in-flight network fetch. Calling it after the load has already completed is a no-op.
+`triggerLoad` returns a cleanup function that detaches its listeners and, for standalone images, aborts the in-flight network fetch. Calling it after the load has already completed is a no-op.
 
 ::: tip
 `triggerLoad` is one-shot – it does not install any `ResizeObserver`. For ongoing source-size tracking on responsive `<picture>` layouts, pair it with [`autoSizes`](/api/auto-sizes) and `{ updateOnResize: true }`:
 
 ```ts
-const disposeSizes = autoSizes(image, { updateOnResize: true })
-const disposeLoad = triggerLoad(image)
+const cleanupSizes = autoSizes(image, { updateOnResize: true })
+const cleanupLoad = triggerLoad(image)
 
 // Later
-disposeSizes()
-disposeLoad()
+cleanupSizes()
+cleanupLoad()
 ```
 :::
 
@@ -37,11 +37,11 @@ import { triggerLoad } from 'unlazy'
 const image = document.querySelector<HTMLImageElement>('.priority-image')!
 
 // Load immediately with callbacks
-const dispose = triggerLoad(image, {
+const cleanup = triggerLoad(image, {
   onImageLoad: img => console.log('Loaded:', img.src),
   onImageError: (img, error) => console.error('Failed to load:', img, error),
 })
 
 // Later, cancel the load if it hasn't completed yet
-dispose()
+cleanup()
 ```

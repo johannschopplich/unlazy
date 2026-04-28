@@ -60,13 +60,13 @@
       return
 
     if (preload) {
-      const disposeSizes = autoSizes
+      const cleanupSizes = autoSizes
         ? _autoSizes(target, { updateOnResize: true })
         : undefined
-      const disposeLoad = triggerLoad(target, { onImageLoad, onImageError })
+      const cleanupLoad = triggerLoad(target, { onImageLoad, onImageError })
       return () => {
-        disposeSizes?.()
-        disposeLoad()
+        cleanupSizes?.()
+        cleanupLoad()
       }
     }
 

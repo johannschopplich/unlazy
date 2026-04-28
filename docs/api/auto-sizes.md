@@ -10,19 +10,19 @@ To lazy load images, refer to the [`lazyLoad`](/api/lazy-load) method.
 
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
-| `updateOnResize` | `boolean` | `false` | Install a debounced `ResizeObserver` that re-resolves `data-sizes="auto"` on viewport changes. The returned disposer disconnects it. |
+| `updateOnResize` | `boolean` | `false` | Install a debounced `ResizeObserver` that re-resolves `data-sizes="auto"` on viewport changes. The returned cleanup function disconnects it. |
 
 ## Return Value
 
-`autoSizes` returns a disposer. When called with `updateOnResize: false` (or no options), the disposer is a no-op. With `updateOnResize: true`, calling it disconnects every `ResizeObserver` created by that call:
+`autoSizes` returns a cleanup function. When called with `updateOnResize: false` (or no options), the cleanup is a no-op. With `updateOnResize: true`, calling it disconnects every `ResizeObserver` created by that call:
 
 ```ts
 import { autoSizes } from 'unlazy'
 
-const dispose = autoSizes('img[data-sizes="auto"]', { updateOnResize: true })
+const cleanup = autoSizes('img[data-sizes="auto"]', { updateOnResize: true })
 
 // Later, when cleaning up
-dispose()
+cleanup()
 ```
 
 ## Type Declarations
@@ -47,9 +47,9 @@ import { autoSizes } from 'unlazy'
 autoSizes()
 
 // Or: resolve and keep tracking on resize
-const dispose = autoSizes(undefined, { updateOnResize: true })
+const cleanup = autoSizes(undefined, { updateOnResize: true })
 ```
 
 ::: tip
-For most users, calling [`lazyLoad`](/api/lazy-load) with `updateSizesOnResize: true` is the simpler path – it delegates to `autoSizes` internally and bundles the disposer into the same cleanup callback.
+For most users, calling [`lazyLoad`](/api/lazy-load) with `updateSizesOnResize: true` is the simpler path – it delegates to `autoSizes` internally and bundles the cleanup into the same callback.
 :::

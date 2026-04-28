@@ -148,21 +148,21 @@ describe('triggerLoad (browser)', () => {
     expect(nativeError).toHaveBeenCalled()
   })
 
-  it('disposer cancels an in-flight standalone preload', async () => {
+  it('cleanup cancels an in-flight standalone preload', async () => {
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG
     document.body.appendChild(img)
 
     const onImageLoad = vi.fn()
-    const dispose = triggerLoad(img, { onImageLoad })
-    dispose()
+    const cleanup = triggerLoad(img, { onImageLoad })
+    cleanup()
 
     await new Promise(resolve => setTimeout(resolve, 200))
 
     expect(onImageLoad).not.toHaveBeenCalled()
   })
 
-  it('disposer cancels an in-flight picture-wrapped load', async () => {
+  it('cleanup cancels an in-flight picture-wrapped load', async () => {
     const picture = document.createElement('picture')
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG
@@ -170,35 +170,35 @@ describe('triggerLoad (browser)', () => {
     document.body.appendChild(picture)
 
     const onImageLoad = vi.fn()
-    const dispose = triggerLoad(img, { onImageLoad })
-    dispose()
+    const cleanup = triggerLoad(img, { onImageLoad })
+    cleanup()
 
     await new Promise(resolve => setTimeout(resolve, 200))
 
     expect(onImageLoad).not.toHaveBeenCalled()
   })
 
-  it('tolerates calling the disposer twice', () => {
+  it('tolerates calling cleanup twice', () => {
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG
     document.body.appendChild(img)
 
-    const dispose = triggerLoad(img, { onImageLoad: vi.fn() })
-    dispose()
-    expect(() => dispose()).not.toThrow()
+    const cleanup = triggerLoad(img, { onImageLoad: vi.fn() })
+    cleanup()
+    expect(() => cleanup()).not.toThrow()
   })
 
-  it('disposer is a no-op when called after the load completes', async () => {
+  it('cleanup is a no-op when called after the load completes', async () => {
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG
     document.body.appendChild(img)
 
     const onImageLoad = vi.fn()
-    let dispose!: () => void
+    let cleanup!: () => void
 
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error('load did not complete')), 2000)
-      dispose = triggerLoad(img, {
+      cleanup = triggerLoad(img, {
         onImageLoad: (image) => {
           onImageLoad(image)
           clearTimeout(timer)
@@ -207,7 +207,7 @@ describe('triggerLoad (browser)', () => {
       })
     })
 
-    expect(() => dispose()).not.toThrow()
+    expect(() => cleanup()).not.toThrow()
     expect(onImageLoad).toHaveBeenCalledTimes(1)
   })
 

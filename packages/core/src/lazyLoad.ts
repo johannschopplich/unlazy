@@ -29,7 +29,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     onImageError,
   }: UnLazyLoadOptions = {},
 ): () => void {
-  const cleanupHandlers = new Set<() => void>()
+  const cleanups = new Set<() => void>()
 
   // @ts-expect-error: Build-time variable
   if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
@@ -50,7 +50,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Resolve `data-sizes="auto"` for the img and any picture-source siblings,
     // optionally installing a single `ResizeObserver` to retrack on resize
-    cleanupHandlers.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
+    cleanups.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
     if (
@@ -85,12 +85,12 @@ export function lazyLoad<T extends HTMLImageElement>(
       if (onImageLoad) {
         const loadHandler = () => onImageLoad(image)
         image.addEventListener('load', loadHandler, { once: true })
-        cleanupHandlers.add(() => image.removeEventListener('load', loadHandler))
+        cleanups.add(() => image.removeEventListener('load', loadHandler))
       }
       if (onImageError) {
         const errorHandler = (event: Event) => onImageError(image, event)
         image.addEventListener('error', errorHandler, { once: true })
-        cleanupHandlers.add(() => image.removeEventListener('error', errorHandler))
+        cleanups.add(() => image.removeEventListener('error', errorHandler))
       }
       swapPictureSources(image)
       swapDataAttribute(image, 'srcset')
@@ -107,24 +107,24 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if is already in the viewport
     if (image.complete && image.naturalWidth > 0) {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
       continue
     }
 
     // Otherwise, load the image when it enters the viewport
     const loadHandler = () => {
-      cleanupHandlers.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
     }
     image.addEventListener('load', loadHandler, { once: true })
 
-    cleanupHandlers.add(
+    cleanups.add(
       () => image.removeEventListener('load', loadHandler),
     )
   }
 
   return () => {
-    for (const fn of cleanupHandlers) fn()
-    cleanupHandlers.clear()
+    for (const fn of cleanups) fn()
+    cleanups.clear()
   }
 }
 
@@ -135,7 +135,7 @@ export function lazyLoad<T extends HTMLImageElement>(
  * resolves them too. With `{ updateOnResize: true }`, a debounced
  * `ResizeObserver` retracks the rendered width on viewport changes.
  *
- * @returns A disposer that disconnects every observer created by this call.
+ * @returns A cleanup function that disconnects every observer created by this call.
  * Calling it on a one-shot invocation is a no-op.
  */
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
@@ -152,14 +152,14 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
   { updateOnResize = false }: AutoSizesOptions = {},
 ): () => void {
-  const disposers: (() => void)[] = []
+  const cleanups: (() => void)[] = []
 
   for (const element of toElementArray<T>(selectorsOrElements))
-    disposers.push(observeAutoSizes(element, updateOnResize))
+    cleanups.push(observeAutoSizes(element, updateOnResize))
 
   return () => {
-    for (const fn of disposers) fn()
-    disposers.length = 0
+    for (const fn of cleanups) fn()
+    cleanups.length = 0
   }
 }
 
@@ -167,7 +167,7 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 /**
  * Triggers the loading of a lazy image by swapping `data-src`/`data-srcset` to `src`/`srcset`.
  *
- * @returns A disposer that detaches listeners and, for standalone images, aborts any
+ * @returns A cleanup function that detaches listeners and, for standalone images, aborts any
  * in-flight network fetch by clearing the temporary image's `src`. Calling it after the
  * load completes is a no-op.
  *
@@ -194,34 +194,34 @@ export function triggerLoad(
   image: HTMLImageElement,
   { onImageLoad, onImageError }: TriggerLoadOptions = {},
 ): () => void {
-  const disposers: (() => void)[] = []
-  const dispose = () => {
-    for (const d of disposers) d()
-    disposers.length = 0
+  const cleanups: (() => void)[] = []
+  const cleanup = () => {
+    for (const fn of cleanups) fn()
+    cleanups.length = 0
   }
 
   if (isDescendantOfPicture(image)) {
     if (onImageLoad) {
       const handler = () => onImageLoad(image)
       image.addEventListener('load', handler, { once: true })
-      disposers.push(() => image.removeEventListener('load', handler))
+      cleanups.push(() => image.removeEventListener('load', handler))
     }
     if (onImageError) {
       const handler = (event: Event) => onImageError(image, event)
       image.addEventListener('error', handler, { once: true })
-      disposers.push(() => image.removeEventListener('error', handler))
+      cleanups.push(() => image.removeEventListener('error', handler))
     }
 
     swapPictureSources(image)
     swapDataAttribute(image, 'srcset')
     swapDataAttribute(image, 'src')
-    return dispose
+    return cleanup
   }
 
   const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
 
   if (!dataSrcset && !dataSrc)
-    return dispose
+    return cleanup
 
   const temporaryImage = new Image()
 
@@ -240,7 +240,7 @@ export function triggerLoad(
   temporaryImage.addEventListener('load', loadHandler, { once: true })
   temporaryImage.addEventListener('error', errorHandler, { once: true })
 
-  disposers.push(() => {
+  cleanups.push(() => {
     temporaryImage.removeEventListener('load', loadHandler)
     temporaryImage.removeEventListener('error', errorHandler)
     // Empty `src` aborts the pending fetch per HTML "update the image data".
@@ -262,7 +262,7 @@ export function triggerLoad(
   if (dataSrc)
     temporaryImage.src = dataSrc
 
-  return dispose
+  return cleanup
 }
 
 // #region createPlaceholderFromHash

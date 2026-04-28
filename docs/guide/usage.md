@@ -104,16 +104,16 @@ import { autoSizes } from 'unlazy'
 autoSizes()
 ```
 
-For responsive layouts where the display width changes – fluid containers, breakpoint switches, orientation changes – pass `{ updateOnResize: true }` to keep `sizes` synced. `autoSizes` returns a disposer – call it when you no longer need the observer:
+For responsive layouts where the display width changes – fluid containers, breakpoint switches, orientation changes – pass `{ updateOnResize: true }` to keep `sizes` synced. `autoSizes` returns a cleanup function – call it when you no longer need the observer:
 
 ```ts
-const dispose = autoSizes(undefined, { updateOnResize: true })
+const cleanup = autoSizes(undefined, { updateOnResize: true })
 
 // Later, when unmounting
-dispose()
+cleanup()
 ```
 
-The same behavior is available on [`lazyLoad`](/api/lazy-load) via `updateSizesOnResize: true`, which delegates to `autoSizes` internally and bundles the disposer into the same cleanup callback.
+The same behavior is available on [`lazyLoad`](/api/lazy-load) via `updateSizesOnResize: true`, which delegates to `autoSizes` internally and bundles the cleanup into the same callback.
 
 ## Custom Selectors
 

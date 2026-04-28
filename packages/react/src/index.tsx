@@ -61,13 +61,13 @@ export function UnLazyImage({
       return
 
     if (preload) {
-      const disposeSizes = autoSizes
+      const cleanupSizes = autoSizes
         ? _autoSizes(targetRef.current, { updateOnResize: true })
         : undefined
-      const disposeLoad = triggerLoad(targetRef.current, { onImageLoad, onImageError })
+      const cleanupLoad = triggerLoad(targetRef.current, { onImageLoad, onImageError })
       return () => {
-        disposeSizes?.()
-        disposeLoad()
+        cleanupSizes?.()
+        cleanupLoad()
       }
     }
 

@@ -17,28 +17,28 @@ The deprecated `loadImage` alias is gone. Replace every call site with `triggerL
 
 ### `triggerLoad` Signature
 
-`triggerLoad` now takes an options object instead of positional callbacks, and returns a disposer that detaches listeners and (for standalone images) aborts the in-flight network fetch:
+`triggerLoad` now takes an options object instead of positional callbacks, and returns a cleanup function that detaches listeners and (for standalone images) aborts the in-flight network fetch:
 
 ```diff
 - triggerLoad(image, onLoad, onError)
-+ const dispose = triggerLoad(image, { onImageLoad: onLoad, onImageError: onError })
-+ // Optional: dispose() to cancel before the load completes
++ const cleanup = triggerLoad(image, { onImageLoad: onLoad, onImageError: onError })
++ // Optional: cleanup() to cancel before the load completes
 ```
 
 ### `autoSizes` Owns Ongoing Size Tracking
 
-`triggerLoad` is one-shot again – it no longer accepts `updateSizesOnResize`. Ongoing re-resolution of `data-sizes="auto"` lives on [`autoSizes`](/api/auto-sizes), which now accepts `{ updateOnResize: true }` and returns a disposer:
+`triggerLoad` is one-shot again – it no longer accepts `updateSizesOnResize`. Ongoing re-resolution of `data-sizes="auto"` lives on [`autoSizes`](/api/auto-sizes), which now accepts `{ updateOnResize: true }` and returns a cleanup function:
 
 ```diff
 - triggerLoad(image, { updateSizesOnResize: true })
-+ const disposeSizes = autoSizes(image, { updateOnResize: true })
-+ const disposeLoad = triggerLoad(image)
-+ // Later: disposeSizes(); disposeLoad()
++ const cleanupSizes = autoSizes(image, { updateOnResize: true })
++ const cleanupLoad = triggerLoad(image)
++ // Later: cleanupSizes(); cleanupLoad()
 ```
 
 For the common case, [`lazyLoad`](/api/lazy-load) keeps `updateSizesOnResize` and delegates to `autoSizes` internally – no caller change needed.
 
-`autoSizes` itself now always returns a function. With no options, the returned disposer is a no-op; with `updateOnResize: true`, it disconnects every `ResizeObserver` created by the call. Passing an `<img>` inside a `<picture>` walks to every `<source data-sizes="auto">` sibling in the same call, replacing the previous need to invoke `autoSizes` separately on each source.
+`autoSizes` itself now always returns a function. With no options, the returned cleanup is a no-op; with `updateOnResize: true`, it disconnects every `ResizeObserver` created by the call. Passing an `<img>` inside a `<picture>` walks to every `<source data-sizes="auto">` sibling in the same call, replacing the previous need to invoke `autoSizes` separately on each source.
 
 ### `isLazyLoadingSupported` Removal
 

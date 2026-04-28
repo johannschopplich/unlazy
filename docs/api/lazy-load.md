@@ -30,7 +30,7 @@ Options can be passed to the function to customize its behavior:
 | `hash` | `boolean \| string` | `true` | Whether to use a hash for generating a blurry placeholder. Can be `true` (auto-detect from `data-blurhash`/`data-thumbhash`), `false` (disabled), or a hash string. |
 | `hashType` | `'blurhash' \| 'thumbhash'` | `'blurhash'` | The type of hash to use. Ignored when `hash` is boolean (auto-detected from data attributes). |
 | `placeholderSize` | `number` | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
-| `updateSizesOnResize` | `boolean` | `false` | Re-resolve `data-sizes="auto"` on viewport resize – applies to both `<img>` and `<source>` siblings inside a `<picture>`. Internally delegates to [`autoSizes`](/api/auto-sizes); the returned cleanup disconnects every observer. |
+| `updateSizesOnResize` | `boolean` | `false` | Re-resolve `data-sizes="auto"` on viewport resize – applies to both `<img>` and `<source>` siblings inside a `<picture>`. Internally delegates to [`autoSizes`](/api/auto-sizes); the returned cleanup function disconnects every observer. |
 | `onImageLoad` | `(image: HTMLImageElement) => void` | - | Callback invoked when an image loads successfully. |
 | `onImageError` | `(image: HTMLImageElement, error: Event) => void` | - | Callback invoked when an image fails to load. |
 

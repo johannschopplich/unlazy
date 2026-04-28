@@ -77,7 +77,7 @@ export interface AutoSizesOptions {
   /**
    * Whether `data-sizes="auto"` should retrack the rendered width on viewport
    * resize. Sets up a debounced `ResizeObserver` per call; the returned
-   * disposer disconnects it.
+   * cleanup function disconnects it.
    *
    * @default false
    */
