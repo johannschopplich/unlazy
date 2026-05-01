@@ -10,6 +10,15 @@ const iifeBase: UserConfig = {
   clean: false,
 }
 
+const esmBundleBase: UserConfig = {
+  entry: './src/bundle/index.iife.ts',
+  format: 'esm',
+  platform: 'browser',
+  minify: true,
+  clean: false,
+  dts: false,
+}
+
 export default defineConfig([
   {
     entry: [
@@ -34,5 +43,15 @@ export default defineConfig([
     ...iifeBase,
     define: { __UNLAZY_HASH_DECODING__: 'true' },
     outputOptions: { entryFileNames: 'unlazy.with-hashing.iife.js' },
+  },
+  {
+    ...esmBundleBase,
+    define: { __UNLAZY_HASH_DECODING__: 'false' },
+    outputOptions: { entryFileNames: 'unlazy.js' },
+  },
+  {
+    ...esmBundleBase,
+    define: { __UNLAZY_HASH_DECODING__: 'true' },
+    outputOptions: { entryFileNames: 'unlazy.with-hashing.js' },
   },
 ])
