@@ -16,7 +16,7 @@ const props = defineProps<{
   /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
   sources?: UnLazySource[]
   /**
-   * A flag to indicate whether the sizes attribute should be automatically calculated.
+   * Whether the `sizes` attribute should be automatically calculated.
    * @default false
    */
   autoSizes?: boolean
@@ -29,12 +29,12 @@ const props = defineProps<{
   /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
   placeholderSize?: number
   /**
-   * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+   * Whether the image should be preloaded, even if it is not in the viewport yet.
    * @default false
    */
   preload?: boolean
   /**
-   * Allows to specify the loading strategy of the image.
+   * Loading strategy of the image.
    * @default 'lazy'
    */
   loading?: ImgHTMLAttributes['loading']
@@ -51,7 +51,7 @@ watchEffect((onCleanup) => {
   if (!target.value)
     return
 
-  // Track changes to image sources to trigger reactivity
+  // Track changes to image sources to trigger reactivity.
   void props.src
   void props.srcSet
   void props.sources

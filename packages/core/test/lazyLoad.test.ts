@@ -125,7 +125,7 @@ describe('lazyLoad', () => {
 
       expect(eager.getAttribute('fetchpriority')).toBe('high')
       expect(eager.src).toContain('eager.jpg')
-      // Image without data-src is not in the selector, left untouched
+      // Image without `data-src` is not in the selector, left untouched.
       expect(eagerNoData.hasAttribute('fetchpriority')).toBe(false)
     })
 
@@ -136,7 +136,7 @@ describe('lazyLoad', () => {
       lazyLoad(img)
 
       expect(spy).toHaveBeenCalled()
-      // Final swap still wins: src ends up as the real image
+      // Final swap still wins: `src` ends up as the real image.
       expect(img.src).toContain('hero.jpg')
 
       spy.mockRestore()

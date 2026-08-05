@@ -21,7 +21,7 @@ describe('rgbaToDataUri', () => {
     const pixels = new Uint8Array(width * height * 4)
     const bytes = decodeToBytes(rgbaToDataUri(width, height, pixels))
 
-    // IHDR width/height occupy 4 bytes each starting at offset 16
+    // IHDR width/height occupy 4 bytes each starting at offset 16.
     const readUint32 = (offset: number) =>
       (bytes[offset]! << 24) | (bytes[offset + 1]! << 16) | (bytes[offset + 2]! << 8) | bytes[offset + 3]!
 

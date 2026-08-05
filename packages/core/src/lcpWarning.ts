@@ -34,10 +34,10 @@ export function installLcpWarning(): void {
     })
 
     // Safari rejects this entry type until 16; catch the `NotSupportedError`
-    // rather than feature-detect, since the type is Newly (not Widely) Available
+    // rather than feature-detect, since the type is Newly (not Widely) Available.
     observer.observe({ type: 'largest-contentful-paint', buffered: true })
   }
   catch {
-    // No-op: progressive enhancement
+    // No-op: progressive enhancement.
   }
 }

@@ -37,22 +37,22 @@ export function lazyLoad<T extends HTMLImageElement>(
 
   for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
     // Skip images already processed in a prior call so callers can safely
-    // re-invoke `lazyLoad` after dynamic DOM insertions
+    // re-invoke `lazyLoad` after dynamic DOM insertions.
     if (processedImages.has(image))
       continue
 
     const isEager = image.loading === 'eager'
 
     // Hint the browser to prioritize the fetch of above-the-fold images,
-    // but respect an explicit author value if present
+    // but respect an explicit author value if present.
     if (isEager && !image.hasAttribute('fetchpriority'))
       image.setAttribute('fetchpriority', 'high')
 
     // Resolve `data-sizes="auto"` for the img and any picture-source siblings,
-    // optionally installing a single `ResizeObserver` to retrack on resize
+    // optionally installing a single `ResizeObserver` to retrack on resize.
     cleanups.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
 
-    // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable
+    // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable.
     if (
       // @ts-expect-error: Build-time variable
       (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
@@ -68,7 +68,7 @@ export function lazyLoad<T extends HTMLImageElement>(
         image.src = placeholder
     }
 
-    // Bail if the image does not provide a `data-src` or `data-srcset` attribute
+    // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
     if (!image.dataset.src && !image.dataset.srcset) {
       // @ts-expect-error: Build-time variable
       if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
@@ -99,19 +99,19 @@ export function lazyLoad<T extends HTMLImageElement>(
     }
 
     // Ensure that `loading="lazy"` works correctly by setting a default placeholder.
-    // For Chrome, is is necessary to generate a unique placeholder. Otherwise, as
+    // For Chrome, it is necessary to generate a unique placeholder. Otherwise, as
     // soon as the first placeholder is loaded, the `load` event will be triggered
     // for all subsequent images, even if they are not in the viewport.
     if (!image.src)
       image.src = createIndexedImagePlaceholder(index)
 
-    // Load the image immediately if is already in the viewport
+    // Load the image immediately if it is already in the viewport.
     if (image.complete && image.naturalWidth > 0) {
       cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
       continue
     }
 
-    // Otherwise, load the image when it enters the viewport
+    // Otherwise, load the image when it enters the viewport.
     const loadHandler = () => {
       cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
     }
@@ -247,7 +247,7 @@ export function triggerLoad(
     temporaryImage.src = ''
   })
 
-  // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set
+  // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set.
   if (dataSizes === 'auto') {
     const width = getOffsetWidth(image)
     if (width)
@@ -306,7 +306,7 @@ export function createPlaceholderFromHash(
 
   try {
     if (hashType === 'blurhash') {
-      // Preserve the original image's aspect ratio
+      // Preserve the original image's aspect ratio.
       if (image && !ratio) {
         const elementWidth = image.width || image.offsetWidth || size
         const elementHeight = image.height || image.offsetHeight || size
@@ -330,7 +330,7 @@ function observeAutoSizes(
   updateOnResize: boolean,
 ): () => void {
   // Each call resolves the element itself plus, for an `<img>` inside a
-  // `<picture>`, every `<source data-sizes="auto">` sibling
+  // `<picture>`, every `<source data-sizes="auto">` sibling.
   const targets = collectAutoSizeTargets(element)
   for (const target of targets)
     updateSizesAttribute(target)
@@ -338,7 +338,7 @@ function observeAutoSizes(
   if (!updateOnResize || !targets.some(hasAutoSizes))
     return noop
 
-  // `<source>` elements have no layout box, so observe the rendered `<img>`
+  // `<source>` elements have no layout box, so observe the rendered `<img>`.
   const observedImage = element instanceof HTMLImageElement
     ? element
     : (element.parentElement?.getElementsByTagName('img')[0] ?? null)

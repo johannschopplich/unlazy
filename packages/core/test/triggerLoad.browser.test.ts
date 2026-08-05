@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { lazyLoad, triggerLoad } from '../src/lazyLoad'
 
-// Tiny 1x1 transparent PNG; decodes synchronously in every browser
+// Tiny 1x1 transparent PNG; decodes synchronously in every browser.
 const TINY_PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
 
 describe('triggerLoad (browser)', () => {
@@ -47,7 +47,7 @@ describe('triggerLoad (browser)', () => {
 
     expect(onError).toHaveBeenCalled()
     expect(nativeError).toHaveBeenCalled()
-    // Visible image keeps its placeholder state on failure
+    // Visible image keeps its placeholder state on failure.
     expect(img.dataset.src).toBe('data:image/png;base64,not-a-valid-png')
   })
 
@@ -76,7 +76,7 @@ describe('triggerLoad (browser)', () => {
     const cleanup = lazyLoad(img, { onImageLoad: onLoad })
 
     // unlazy registers its load listener first, so it runs before this one and
-    // starts triggerLoad's preload during the same dispatch.
+    // starts `triggerLoad`'s preload during the same dispatch.
     await new Promise<void>(resolve => img.addEventListener('load', () => resolve(), { once: true }))
 
     cleanup()
@@ -90,7 +90,7 @@ describe('triggerLoad (browser)', () => {
     const picture = document.createElement('picture')
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG
-    // Real apps via lazyLoad set image.src = placeholder before triggerLoad runs
+    // Real apps via `lazyLoad` set `image.src = placeholder` before `triggerLoad` runs.
     img.src = TINY_PNG
     picture.appendChild(img)
     document.body.appendChild(picture)

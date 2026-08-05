@@ -13,7 +13,7 @@ interface Props
   /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
   sources?: UnLazySource[]
   /**
-   * A flag to indicate whether the sizes attribute should be automatically calculated.
+   * Whether the `sizes` attribute should be automatically calculated.
    * @default false
    */
   autoSizes?: boolean
@@ -24,18 +24,16 @@ interface Props
   /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
   placeholderSrc?: string
   /**
-   * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+   * Whether the image should be preloaded, even if it is not in the viewport yet.
    * @default false
    */
   preload?: boolean
   /**
-   * Allows to specify the loading strategy of the image.
+   * Loading strategy of the image.
    * @default 'lazy'
    */
   loading?: ImgHTMLAttributes<HTMLImageElement>['loading']
-  /** A callback function to run when the image is loaded. */
   onImageLoad?: (image: HTMLImageElement) => void
-  /** A callback function to run when the image fails to load. */
   onImageError?: (image: HTMLImageElement, error: Event) => void
 }
 

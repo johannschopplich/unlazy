@@ -1,8 +1,6 @@
-/**
- * Colors: Brand
- *
- * Single-source OKLCH palette – warm red, logo-derived.
- * -------------------------------------------------------------------------- */
+/* #region Colors: Brand */
+
+/* Single-source OKLCH palette – warm red, logo-derived. */
 
 :root {
   --brand-h: 16;
@@ -29,9 +27,9 @@
   --vp-c-sponsor: #ee4e95;
 }
 
-/**
- * Component: Button
- * -------------------------------------------------------------------------- */
+/* #endregion */
+
+/* #region Component: Button */
 
 .dark {
   --vp-button-brand-text: oklch(25% 0.04 var(--brand-h));
@@ -39,9 +37,9 @@
   --vp-button-brand-hover-text: oklch(25% 0.04 var(--brand-h));
 }
 
-/**
- * Component: Home
- * -------------------------------------------------------------------------- */
+/* #endregion */
+
+/* #region Component: Home */
 
 :root {
   --vp-home-hero-name-color: transparent;
@@ -69,3 +67,5 @@
     --vp-home-hero-image-filter: blur(72px);
   }
 }
+
+/* #endregion */

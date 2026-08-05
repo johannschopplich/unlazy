@@ -18,7 +18,7 @@ const props = withDefaults(
     /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
     sources?: UnLazySource[]
     /**
-     * A flag to indicate whether the sizes attribute should be automatically calculated.
+     * Whether the `sizes` attribute should be automatically calculated.
      * @default false
      */
     autoSizes?: boolean
@@ -33,19 +33,19 @@ const props = withDefaults(
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to SSR-decoded placeholder images from a BlurHash string. */
     placeholderRatio?: number
     /**
-     * A flag to indicate whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Note: Placeholder images from hashes will still be decoded.
+     * Whether the image should be lazy-loaded (default) or deferred until this prop is set to `true`. Placeholder images from hashes will still be decoded.
      * @default true
      */
     lazyLoad?: boolean
     /**
-     * A flag to indicate whether the image should be preloaded, even if it is not in the viewport yet.
+     * Whether the image should be preloaded, even if it is not in the viewport yet.
      * @default false
      */
     preload?: boolean
     /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */
     ssr?: boolean
     /**
-     * Allows to specify the loading strategy of the image.
+     * Loading strategy of the image.
      * @default 'lazy'
      */
     loading?: ImgHTMLAttributes['loading']
@@ -92,7 +92,7 @@ watchEffect((onCleanup) => {
   if (!target.value)
     return
 
-  // Track changes to image sources to trigger reactivity
+  // Track changes to image sources to trigger reactivity.
   void props.src
   void props.srcSet
   void props.sources
@@ -130,7 +130,7 @@ watchEffect((onCleanup) => {
   if (!props.lazyLoad)
     return
 
-  // Placeholder is already decoded
+  // Placeholder is already decoded.
   const cleanup = lazyLoad(target.value, {
     hash: false,
     updateSizesOnResize: props.autoSizes,

@@ -17,7 +17,7 @@ export interface ModuleOptions {
    * decoded, depending on the aspect ratio.
    *
    * @remarks
-   * This option is ignored if the a ThumbHash is used.
+   * This option is ignored if a ThumbHash is used.
    *
    * @default 32
    */
@@ -41,13 +41,11 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
-    // Add module options to public runtime config
     nuxt.options.runtimeConfig.public.unlazy = defu(
       nuxt.options.runtimeConfig.public.unlazy,
       options,
     )
 
-    // Transpile runtime
     nuxt.options.build.transpile.push(resolve('runtime'))
 
     extendViteConfig((config) => {
