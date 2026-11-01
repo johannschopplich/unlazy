@@ -117,7 +117,12 @@ import type { UnLazySource } from 'unlazy'
 
 const sources: UnLazySource[] = [
   { type: 'image/avif', srcSet: 'hero.avif 1x, hero@2x.avif 2x' },
-  { media: '(max-width: 600px)', srcSet: 'hero-mobile.jpg', width: 480, height: 640 },
+  {
+    media: '(max-width: 600px)',
+    srcSet: 'hero-mobile.jpg',
+    width: 480,
+    height: 640
+  },
 ]
 ```
 

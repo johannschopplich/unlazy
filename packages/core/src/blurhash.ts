@@ -43,7 +43,11 @@ function getAspectRatioDimensions(ratio: number, size: number): { width: number,
   const isLandscapeOrSquare = ratio >= 1
 
   return {
-    width: isLandscapeOrSquare ? size : Math.round(size * ratio),
-    height: isLandscapeOrSquare ? Math.round(size / ratio) : size,
+    width: isLandscapeOrSquare
+      ? size
+      : Math.round(size * ratio),
+    height: isLandscapeOrSquare
+      ? Math.round(size / ratio)
+      : size,
   }
 }

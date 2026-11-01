@@ -6,7 +6,9 @@ import { defineConfig } from 'vite'
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+  ],
 
   resolve: {
     alias: {

@@ -9,8 +9,11 @@ export function toElementArray<T extends HTMLElement>(
   target: string | T | NodeListOf<T> | T[],
   parentElement: Element | Document = document,
 ): T[] {
-  if (typeof target === 'string')
-    return [...parentElement.querySelectorAll<T>(target)]
+  if (typeof target === 'string') {
+    return [
+      ...parentElement.querySelectorAll<T>(target),
+    ]
+  }
 
   if (target instanceof Element)
     return [target]

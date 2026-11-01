@@ -8,25 +8,66 @@ export default defineConfig({
   title: ogTitle,
   description: ogDescription,
   head: [
-    ['link', { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' }],
-    ['meta', { name: 'author', content: 'Johann Schopplich' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:url', content: ogUrl }],
-    ['meta', { property: 'og:title', content: ogTitle }],
-    ['meta', { property: 'og:description', content: ogDescription }],
-    ['meta', { property: 'og:image', content: ogImage }],
-    ['meta', { name: 'twitter:title', content: ogTitle }],
-    ['meta', { name: 'twitter:description', content: ogDescription }],
-    ['meta', { name: 'twitter:image', content: ogImage }],
-    ['meta', { name: 'twitter:site', content: '@jschopplich' }],
-    ['meta', { name: 'twitter:creator', content: '@jschopplich' }],
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    [
+      'link',
+      { rel: 'icon', href: '/logo.svg', type: 'image/svg+xml' },
+    ],
+    [
+      'meta',
+      { name: 'author', content: 'Johann Schopplich' },
+    ],
+    [
+      'meta',
+      { property: 'og:type', content: 'website' },
+    ],
+    [
+      'meta',
+      { property: 'og:url', content: ogUrl },
+    ],
+    [
+      'meta',
+      { property: 'og:title', content: ogTitle },
+    ],
+    [
+      'meta',
+      { property: 'og:description', content: ogDescription },
+    ],
+    [
+      'meta',
+      { property: 'og:image', content: ogImage },
+    ],
+    [
+      'meta',
+      { name: 'twitter:title', content: ogTitle },
+    ],
+    [
+      'meta',
+      { name: 'twitter:description', content: ogDescription },
+    ],
+    [
+      'meta',
+      { name: 'twitter:image', content: ogImage },
+    ],
+    [
+      'meta',
+      { name: 'twitter:site', content: '@jschopplich' },
+    ],
+    [
+      'meta',
+      { name: 'twitter:creator', content: '@jschopplich' },
+    ],
+    [
+      'meta',
+      { name: 'twitter:card', content: 'summary_large_image' },
+    ],
   ],
 
   appearance: 'dark',
 
   vite: {
-    plugins: [UnoCSS()],
+    plugins: [
+      UnoCSS(),
+    ],
   },
 
   themeConfig: {

@@ -80,7 +80,19 @@ export function UnLazyImage({
     return () => {
       cleanup()
     }
-  }, [src, srcSet, sources, autoSizes, blurhash, thumbhash, placeholderSrc, placeholderSize, preload, onImageLoad, onImageError])
+  }, [
+    src,
+    srcSet,
+    sources,
+    autoSizes,
+    blurhash,
+    thumbhash,
+    placeholderSrc,
+    placeholderSize,
+    preload,
+    onImageLoad,
+    onImageError,
+  ])
 
   const img = (
     <img

@@ -8,7 +8,9 @@ export default defineConfig({
   ],
   format: 'esm',
   platform: 'neutral',
-  plugins: [Vue({ isProduction: true })],
+  plugins: [
+    Vue({ isProduction: true }),
+  ],
   dts: { vue: true },
   clean: true,
 })

@@ -12,7 +12,16 @@ describe('rgbaToDataUri', () => {
     const pixels = new Uint8Array([255, 0, 0, 255])
     const bytes = decodeToBytes(rgbaToDataUri(1, 1, pixels))
 
-    expect(Array.from(bytes.slice(0, 8))).toEqual([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
+    expect(Array.from(bytes.slice(0, 8))).toEqual([
+      0x89,
+      0x50,
+      0x4E,
+      0x47,
+      0x0D,
+      0x0A,
+      0x1A,
+      0x0A,
+    ])
   })
 
   it('encodes width and height into the IHDR chunk', () => {
@@ -35,6 +44,15 @@ describe('rgbaToDataUri', () => {
     const tail = bytes.slice(-8)
 
     // IEND chunk: length=0, type="IEND", CRC=0xAE426082
-    expect(Array.from(tail)).toEqual([0x49, 0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82])
+    expect(Array.from(tail)).toEqual([
+      0x49,
+      0x45,
+      0x4E,
+      0x44,
+      0xAE,
+      0x42,
+      0x60,
+      0x82,
+    ])
   })
 })

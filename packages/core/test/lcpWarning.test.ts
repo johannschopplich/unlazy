@@ -23,7 +23,9 @@ class FakePerformanceObserver {
   disconnect(): void {}
 
   fire(entries: unknown[]): void {
-    this.callback({ getEntries: () => entries })
+    this.callback({
+      getEntries: () => entries,
+    })
   }
 }
 
@@ -70,7 +72,9 @@ describe('installLcpWarning', () => {
     const img = document.createElement('img')
     img.loading = 'lazy'
 
-    FakePerformanceObserver.instances[0]!.fire([makeEntry(img)])
+    FakePerformanceObserver.instances[0]!.fire([
+      makeEntry(img),
+    ])
 
     expect(consoleWarn).toHaveBeenCalledWith(
       expect.stringContaining('LCP element is configured for lazy loading'),
@@ -86,7 +90,9 @@ describe('installLcpWarning', () => {
     img.loading = 'eager'
     img.setAttribute('data-src', 'hero.jpg')
 
-    FakePerformanceObserver.instances[0]!.fire([makeEntry(img)])
+    FakePerformanceObserver.instances[0]!.fire([
+      makeEntry(img),
+    ])
 
     expect(consoleWarn).toHaveBeenCalled()
   })
@@ -97,7 +103,9 @@ describe('installLcpWarning', () => {
 
     const div = document.createElement('div')
 
-    FakePerformanceObserver.instances[0]!.fire([makeEntry(div)])
+    FakePerformanceObserver.instances[0]!.fire([
+      makeEntry(div),
+    ])
 
     expect(consoleWarn).not.toHaveBeenCalled()
   })

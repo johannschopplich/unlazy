@@ -40,7 +40,20 @@ interface Props
 export function UnLazyImage(props: Props) {
   const [local, rest] = splitProps(
     props,
-    ['src', 'srcSet', 'sources', 'autoSizes', 'blurhash', 'thumbhash', 'placeholderSrc', 'placeholderSize', 'preload', 'loading', 'onImageLoad', 'onImageError'],
+    [
+      'src',
+      'srcSet',
+      'sources',
+      'autoSizes',
+      'blurhash',
+      'thumbhash',
+      'placeholderSrc',
+      'placeholderSize',
+      'preload',
+      'loading',
+      'onImageLoad',
+      'onImageError',
+    ],
   )
 
   const [target, setTarget] = createSignal<HTMLImageElement>()

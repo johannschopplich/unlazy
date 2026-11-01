@@ -312,7 +312,9 @@ describe('autoSizes resize tracking', () => {
   it('retracks picture source sizes on viewport resize when updateOnResize is enabled', () => {
     const { picture, img, sources } = makePictureImg({
       dataSrc: 'image.jpg',
-      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+      sources: [
+        { dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' },
+      ],
     })
     document.body.append(picture)
     const [source] = sources as [HTMLSourceElement]
@@ -331,7 +333,9 @@ describe('autoSizes resize tracking', () => {
   it('stops retracking source sizes after the autoSizes cleanup runs', () => {
     const { picture, img, sources } = makePictureImg({
       dataSrc: 'image.jpg',
-      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+      sources: [
+        { dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' },
+      ],
     })
     document.body.append(picture)
     const [source] = sources as [HTMLSourceElement]
@@ -351,7 +355,9 @@ describe('autoSizes resize tracking', () => {
     const { picture, img, sources } = makePictureImg({
       loading: 'eager',
       dataSrc: 'image.jpg',
-      sources: [{ dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' }],
+      sources: [
+        { dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' },
+      ],
     })
     document.body.append(picture)
     const [source] = sources as [HTMLSourceElement]

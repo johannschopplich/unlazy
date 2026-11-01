@@ -6,5 +6,7 @@ export default defineConfig({
   platform: 'neutral',
   dts: true,
   clean: true,
-  plugins: [solid()],
+  plugins: [
+    solid(),
+  ],
 })

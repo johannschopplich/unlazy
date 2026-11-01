@@ -183,7 +183,9 @@ describe('triggerLoad (browser)', () => {
     img.dataset.src = TINY_PNG
     document.body.appendChild(img)
 
-    const cleanup = triggerLoad(img, { onImageLoad: vi.fn() })
+    const cleanup = triggerLoad(img, {
+      onImageLoad: vi.fn(),
+    })
     cleanup()
     expect(() => cleanup()).not.toThrow()
   })

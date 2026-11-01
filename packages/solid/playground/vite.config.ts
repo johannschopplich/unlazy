@@ -6,7 +6,9 @@ import solid from 'vite-plugin-solid'
 const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [
+    solid(),
+  ],
 
   resolve: {
     alias: {

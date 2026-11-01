@@ -60,7 +60,9 @@ export function lazyLoad<T extends HTMLImageElement>(
     ) {
       const placeholder = createPlaceholderFromHash({
         image,
-        hash: typeof hash === 'string' ? hash : undefined,
+        hash: typeof hash === 'string'
+          ? hash
+          : undefined,
         hashType,
         size: placeholderSize,
       })
