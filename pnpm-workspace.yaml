@@ -1,10 +1,15 @@
-shellEmulator: true
+minimumReleaseAgeExcludePrune: true
+
 trustPolicy: no-downgrade
+trustPolicyExclude:
+  - semver@6.3.1
+
+shellEmulator: true
 
 packages:
   - docs
   - packages/*
 
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - esbuild
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
