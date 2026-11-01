@@ -13,26 +13,21 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org/
-          cache: pnpm
+          runtime: node@24
 
       - name: Publish changelog
-        run: npx changelogithub
+        run: pnpm dlx changelogithub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Install
-        run: pnpm install
 
       - name: Build
         run: pnpm run build
 
       - name: Publish to npm
-        run: npm install -g npm@latest && pnpm -r publish --access public --no-git-checks
+        run: pnpm -r publish --access public --no-git-checks

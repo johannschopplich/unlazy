@@ -5,24 +5,28 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy
+
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
+          persist-credentials: false
+      - uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org/
-          cache: pnpm
+          runtime: node@24
+          cache: true
 
-      - run: pnpm install
       - run: pnpm run docs:build
 
-      - name: Deploy to Cloudflare Workers
-        run: npx wrangler deploy
+      - name: Deploy to Cloudflare
+        run: pnpm dlx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
