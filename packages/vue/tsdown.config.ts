@@ -11,6 +11,8 @@ export default defineConfig({
   plugins: [
     Vue({ isProduction: true }),
   ],
-  dts: { vue: true },
+  dts: {
+    tsc: { vue: true },
+  },
   clean: true,
 })
