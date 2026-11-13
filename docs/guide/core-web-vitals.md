@@ -37,10 +37,10 @@ Strip the warning from production builds via the [`__UNLAZY_LOGGING__`](/advance
 
 ## Browser Support
 
-`loading="lazy"` is [Baseline Widely Available](https://caniuse.com/loading-lazy-attr), so unlazy ships no fallback for browsers without it. `fetchpriority` is [Baseline Newly Available since 2024-10-29](https://web-platform-dx.github.io/web-features-explorer/features/fetch-priority/), so older browsers ignore the hint without breaking the eager swap. The `LargestContentfulPaint` API used by the dev warning is similarly [Baseline Newly Available](https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint); browsers without support silently no-op the warning.
+`loading="lazy"` is [Baseline Widely Available](https://caniuse.com/loading-lazy-attr), so unlazy ships no fallback for browsers without it. Browsers without `fetchpriority` ignore the hint and still get the eager swap; browsers without the `LargestContentfulPaint` API skip the dev warning.
 
 ## What unlazy Does Not Set
 
-- **`decoding`** – browsers handle decoding well by default; `decoding="async"` is no longer the LCP risk older posts suggest. If you have a reason to set it, do so on the `<img>` directly.
+- **`decoding`** – if you need it, set it on the `<img>` directly.
 - **`width` / `height`** – set both on every `<img>`. Browsers [derive `aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img) from the pair and reserve layout space, which prevents Cumulative Layout Shift. Without them, set the CSS `aspect-ratio` property to the width / height of the full-quality image to reserve the space.
-- **`alt`** – your call. unlazy preserves whatever you pass.
+- **`alt`** – unlazy preserves whatever you pass.

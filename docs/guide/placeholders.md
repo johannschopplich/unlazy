@@ -95,7 +95,7 @@ lazyLoad('img[loading="lazy"]', {
 
 ## Using Your Own Placeholder
 
-Hash-based placeholders are convenient when you only have a compact string on hand, but they are not the only option. If your image pipeline already produces a tiny WebP, JPEG, or AVIF preview – as Sharp, imgix, Cloudinary, and most modern CDNs do – put that data URL directly into `src`:
+Hash-based placeholders are convenient when you only have a compact string on hand, but they are not the only option. If your image pipeline already produces a tiny WebP, JPEG, or AVIF preview – as Sharp, imgix, Cloudinary, and most modern CDNs do – put that data URL, or an inline SVG dominant-color fill, directly into `src`:
 
 ```html
 <img
@@ -109,5 +109,3 @@ Hash-based placeholders are convenient when you only have a compact string on ha
 ```
 
 When no `data-blurhash` or `data-thumbhash` attribute is present on the image, unlazy leaves `src` alone. The browser decodes the placeholder natively, and no library code runs on the placeholder path. To also drop the hash decoders from your bundle, set [`__UNLAZY_HASH_DECODING__`](/advanced/build-flags#disable-hash-decoding) to `false`.
-
-The pattern works for any data URL – WebP, JPEG, AVIF, or an inline SVG dominant-color fill.

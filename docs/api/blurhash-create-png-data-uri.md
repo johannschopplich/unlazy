@@ -2,8 +2,6 @@
 
 Creates a PNG data URI from a BlurHash string for server-side rendering.
 
-The function uses the `fast-blurhash` library for decoding and generates a compact PNG representation suitable for inlining in HTML.
-
 ## Example
 
 ```ts

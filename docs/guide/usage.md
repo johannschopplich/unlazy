@@ -18,8 +18,6 @@ Set `data-sizes="auto"`, and unlazy sets the `sizes` attribute to the display wi
 >
 ```
 
-When calling [`lazyLoad`](/api/lazy-load), the library automatically calculates the `sizes` attribute for all images with `data-sizes="auto"`.
-
 Alternatively, use the [`autoSizes`](/api/auto-sizes) function to calculate the `sizes` attribute without lazy loading. Call it with an `<img>` inside a `<picture>` and it walks to every `<source data-sizes="auto">` sibling in the same call:
 
 ```ts
@@ -38,7 +36,7 @@ const cleanup = autoSizes(undefined, { updateOnResize: true })
 cleanup()
 ```
 
-The same behavior is available on [`lazyLoad`](/api/lazy-load) via `updateSizesOnResize: true`, which delegates to `autoSizes` internally and bundles the cleanup into the same callback.
+[`lazyLoad`](/api/lazy-load) does the same with `updateSizesOnResize: true`, and the cleanup function it returns disconnects the observer too.
 
 ## Target Specific Images
 

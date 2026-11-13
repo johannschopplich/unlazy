@@ -85,39 +85,17 @@ Native `@error` listeners attach to the underlying `<img>` via Vue's attribute f
 
 ## Examples
 
-::: code-group
-  ```html [BlurHash]
-  <UnLazyImage
-    width="800"
-    height="600"
-    blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-  />
-  ```
-  ```html [ThumbHash]
-  <UnLazyImage
-    width="800"
-    height="600"
-    thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-  />
-  ```
-  ```html [Inlined placeholder image]
-  <UnLazyImage
-    width="800"
-    height="600"
-    placeholder-src="data:image/svg+xml, ..."
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-  />
-  ```
-:::
+```html
+<UnLazyImage
+  width="800"
+  height="600"
+  blurhash="LKO2:N%2Tw=w]~RBVZRi};RPxuwH"
+  src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+  auto-sizes
+/>
+```
 
-::: tip
-In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
-:::
+For a ThumbHash, pass `thumbhash` instead of `blurhash`. For an inlined placeholder image, pass `placeholder-src="data:image/svg+xml, ..."` instead.
 
 ::: info
 When using BlurHash, set explicit `width` and `height` attributes. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.

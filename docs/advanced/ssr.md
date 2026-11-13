@@ -57,9 +57,7 @@ const placeholder = createPngDataUri(props.thumbhash)
 
 The same primitive works elsewhere – React Server Components import from `unlazy/thumbhash` directly and put the result on `<img src={…}>`; Astro frontmatter and SvelteKit `+page.server.ts` follow the same pattern. The only framework-specific detail is where the client-side `lazyLoad()` runs (a `'use client'` boundary in RSC, the SvelteKit `+page.svelte` script, the Astro [client directive](https://docs.astro.build/en/reference/directives-reference/) of your choice).
 
-## Nuxt: First-Class SSR
-
-[`@unlazy/nuxt`](/integrations/nuxt) integrates the contract end-to-end: `ssr: true` (default) decodes the hash per-request, inlines the data URI as `src`, and the client mounts `lazyLoad` with `hash: false` so the decoder never reruns in the browser. Override per-component with `:ssr="false"`, or globally via `nuxt.config.ts`.
+[`@unlazy/nuxt`](/integrations/nuxt) does all of this for you: it decodes the hash on the server by default, inlines the data URI as `src`, and never decodes it again in the browser.
 
 ## Performance and Caching
 

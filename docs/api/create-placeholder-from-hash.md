@@ -1,6 +1,6 @@
 # `createPlaceholderFromHash`
 
-Generates a PNG data URI placeholder from a BlurHash or ThumbHash string. This function is used internally by [`lazyLoad`](/api/lazy-load) but can also be called directly for custom implementations.
+Generates a PNG data URI placeholder from a BlurHash or ThumbHash string, the same placeholder [`lazyLoad`](/api/lazy-load) sets.
 
 ## Example
 

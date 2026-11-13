@@ -84,12 +84,6 @@ The component also accepts all standard `<img>` HTML attributes via Nuxt's attri
 Native `@error` listeners attach to the underlying `<img>` via Vue's attribute fallthrough and fire for both browser-level errors and the synthetic event unlazy dispatches when its preload fails. Reach for `@image-error` when you want the unwrapped element with a typed payload.
 :::
 
-### Server-Side Rendering
-
-The Nuxt module decodes BlurHash and ThumbHash strings on the server, so the placeholder is part of the HTML the client receives.
-
-Override the `ssr` module option (enabled by default) per component with the `ssr` prop, or disable it globally in `nuxt.config.ts`.
-
 ## Examples
 
 In every `srcSet` example, the `auto-sizes` prop calculates the `sizes` attribute automatically.
@@ -105,55 +99,21 @@ In every `srcSet` example, the `auto-sizes` prop calculates the `sizes` attribut
 
 ### BlurHash
 
-::: code-group
-  ```html [SSR-decoded BlurHash]
-  <UnLazyImage
-    :blurhash="blurhash"
-    :placeholder-ratio="2"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-    width="640"
-    height="320"
-  />
-  ```
-  ```html [Client-side decoded BlurHash]
-  <UnLazyImage
-    :ssr="false"
-    :blurhash="blurhash"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-    width="640"
-    height="320"
-  />
-  ```
-:::
+```html
+<UnLazyImage
+  :blurhash="blurhash"
+  :placeholder-ratio="2"
+  src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+  auto-sizes
+  width="640"
+  height="320"
+/>
+```
+
+For a ThumbHash, pass `:thumbhash` instead of `:blurhash` and drop `:placeholder-ratio`. Add `:ssr="false"` to decode the hash in the browser.
 
 ::: info
 When using client-side BlurHash decoding (`:ssr="false"`), set explicit `width` and `height` attributes. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
-:::
-
-### ThumbHash
-
-::: code-group
-  ```html [SSR-decoded ThumbHash]
-  <UnLazyImage
-    :thumbhash="thumbhash"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-    width="640"
-    height="320"
-  />
-  ```
-  ```html [Client-side decoded ThumbHash]
-  <UnLazyImage
-    :ssr="false"
-    :thumbhash="thumbhash"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-    width="640"
-    height="320"
-  />
-  ```
 :::
 
 ### Multiple Image Sources

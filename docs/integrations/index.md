@@ -10,7 +10,7 @@ unlazy supports lazy loading images in your framework of choice. Each package pr
 - [Svelte](/integrations/svelte)
 - [Nuxt](/integrations/nuxt), which also decodes [hash-based placeholders](/guide/placeholders) (BlurHash and ThumbHash) on the server
 
-unlazy's hash decoders work in any SSR runtime (Node, Deno, Bun, Workers). See [Server-Side Rendering](/advanced/ssr) for framework-specific recipes.
+To decode hashes on the server in another framework, see [Server-Side Rendering](/advanced/ssr).
 
 ## `UnLazySource`
 

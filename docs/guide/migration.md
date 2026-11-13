@@ -31,7 +31,7 @@ The deprecated `loadImage` alias is gone. Replace every call site with `triggerL
 
 ### `isLazyLoadingSupported` Removal
 
-Native `loading="lazy"` is Baseline Widely Available; the feature-detect was used internally to fall back to immediate swap, and that branch is gone. If you imported the helper directly, replace it with:
+Native `loading="lazy"` is Baseline Widely Available, so v2 drops the helper along with the fallback to an immediate swap. If you imported the helper directly, replace it with:
 
 ```ts
 const isLazyLoadingSupported = 'loading' in HTMLImageElement.prototype
