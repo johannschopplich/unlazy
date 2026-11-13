@@ -112,7 +112,7 @@ function nav(): DefaultTheme.NavItem[] {
           text: 'Guide',
           items: [
             { text: 'Getting Started', link: '/guide/' },
-            { text: 'Installation', link: '/guide/installation' },
+            { text: 'Without a Build Step', link: '/guide/cdn' },
             { text: 'Usage', link: '/guide/usage' },
             { text: 'Placeholders', link: '/guide/placeholders' },
             { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
@@ -127,7 +127,7 @@ function nav(): DefaultTheme.NavItem[] {
       activeMatch: '^/integrations/',
       items: [
         {
-          text: 'How To',
+          text: 'Overview',
           link: '/integrations/',
         },
         {
@@ -180,7 +180,6 @@ function nav(): DefaultTheme.NavItem[] {
         {
           text: 'Advanced',
           items: [
-            { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
             { text: 'Server-Side Rendering', link: '/advanced/ssr' },
             { text: 'Build Flags', link: '/advanced/build-flags' },
           ],
@@ -205,7 +204,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: 'Guides',
       items: [
         { text: 'Getting Started', link: '/guide/' },
-        { text: 'Installation', link: '/guide/installation' },
+        { text: 'Without a Build Step', link: '/guide/cdn' },
         { text: 'Usage', link: '/guide/usage' },
         { text: 'Placeholders', link: '/guide/placeholders' },
         { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
@@ -216,7 +215,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Integrations',
       items: [
-        { text: 'How To', link: '/integrations/' },
+        { text: 'Overview', link: '/integrations/' },
         { text: 'Vue', link: '/integrations/vue' },
         { text: 'Nuxt', link: '/integrations/nuxt' },
         { text: 'React', link: '/integrations/react' },
@@ -227,7 +226,6 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
     {
       text: 'Advanced',
       items: [
-        { text: 'Aspect Ratio', link: '/advanced/aspect-ratio' },
         { text: 'Server-Side Rendering', link: '/advanced/ssr' },
         { text: 'Build Flags', link: '/advanced/build-flags' },
       ],

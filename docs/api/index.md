@@ -1,4 +1,4 @@
-# Overview
+# API
 
 | Function | Import | Purpose |
 | --- | --- | --- |
@@ -13,7 +13,7 @@
 
 | Constant | Import | Purpose |
 | --- | --- | --- |
-| `isCrawler` | `unlazy` | Boolean indicating if the current visitor is detected as a bot or crawler |
+| [`isCrawler`](/guide/seo-considerations#crawlers-get-the-real-image) | `unlazy` | Boolean indicating if the current visitor is detected as a bot or crawler |
 
 ## Types
 

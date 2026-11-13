@@ -1,6 +1,6 @@
 # Server-Side Rendering
 
-unlazy's hash decoders run in any JavaScript runtime that exposes `globalThis.btoa` and `globalThis.atob` – [Node ≥ 16](https://nodejs.org/api/globals.html#btoadata), Deno, Bun, [Cloudflare Workers](https://developers.cloudflare.com/workers/runtime-apis/web-standards/), Vercel Edge, and RSC servers. They never import `node:` modules or `Buffer`. Decoding on the server keeps the placeholder visible on first paint and removes the client-side decode step entirely.
+unlazy's hash decoders run in any JavaScript runtime that exposes `globalThis.btoa` and `globalThis.atob` – [Node ≥ 16](https://nodejs.org/api/globals.html#btoadata), Deno, Bun, [Cloudflare Workers](https://developers.cloudflare.com/workers/runtime-apis/web-standards/), Vercel Edge, and RSC servers. They never import `node:` modules or `Buffer`. Decoding on the server keeps the placeholder visible on first paint.
 
 ## The Output Contract
 
@@ -10,14 +10,15 @@ The server emits the placeholder inline:
 <img
   src="data:image/png;base64,iVBORw0KGgo…"
   data-src="real.jpg"
-  data-thumbhash="1QcSHQRnh493V4dIh4eXh1h4kJUI"
   loading="lazy"
   width="800"
   height="600"
 >
 ```
 
-After hydration, `lazyLoad` swaps `data-src` into `src` when the image enters the viewport. The encoder is deterministic – the same hash produces a byte-identical data URI on the server and on the client – so [Vue](https://vuejs.org/guide/scaling-up/ssr.html) and React see no hydration mismatch.
+After hydration, `lazyLoad` swaps `data-src` into `src` when the image enters the viewport. Leave `data-blurhash` and `data-thumbhash` off the server-rendered `<img>`: with either present, `lazyLoad` decodes the hash again in the browser and replaces the inlined `src`.
+
+The decoders are deterministic – the same input produces a byte-identical data URI on the server and on the client – so [Vue](https://vuejs.org/guide/scaling-up/ssr.html) and React see no hydration mismatch.
 
 ::: warning
 For above-the-fold images, set `loading="eager"` even with an SSR placeholder – the LCP candidate is the real image, not the placeholder. The [dev-mode LCP warning](/guide/core-web-vitals#dev-mode-lcp-warning) catches misconfigurations.
@@ -46,7 +47,6 @@ const placeholder = createPngDataUri(props.thumbhash)
   <img
     :src="placeholder"
     :data-src="src"
-    :data-thumbhash="thumbhash"
     :alt="alt"
     :width="width"
     :height="height"
@@ -63,7 +63,7 @@ The same primitive works elsewhere – React Server Components import from `unla
 
 ## Performance and Caching
 
-The decode path is hash → 32×32 RGBA → uncompressed PNG → base64. [`fast-blurhash`](https://github.com/mad-gooze/fast-blurhash) reports up to 70% faster decoding than the reference implementation; absolute timings depend on hash length and output size. For routes that render many images sharing a small set of hashes, cache by hash key – the encoder is pure, so an LRU keyed on the hash string is enough. For static catalogues, prefer build-time generation over per-request decode.
+The decode path is hash → RGBA pixels → uncompressed PNG → base64. [`fast-blurhash`](https://github.com/mad-gooze/fast-blurhash) reports up to 70% faster decoding than the reference implementation; absolute timings depend on hash length and output size. For routes that render many images sharing a small set of hashes, cache by hash key – the encoder is pure, so an LRU keyed on the hash string is enough. For static catalogues, prefer build-time generation over per-request decode.
 
 ## Content Security Policy
 

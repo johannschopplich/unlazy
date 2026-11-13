@@ -1,23 +1,8 @@
 # `createPngDataUri`
 
-Creates a PNG data URI from a BlurHash string for server-side rendering. This function decodes the BlurHash into RGBA pixel data and encodes it as a base64 PNG data URI.
-
-```ts
-import { createPngDataUri } from 'unlazy/blurhash'
-
-const pngDataUri = createPngDataUri(blurhash, {
-  ratio: 16 / 9,
-  size: 32
-})
-```
+Creates a PNG data URI from a BlurHash string for server-side rendering.
 
 The function uses the `fast-blurhash` library for decoding and generates a compact PNG representation suitable for inlining in HTML.
-
-## Type Declarations
-
-<<< @/../packages/core/src/blurhash.ts#BlurHashOptions{ts}
-
-<<< @/../packages/core/src/blurhash.ts#createPngDataUri{ts}
 
 ## Example
 
@@ -25,11 +10,20 @@ The function uses the `fast-blurhash` library for decoding and generates a compa
 import { createPngDataUri } from 'unlazy/blurhash'
 
 const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
-const pngDataUri = createPngDataUri(blurhash)
+const pngDataUri = createPngDataUri(blurhash, {
+  ratio: 16 / 9,
+  size: 32
+})
 ```
 
-The `pngDataUri` variable will contain a PNG data URI for the `src` attribute of a `<img>` element.
+Use the result as the `src` attribute of an `<img>` element:
 
 ```html
 <img :src="pngDataUri">
 ```
+
+## Type Declarations
+
+<<< @/../packages/core/src/blurhash.ts#BlurHashOptions{ts}
+
+<<< @/../packages/core/src/blurhash.ts#createPngDataUri{ts}

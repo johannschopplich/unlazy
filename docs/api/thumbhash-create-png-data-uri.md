@@ -1,20 +1,8 @@
 # `createPngDataUri`
 
-Creates a PNG data URI from a ThumbHash string for server-side rendering. This function decodes the base64-encoded ThumbHash into RGBA pixel data and encodes it as a base64 PNG data URI.
+Creates a PNG data URI from a ThumbHash string for server-side rendering.
 
-```ts
-import { createPngDataUri } from 'unlazy/thumbhash'
-
-const pngDataUri = createPngDataUri(thumbhash)
-```
-
-The function handles base64-url encoding by converting `-` to `+` and `_` to `/` before decoding. It uses the `thumbhash` library for decoding, which automatically determines the aspect ratio from the hash itself.
-
-## Type Declarations
-
-```ts
-function createPngDataUri(hash: string): string
-```
+The hash can be base64 or base64url encoded. The function uses the `thumbhash` library for decoding, which determines the aspect ratio from the hash itself.
 
 ## Example
 
@@ -25,8 +13,14 @@ const thumbhash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
 const pngDataUri = createPngDataUri(thumbhash)
 ```
 
-The `pngDataUri` variable will contain a PNG data URI for the `src` attribute of a `<img>` element.
+Use the result as the `src` attribute of an `<img>` element:
 
 ```html
 <img :src="pngDataUri">
+```
+
+## Type Declarations
+
+```ts
+function createPngDataUri(hash: string): string
 ```

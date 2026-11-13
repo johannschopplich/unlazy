@@ -29,11 +29,9 @@ export default defineNuxtConfig({
 
 ## Module Options
 
-The `@unlazy/nuxt` module accepts the following options:
-
 <<< @/../packages/nuxt/src/module.ts#ModuleOptions{ts}
 
-Adapt the module options to your needs:
+Set the options under the `unlazy` key:
 
 ```ts
 // `nuxt.config.ts`
@@ -48,7 +46,7 @@ export default defineNuxtConfig({
 ```
 
 ::: warning
-Disabling server-side rendering of the blurry placeholder image will result in a flash of the original image on the initial page load and largely defeats the purpose of the SSR abilities from Nuxt.
+With `ssr: false`, the placeholder is decoded in the browser and only appears after hydration instead of on first paint.
 :::
 
 ## `UnLazyImage` Component
@@ -57,23 +55,21 @@ The `UnLazyImage` component is [globally available](https://nuxt.com/docs/guide/
 
 ### Props
 
-The `UnLazyImage` component accepts the following props:
-
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `src` | String | - | Image source URL to be lazy-loaded. |
 | `srcSet` | String | - | Image source set to be lazy-loaded. |
-| `sources` | Array | - | Array of `UnLazySource` objects to render a `<picture>` element. |
+| `sources` | Array | - | Array of [`UnLazySource`](/integrations/#unlazysource) objects to render a `<picture>` element. |
 | `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
 | `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. |
 | `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
-| `placeholderRatio` | Number | - | Aspect ratio (width / height) for BlurHash decoding during SSR. |
+| `placeholderRatio` | Number | - | Aspect ratio (width / height) for BlurHash decoding. Without it, the server decodes a square placeholder. |
 | `lazyLoad` | Boolean | `true` | Whether the image should be lazy-loaded. Set to `false` to defer loading until changed to `true`. |
 | `preload` | Boolean | `false` | Whether the image should be preloaded immediately, bypassing lazy loading. |
-| `ssr` | Boolean | `true` | Whether hashes should be decoded on the server. Overrides global module config. |
-| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). |
+| `ssr` | Boolean | Module option `ssr` | Whether hashes should be decoded on the server. Overrides the module option. |
+| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). Defaults to `'eager'` while `lazyLoad` is `false`. |
 
 The component also accepts all standard `<img>` HTML attributes via Nuxt's attribute inheritance.
 
@@ -90,15 +86,13 @@ Native `@error` listeners attach to the underlying `<img>` via Vue's attribute f
 
 ### Server-Side Rendering
 
-The Nuxt module decodes BlurHash and ThumbHash strings on the server during SSR, providing placeholder images before the HTML is sent to the client. This prevents layout shifts and improves perceived performance.
+The Nuxt module decodes BlurHash and ThumbHash strings on the server, so the placeholder is part of the HTML the client receives.
 
-The `ssr` option (enabled by default) can be overridden per-component or disabled globally in `nuxt.config.ts`.
+Override the `ssr` module option (enabled by default) per component with the `ssr` prop, or disable it globally in `nuxt.config.ts`.
 
 ## Examples
 
-::: tip
-In every `srcSet` example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
-:::
+In every `srcSet` example, the `auto-sizes` prop calculates the `sizes` attribute automatically.
 
 ### Inlined Placeholder Image
 
@@ -117,6 +111,7 @@ In every `srcSet` example, the `sizes` attribute is automatically calculated giv
     :blurhash="blurhash"
     :placeholder-ratio="2"
     src-set="image-320w.jpg 320w, image-640w.jpg 640w"
+    auto-sizes
     width="640"
     height="320"
   />
@@ -131,6 +126,10 @@ In every `srcSet` example, the `sizes` attribute is automatically calculated giv
     height="320"
   />
   ```
+:::
+
+::: info
+When using client-side BlurHash decoding (`:ssr="false"`), set explicit `width` and `height` attributes. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
 :::
 
 ### ThumbHash
@@ -192,7 +191,7 @@ Set `width` and `height` per source to prevent layout shift when the breakpoint 
 
 ### Preload Image
 
-Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
+Set `preload` to load the image before it enters the viewport, for example the next slide of a slider:
 
 ```vue
 <template>
@@ -206,7 +205,3 @@ Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload th
   />
 </template>
 ```
-
-::: info
-When using client-side BlurHash decoding (`:ssr="false"`), set explicit `width` and `height` attributes for optimal performance. Server-side rendering (enabled by default) is less affected by this, but including these attributes is still recommended as a best practice.
-:::

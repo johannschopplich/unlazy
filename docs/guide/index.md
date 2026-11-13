@@ -1,31 +1,60 @@
-# What Is unlazy?
+# Getting Started
 
-unlazy is a lazy loading library that leverages native browser APIs. It uses inlined placeholder images or hash-based representations like [BlurHash](/guide/placeholders#blurhash) or [ThumbHash](/guide/placeholders#thumbhash) alongside the native `loading="lazy"` attribute.
+unlazy is a lazy loading library that leverages native browser APIs. It uses inlined placeholder images or hash-based representations like [BlurHash](/guide/placeholders#blurhash) or [ThumbHash](/guide/placeholders#thumbhash) alongside the native `loading="lazy"` attribute, and targets [Baseline Widely Available](/guide/core-web-vitals#browser-support) browsers.
 
 Images render with blurry placeholders initially, then swap to full-quality versions as they enter the viewport. This improves perceived performance, especially on slow connections.
 
-## How It Works
+## Install unlazy
 
-unlazy enhances `loading="lazy"` by processing images and managing their lifecycle:
+Install the `unlazy` package using your favorite package manager:
 
-1. **Data Attribute Processing**: Uses `data-src`, `data-srcset`, and `data-sizes` attributes which are swapped to standard attributes when images load.
+::: code-group
+  ```bash [pnpm]
+  pnpm add -D unlazy
+  ```
+  ```bash [yarn]
+  yarn add -D unlazy
+  ```
+  ```bash [npm]
+  npm install -D unlazy
+  ```
+:::
 
-2. **Placeholder Generation**: Decodes [BlurHash](/guide/placeholders#blurhash) or [ThumbHash](/guide/placeholders#thumbhash) strings into PNG data URIs for placeholders.
+## Mark Up an Image
 
-3. **Chrome Workaround**: Generates unique indexed SVG placeholders to prevent Chrome's aggressive loading behavior that triggers load events prematurely.
+1. Add the `loading="lazy"` attribute to an `<img>` element that you want to lazily load. You can also use the `<picture>` element to [lazily load images in different formats](/guide/usage#lazy-load-picture-elements).
 
-4. **Auto Sizes**: Calculates the `sizes` attribute based on display width when `data-sizes="auto"` is set.
+2. Use `data-src` or `data-srcset` attributes to specify the high-quality image. These prevent browsers from loading images before they enter the viewport and are swapped to standard attributes when loading occurs.
 
-## Browser Compatibility
+3. Set the `src` attribute with a pre-generated blurry placeholder, or use [hash-based placeholders](/guide/placeholders) (BlurHash or ThumbHash) to generate placeholders on the fly.
 
-unlazy targets [Baseline Widely Available](https://web.dev/baseline) browsers. The eager-priority path applies the `fetchpriority` attribute as progressive enhancement: browsers that don't yet recognize it ignore the attribute and still load the image correctly, just without the priority hint.
+```html
+<img
+  loading="lazy"
+  src="blurry placeholder ..."
+  data-srcset="image.png"
+  data-sizes="auto"
+  alt="Descriptive text"
+  width="1200"
+  height="800"
+>
+```
 
-## SEO
+With `data-srcset`, set `data-sizes="auto"` to [calculate the `sizes` attribute automatically](/guide/usage#calculate-the-sizes-attribute-automatically).
 
-unlazy detects bots and crawlers, loading full-quality images immediately for proper indexing. See [SEO considerations](/guide/seo-considerations).
+## Call `lazyLoad`
 
-## Getting Started
+In your frontend code, import the [`lazyLoad`](/api/lazy-load) function from the library and call it:
 
-1. [Install](/guide/installation) the `unlazy` package
-2. Review the [usage guide](/guide/usage)
-3. Optionally, set up [placeholders](/guide/placeholders) (BlurHash or ThumbHash)
+```ts
+import { lazyLoad } from 'unlazy'
+
+// Lazily load all `img[loading="lazy"]` images
+const cleanup = lazyLoad()
+```
+
+The `lazyLoad` function returns a cleanup function that removes event listeners and ResizeObservers. Call this when unmounting components or removing images to prevent memory leaks.
+
+Images that are visible in the initial viewport – your hero / LCP image in particular – should **not** be lazy-loaded. Mark them `loading="eager"` instead (see [The Eager Path](/guide/core-web-vitals#the-eager-path)).
+
+From here, [Usage](/guide/usage) covers more use cases, and [Hash-Based Placeholders](/guide/placeholders) sets up BlurHash or ThumbHash placeholders.

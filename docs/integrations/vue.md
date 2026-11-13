@@ -38,7 +38,7 @@ import { UnLazyImage } from '@unlazy/vue/components'
 
 ### Global Registration
 
-If you prefer to make the `UnLazyImage` component globally available, you can register it in your `main.ts` file across your entire Vue application:
+To make the `UnLazyImage` component available in every template, register the plugin in your `main.ts` file:
 
 ```ts
 // src/main.ts
@@ -53,17 +53,15 @@ app.mount('#app')
 
 ## `UnLazyImage` Component
 
-The `UnLazyImage` component allows you to easily implement unlazy in your Vue application, providing a smoother image loading experience. The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` for the blurry placeholder image.
+`UnLazyImage` renders a lazy-loaded `<img>`, or a `<picture>` when you pass `sources`.
 
 ### Props
-
-The `UnLazyImage` component accepts the following props:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `src` | String | - | Image source URL to be lazy-loaded. |
 | `srcSet` | String | - | Image source set to be lazy-loaded. |
-| `sources` | Array | - | Array of `UnLazySource` objects to render a `<picture>` element. |
+| `sources` | Array | - | Array of [`UnLazySource`](/integrations/#unlazysource) objects to render a `<picture>` element. |
 | `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
@@ -84,15 +82,6 @@ The component also accepts all standard `<img>` HTML attributes via Vue's attrib
 ::: info
 Native `@error` listeners attach to the underlying `<img>` via Vue's attribute fallthrough and fire for both browser-level errors and the synthetic event unlazy dispatches when its preload fails. Reach for `@image-error` when you want the unwrapped element with a typed payload.
 :::
-
-### Reactivity
-
-The component uses Vue's `watchEffect` to handle reactive updates:
-
-- Automatically tracks changes to `src`, `srcSet`, and hash props
-- Re-initializes lazy loading when relevant props change
-- Cleans up previous listeners before setting up new ones
-- Bypasses lazy loading entirely when `preload` is `true`
 
 ## Examples
 
@@ -170,7 +159,7 @@ Set `width` and `height` per source to prevent layout shift when the breakpoint 
 
 ### Preload Image
 
-Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
+Set `preload` to load the image before it enters the viewport, for example the next slide of a slider:
 
 ```vue
 <template>

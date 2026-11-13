@@ -2,13 +2,29 @@
 
 unlazy supports lazy loading images in your framework of choice. Each package provides a `UnLazyImage` component as a drop-in replacement for the native `<img>` element.
 
+## Available Integrations
+
+- [Vue](/integrations/vue)
+- [React](/integrations/react)
+- [Solid](/integrations/solid)
+- [Svelte](/integrations/svelte)
+- [Nuxt](/integrations/nuxt), which also decodes [hash-based placeholders](/guide/placeholders) (BlurHash and ThumbHash) on the server
+
+unlazy's hash decoders work in any SSR runtime (Node, Deno, Bun, Workers). See [Server-Side Rendering](/advanced/ssr) for framework-specific recipes.
+
+## `UnLazySource`
+
+Every `UnLazyImage` component takes a `sources` prop. Each `UnLazySource` entry renders one `<source>` inside a `<picture>`:
+
+<<< @/../packages/core/src/types.ts#UnLazySource{ts}
+
 ## Creating Custom Integrations
 
 To create a component for your framework, keep the following in mind:
 
 1. The component should wrap a native `<img>` element with the `loading="lazy"` attribute set.
 2. The component should support at least a `src` or `srcset` attribute.
-3. Import the [`lazyLoad`](/api/lazy-load) function from the unlazy library and call it with a `HTMLImageElement` or `HTMLSourceElement` as the first argument:
+3. Import the [`lazyLoad`](/api/lazy-load) function from the unlazy library and call it with the `HTMLImageElement` as the first argument:
 
 ```ts
 import { lazyLoad } from 'unlazy'
@@ -20,36 +36,15 @@ lazyLoad(target)
 
 ```ts
 import { lazyLoad } from 'unlazy'
+import { ref, watchEffect } from 'vue'
 
 const target = ref<HTMLImageElement | undefined>()
 
-onMounted(() => {
-  if (target.value) {
-    const cleanup = lazyLoad(target.value)
-    onBeforeUnmount(cleanup)
-  }
+watchEffect((onCleanup) => {
+  if (!target.value)
+    return
+
+  const cleanup = lazyLoad(target.value)
+  onCleanup(cleanup)
 })
 ```
-
-## Server-Side Rendering
-
-unlazy's hash decoders work in any SSR runtime (Node, Deno, Bun, Workers). See [Server-Side Rendering](/advanced/ssr) for framework-specific recipes.
-
-## Available Integrations
-
-The following integrations are available as of now:
-
-### Frontend Frameworks
-
-- [Vue](/integrations/vue)
-- [React](/integrations/react)
-- [Solid](/integrations/solid)
-- [Svelte](/integrations/svelte)
-
-### Meta-Frameworks
-
-::: tip
-These include SSR-decoding of [hash-based placeholders](/guide/placeholders) (BlurHash and ThumbHash).
-:::
-
-- [Nuxt](/integrations/nuxt)

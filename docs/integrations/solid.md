@@ -1,6 +1,6 @@
 # `@unlazy/solid`
 
-The Solid integration provides an `UnLazyImage` component for your Solid 1.9+ application.
+The Solid integration provides an `UnLazyImage` component for your Solid 1.x application.
 
 ## Installation
 
@@ -36,19 +36,15 @@ export default function MyComponent() {
 
 ## `UnLazyImage` Component
 
-The `UnLazyImage` component allows you to easily implement unlazy in your Solid application, providing a smoother image loading experience.
-
-The component supports automatic calculation of the `sizes` attribute with the `autoSizes` prop. It also enables you to specify a `blurhash` or `thumbhash` for the blurry placeholder image.
+`UnLazyImage` renders a lazy-loaded `<img>`, or a `<picture>` when you pass `sources`.
 
 ### Props
-
-The `UnLazyImage` component accepts the following props:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `src` | String | - | Image source URL to be lazy-loaded. |
 | `srcSet` | String | - | Image source set to be lazy-loaded. |
-| `sources` | Array | - | Array of `UnLazySource` objects to render a `<picture>` element. |
+| `sources` | Array | - | Array of [`UnLazySource`](/integrations/#unlazysource) objects to render a `<picture>` element. |
 | `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
 | `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
 | `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
@@ -60,15 +56,6 @@ The `UnLazyImage` component accepts the following props:
 | `onImageError` | Function | - | Callback function invoked when an error occurs during image loading. Receives the `HTMLImageElement` and `Event` as arguments. |
 
 The component also accepts all standard `<img>` HTML attributes.
-
-### Solid.js Reactivity
-
-This component uses Solid.js's fine-grained reactivity primitives:
-
-- **`createSignal()`**: Creates a reactive signal for storing the img element reference
-- **`createEffect()`**: Runs when tracked signals change, automatically setting up lazy loading
-- **`onCleanup()`**: Registers cleanup function to remove event listeners on unmount
-- **`splitProps()`**: Separates component-specific props from HTML attributes to be forwarded
 
 ## Examples
 
@@ -113,7 +100,7 @@ When using BlurHash, set explicit `width` and `height` props. See [Hash-Based Pl
 :::
 
 ::: tip
-In each example, the `sizes` attribute is automatically calculated given the `auto-sizes` prop.
+In each example, the `sizes` attribute is automatically calculated given the `autoSizes` prop.
 :::
 
 ### Multiple Image Sources
@@ -149,7 +136,7 @@ Set `width` and `height` per source to prevent layout shift when the breakpoint 
 
 ### Preload Image
 
-Useful if the `UnLazyImage` is part of e.g. a slider, and you want to preload the next image.
+Set `preload` to load the image before it enters the viewport, for example the next slide of a slider:
 
 ```tsx
 return (

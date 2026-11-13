@@ -24,22 +24,17 @@ export default defineConfig({
 })
 ```
 
-## Disable Hash Decoding <Badge type="info" text="^0.10.0" />
+## Disable Hash Decoding
 
-unlazy includes [BlurHash](/guide/placeholders#blurhash) and [ThumbHash](/guide/placeholders#thumbhash) decoding algorithms (from `fast-blurhash` and `thumbhash` packages). If your project doesn't use hash-based placeholders, you can exclude these dependencies entirely:
+unlazy includes [BlurHash](/guide/placeholders#blurhash) and [ThumbHash](/guide/placeholders#thumbhash) decoding algorithms (from the `fast-blurhash` and `thumbhash` packages). If your project doesn't decode hashes in the browser, set `__UNLAZY_HASH_DECODING__` to `false`. Default is `true`.
 
-- `__UNLAZY_HASH_DECODING__`: Set to `false` to tree-shake hash decoding code. Default is `true`.
-
-When disabled, the bundler removes:
-- BlurHash and ThumbHash decoding libraries
-- Hash-related code paths in `lazyLoad()`
-- Associated dependencies from the final bundle
+The bundler then removes the hash-related code paths in `lazyLoad()` and both decoding libraries from the final bundle.
 
 ::: warning
-This flag only affects the main entry point. If you directly import `unlazy/blurhash` or `unlazy/thumbhash`, those modules will still be bundled regardless of this flag.
+This flag only removes hash decoding from `lazyLoad`. `createPlaceholderFromHash`, `unlazy/blurhash`, and `unlazy/thumbhash` still bundle their decoder when you import them. `@unlazy/nuxt` always sets the flag to `true`, so defining it in a Nuxt app has no effect.
 :::
 
-## Disable Client Logging <Badge type="info" text="^0.10.2" />
+## Disable Client Logging
 
 unlazy emits dev-time console output to help you catch configuration mistakes. Set `__UNLAZY_LOGGING__` to `false` to strip all of it from production builds. Default is `true`.
 

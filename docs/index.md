@@ -42,12 +42,12 @@ features:
   - title: SSR and Client-Side Decoding
     icon: <span class="i-carbon:fit-to-screen"></span>
     details: Decode hashes on the server during SSR or in the browser at runtime.
-    link: /guide/placeholders#hash-decoding-strategies
+    link: /guide/placeholders#decode-in-the-browser-or-on-the-server
     linkText: Decoding strategies
   - title: Auto-Sizing
     icon: <span class="i-carbon:fit-to-width"></span>
     details: Calculates the <code>sizes</code> attribute automatically from display width.
-    link: /guide/usage#auto-calculation-of-the-sizes-attribute
+    link: /guide/usage#calculate-the-sizes-attribute-automatically
     linkText: Auto sizes
   - title: SEO-Friendly
     icon: <span class="i-carbon:zoom-area"></span>
@@ -62,6 +62,6 @@ features:
   - title: CDN Auto-Initialize
     icon: <span class="i-carbon:delivery"></span>
     details: Use the <code>init</code> attribute in IIFE builds. No bundler required.
-    link: /guide/installation#auto-initialization
+    link: /guide/cdn#auto-initialization
     linkText: CDN usage
 ---

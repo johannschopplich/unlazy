@@ -1,8 +1,8 @@
 # SEO Considerations
 
-When implementing lazy loading with blurry placeholders, consider the SEO impact. Search engine bots and crawlers may not behave like human visitors. unlazy ensures images are indexed correctly without compromising quality due to blurry placeholders.
+Search engine bots and crawlers don't behave like human visitors: Googlebot supports native `loading="lazy"` but [does not scroll the page](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading), and most social scrapers (Slackbot, Twitterbot, facebookexternalhit) don't run JavaScript at all. For crawlers that do, unlazy detects them and loads the full-quality image immediately, so the blurry placeholder isn't what gets indexed.
 
-## Detects Bots and Crawlers
+## Crawlers Get the Real Image
 
 unlazy exports an `isCrawler` constant that indicates whether the current visitor is detected as a bot or crawler, ensuring full-quality images are loaded and indexed by search engines.
 
@@ -14,8 +14,4 @@ The detection mechanism works by:
 
 The library trusts that bots and crawlers can evaluate the `srcset` attribute and select appropriate image sources for indexing.
 
-## Use `src`, `data-srcset` and `sizes`, or `data-src` Attributes
-
-Set the `src` attribute with the blurry placeholder and use `data-srcset` (or `data-src`) for the high-quality image. This displays placeholders during initial render while loading full-quality images as they enter the viewport.
-
-Use the `sizes` attribute (or [`data-sizes="auto"`](/guide/usage#auto-calculation-of-the-sizes-attribute) for automatic calculation) to provide search engines with the intended display size. This enables search engines to select the appropriate image source from the `srcset` attribute when indexing.
+Use the `sizes` attribute (or [`data-sizes="auto"`](/guide/usage#calculate-the-sizes-attribute-automatically) for automatic calculation) to provide search engines with the intended display size.
