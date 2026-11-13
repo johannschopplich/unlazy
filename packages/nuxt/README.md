@@ -43,9 +43,9 @@ The `UnLazyImage` component is auto-imported globally:
 
 ## Documentation
 
-[📖 Read the full documentation](https://unlazy.byjohann.dev/integrations/nuxt), including [hash-based placeholders](https://unlazy.byjohann.dev/guide/placeholders), [Core Web Vitals](https://unlazy.byjohann.dev/guide/core-web-vitals), and [SSR](https://unlazy.byjohann.dev/guide/ssr).
+[📖 Read the full documentation](https://unlazy.byjohann.dev/integrations/nuxt), including [hash-based placeholders](https://unlazy.byjohann.dev/guide/placeholders), [Core Web Vitals](https://unlazy.byjohann.dev/guide/core-web-vitals), and [SSR](https://unlazy.byjohann.dev/advanced/ssr).
 
-## Migrating from v1
+## Migrating From v1
 
 See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v2, including the `@loaded` → `@image-load` rename and the new `@image-error` event.
 

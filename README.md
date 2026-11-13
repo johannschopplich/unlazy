@@ -5,7 +5,7 @@
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
 
-Universal lazy loading library leveraging native browser APIs. Built around the `loading="lazy"` attribute, with [BlurHash](https://unlazy.byjohann.dev/placeholders/hash-based#blurhash) / [ThumbHash](https://unlazy.byjohann.dev/placeholders/hash-based#thumbhash) placeholders, a dedicated above-the-fold priority path, and a dev-mode LCP warning so you never ship a lazy-loaded hero image by accident.
+Universal lazy loading library leveraging native browser APIs. Built around the `loading="lazy"` attribute, with [BlurHash](https://unlazy.byjohann.dev/guide/placeholders#blurhash) / [ThumbHash](https://unlazy.byjohann.dev/guide/placeholders#thumbhash) placeholders, a dedicated above-the-fold priority path, and a dev-mode LCP warning so you never ship a lazy-loaded hero image by accident.
 
 ## Features
 
@@ -15,10 +15,10 @@ Universal lazy loading library leveraging native browser APIs. Built around the 
 - ⚡ **Core Web Vitals-aware**: Eager-priority path for above-the-fold images, dev-mode LCP warning
 - 🪄 **Sizing**: Automatically calculates the `sizes` attribute
 - 🔍 **SEO-friendly**: Detects search engine bots and preloads all images
-- 🎟 **`<picture>`**: Supports multiple image tags
+- 🎟 **`<picture>`**: Art direction and format selection with multiple sources
 - 🏎 **Auto-initialize**: Usable without a build step
 
-## Setup
+## Installation
 
 > [📖 Read the documentation](https://unlazy.byjohann.dev)
 
@@ -30,9 +30,23 @@ pnpm add -D unlazy
 npm i -D unlazy
 ```
 
+For a framework, install its integration instead:
+
+- **Vue**: [`@unlazy/vue`](https://unlazy.byjohann.dev/integrations/vue)
+- **Nuxt**: [`@unlazy/nuxt`](https://unlazy.byjohann.dev/integrations/nuxt)
+- **React**: [`@unlazy/react`](https://unlazy.byjohann.dev/integrations/react)
+- **Solid**: [`@unlazy/solid`](https://unlazy.byjohann.dev/integrations/solid)
+- **Svelte**: [`@unlazy/svelte`](https://unlazy.byjohann.dev/integrations/svelte)
+
 ## Basic Usage
 
-To apply lazy loading to all matching images, import the [`lazyLoad`](https://unlazy.byjohann.dev/api/lazy-load) function and call it without any arguments:
+Mark an image with `loading="lazy"` and put its source into `data-src` or `data-srcset`:
+
+```html
+<img loading="lazy" data-src="image.jpg" width="640" height="360" alt="Descriptive text">
+```
+
+Then import the [`lazyLoad`](https://unlazy.byjohann.dev/api/lazy-load) function and call it without arguments to process all matching images:
 
 ```ts
 import { lazyLoad } from 'unlazy'
@@ -47,7 +61,7 @@ For above-the-fold images (your hero / LCP image), use `loading="eager"`. unlazy
 <img loading="eager" data-src="hero.jpg" width="1600" height="900" alt="Sunset">
 ```
 
-You can target specific images by passing a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load to [`lazyLoad`](https://unlazy.byjohann.dev/api/lazy-load).
+To target specific images, pass a CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to [`lazyLoad`](https://unlazy.byjohann.dev/api/lazy-load).
 
 ## 💻 Development
 
@@ -55,7 +69,7 @@ You can target specific images by passing a CSS selector, a DOM element, a list 
 2. Enable [Corepack](https://github.com/nodejs/corepack) using `corepack enable`
 3. Install dependencies using `pnpm install`
 4. Run `pnpm run dev:prepare`
-5. Start development server using `pnpm run dev` inside the one of the `packages` directories
+5. Start a development server using `pnpm run dev` inside one of the framework packages, such as `packages/vue`
 
 ## License
 
