@@ -1,117 +1,108 @@
 <script lang='ts'>
-  import type { HTMLImgAttributes } from 'svelte/elements'
-  import type { UnLazySource } from 'unlazy'
-  import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
+  import type { EventHandler, HTMLImgAttributes } from 'svelte/elements'
+  import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
+  import { lazyLoad, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+
+  type ImageEvent = Parameters<EventHandler<Event, HTMLImageElement>>[0]
 
   const {
     src,
     srcSet,
     sources,
-    autoSizes = false,
+    autoSizes,
     blurhash,
     thumbhash,
     placeholderSrc,
     placeholderSize,
-    preload = false,
-    loading = 'lazy',
+    preload,
+    loading,
     onImageLoad,
     onImageError,
+    onload,
+    onerror,
     ...restProps
-  }: {
-    /** Image source URL to be lazy-loaded. */
-    src?: HTMLImgAttributes['src']
-    /** Image source set to be lazy-loaded. */
-    srcSet?: HTMLImgAttributes['srcset']
-    /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
-    sources?: UnLazySource[]
-    /**
-     * Whether the `sizes` attribute should be automatically calculated.
-     * @default false
-     */
-    autoSizes?: boolean
-    /** A BlurHash string representing the blurry placeholder image. */
-    blurhash?: string
-    /** A ThumbHash string representing the blurry placeholder image. */
-    thumbhash?: string
-    /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
-    placeholderSrc?: string
-    /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
-    placeholderSize?: number
-    /**
-     * Whether the image should be preloaded, even if it is not in the viewport yet.
-     * @default false
-     */
-    preload?: boolean
-    /**
-     * Loading strategy of the image.
-     * @default 'lazy'
-     */
-    loading?: HTMLImgAttributes['loading']
-    onImageLoad?: (image: HTMLImageElement) => void
-    onImageError?: (image: HTMLImageElement, error: Event) => void
-  } & Omit<HTMLImgAttributes, 'srcset'> = $props()
+  }: Omit<UnLazyImageProps, 'src' | 'srcSet' | 'loading'>
+    // Svelte's `<img>` attributes accept `null` for these.
+    & {
+      src?: HTMLImgAttributes['src']
+      srcSet?: HTMLImgAttributes['srcset']
+      loading?: HTMLImgAttributes['loading']
+    }
+    & TriggerLoadOptions
+    & Omit<HTMLImgAttributes, 'srcset' | keyof UnLazyImageProps> = $props()
 
   let target = $state<HTMLImageElement | undefined>()
+  // Read the callbacks on call, so a new one does not reload the image.
+  const outcomeCallbacks = {
+    onImageLoad: (image: HTMLImageElement) => onImageLoad?.(image),
+    onImageError: (image: HTMLImageElement, error: Event) => onImageError?.(image, error),
+  }
+  const attributes = $derived(resolveImageAttributes({
+    src: src ?? undefined,
+    srcSet: srcSet ?? undefined,
+    sources,
+    autoSizes,
+    blurhash,
+    thumbhash,
+    placeholderSrc,
+    preload,
+    loading: loading ?? undefined,
+  }))
+  // The effect reads single fields, since `attributes` changes with every new
+  // `sources` array.
+  const hasRealSources = $derived(attributes.hasRealSources)
+  const sourcesKey = $derived(attributes.sourcesKey)
+  const hash = $derived(attributes.hash)
+  const hashType = $derived(attributes.hashType)
 
   $effect(() => {
-    if (!target)
+    if (!target || hasRealSources)
       return
 
-    if (preload) {
-      const cleanupSizes = autoSizes
-        ? _autoSizes(target, { updateOnResize: true })
-        : undefined
-      const cleanupLoad = triggerLoad(target, { onImageLoad, onImageError })
-      return () => {
-        cleanupSizes?.()
-        cleanupLoad()
-      }
-    }
+    // Track changes to image sources to trigger reactivity.
+    void src
+    void srcSet
+    void sourcesKey
 
-    const cleanup = lazyLoad(target, {
-      hash: thumbhash || blurhash,
-      hashType: thumbhash ? 'thumbhash' : 'blurhash',
+    return lazyLoad(target, {
+      hash,
+      hashType,
       placeholderSize,
       updateSizesOnResize: autoSizes,
-      onImageLoad,
-      onImageError,
+      preload,
+      ...outcomeCallbacks,
     })
-    return () => {
-      cleanup()
-    }
   })
+
+  // `lazyLoad` reports the outcome of the images it swaps; an image with its
+  // real sources in the markup reports its own.
+  function handleOutcome(event: Event) {
+    if (event.type === 'error')
+      onerror?.(event as ImageEvent)
+    else
+      onload?.(event as ImageEvent)
+    if (hasRealSources)
+      reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
+  }
 </script>
+
+{#snippet image()}
+  <img
+    bind:this={target}
+    {...attributes.image}
+    onload={handleOutcome}
+    onerror={handleOutcome}
+    {...restProps}
+  />
+{/snippet}
 
 {#if sources?.length}
   <picture>
-    {#each sources as source, index (index)}
-      <source
-        type={source.type}
-        media={source.media}
-        width={source.width}
-        height={source.height}
-        data-srcset={source.srcSet}
-        data-sizes={source.sizes || (autoSizes ? 'auto' : undefined)}
-      />
+    {#each attributes.sources as sourceAttributes, index (index)}
+      <source {...sourceAttributes} />
     {/each}
-    <img
-      bind:this={target}
-      src={placeholderSrc}
-      data-src={src}
-      data-srcset={srcSet}
-      data-sizes={autoSizes ? 'auto' : undefined}
-      {loading}
-      {...restProps}
-    />
+    {@render image()}
   </picture>
 {:else}
-  <img
-    bind:this={target}
-    src={placeholderSrc}
-    data-src={src}
-    data-srcset={srcSet}
-    data-sizes={autoSizes ? 'auto' : undefined}
-    {loading}
-    {...restProps}
-  />
+  {@render image()}
 {/if}

@@ -58,6 +58,7 @@
     "svelte": "catalog:",
     "svelte-check": "catalog:",
     "tslib": "catalog:",
-    "vite": "catalog:"
+    "vite": "catalog:",
+    "vitest-browser-svelte": "catalog:"
   }
 }
