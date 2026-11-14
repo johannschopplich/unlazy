@@ -88,7 +88,7 @@ To disable hash decoding altogether, pass `false` to the `hash` option. This dis
 ```ts
 import { lazyLoad } from 'unlazy'
 
-lazyLoad('img[loading="lazy"]', {
+lazyLoad(undefined, {
   hash: false
 })
 ```
@@ -109,3 +109,14 @@ Hash-based placeholders are convenient when you only have a compact string on ha
 ```
 
 When no `data-blurhash` or `data-thumbhash` attribute is present on the image, unlazy leaves `src` alone. The browser decodes the placeholder natively, and no library code runs on the placeholder path. To also drop the hash decoders from your bundle, set [`__UNLAZY_HASH_DECODING__`](/advanced/build-flags#disable-hash-decoding) to `false`.
+
+### Give Every Image Its Own Placeholder URL
+
+Once an image with a given placeholder URL has loaded, the browser serves that URL from memory and fires `load` at once on every image that gets it later – after a client-side navigation, in an infinite scroll, or in a component mounted later. unlazy reads that `load` as the image nearing the viewport, so an off-screen image loads its real source right away. Append a fragment that differs per image:
+
+```html
+<img src="data:image/webp;base64,UklGRi...#1" data-src="first.jpg" loading="lazy" alt="" width="1200" height="800">
+<img src="data:image/webp;base64,UklGRi...#2" data-src="second.jpg" loading="lazy" alt="" width="1200" height="800">
+```
+
+Placeholders that `lazyLoad` decodes from a hash, and its default placeholder, already carry a unique fragment.

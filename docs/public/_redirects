@@ -3,3 +3,5 @@
 /advanced/aspect-ratio /guide/core-web-vitals#what-unlazy-does-not-set 301
 /advanced/aspect-ratio.html /guide/core-web-vitals#what-unlazy-does-not-set 301
 /advanced/ /advanced/ssr 301
+/placeholders/hash-based /guide/placeholders 301
+/guide/ssr /advanced/ssr 301

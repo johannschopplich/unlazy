@@ -48,6 +48,8 @@ For server-side rendering, use the specialized functions instead:
 
 ## Type Declarations
 
+<<< @/../packages/unlazy/src/types.ts#CreatePlaceholderFromHashOptions{ts}
+
 <<< @/../packages/unlazy/src/lazyLoad.ts#createPlaceholderFromHash{ts}
 
 ## Options
@@ -57,8 +59,8 @@ For server-side rendering, use the specialized functions instead:
 | `image` | `HTMLImageElement` | - | If provided, extracts hash from `data-blurhash` or `data-thumbhash` and calculates ratio from element dimensions |
 | `hash` | `string` | - | Hash string to decode. Takes precedence over `image` attributes |
 | `hashType` | `'blurhash' \| 'thumbhash'` | `'blurhash'` | Hash format. Auto-detected when `image` is provided without `hash` |
-| `size` | `number` | `32` | Size of the longer edge for BlurHash decoding. Ignored for ThumbHash |
-| `ratio` | `number` | - | Aspect ratio (width / height) for BlurHash. Auto-calculated from `image` if provided |
+| `size` | `number` | `32` | Size of the longer edge for BlurHash decoding, capped at `100`. Ignored for ThumbHash |
+| `ratio` | `number` | - | Aspect ratio (width / height) for BlurHash. Read from `image` when both its width and height are known, otherwise `1` (square) |
 
 ::: info
 For BlurHash, set explicit `width` and `height` attributes on images. See [Hash-Based Placeholders](/guide/placeholders#using-data-attributes) for why.
@@ -66,4 +68,4 @@ For BlurHash, set explicit `width` and `height` attributes on images. See [Hash-
 
 ## Return Value
 
-Returns a PNG data URI string, or `undefined` if no hash is provided or the decoder throws.
+Returns a PNG data URI string, or `undefined` if no hash is provided or the decoder throws. Unlike the placeholders `lazyLoad` sets, the data URI carries no unique fragment – before you set it on several lazy images, [give each its own](/guide/placeholders#give-every-image-its-own-placeholder-url).

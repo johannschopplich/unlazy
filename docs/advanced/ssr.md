@@ -57,7 +57,7 @@ const placeholder = createPngDataUri(props.thumbhash)
 
 The same primitive works elsewhere – React Server Components import from `unlazy/thumbhash` directly and put the result on `<img src={…}>`; Astro frontmatter and SvelteKit `+page.server.ts` follow the same pattern. The only framework-specific detail is where the client-side `lazyLoad()` runs (a `'use client'` boundary in RSC, the SvelteKit `+page.svelte` script, the Astro [client directive](https://docs.astro.build/en/reference/directives-reference/) of your choice).
 
-[`@unlazy/nuxt`](/integrations/nuxt) does all of this for you: it decodes the hash on the server by default, inlines the data URI as `src`, and never decodes it again in the browser.
+[`@unlazy/nuxt`](/integrations/nuxt) does all of this for you: it decodes the hash on the server by default, inlines the data URI as `src`, and decodes the same placeholder during hydration, so the `src` stays until the real image has loaded.
 
 ## Performance and Caching
 

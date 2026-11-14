@@ -4,6 +4,6 @@ Search engine bots and crawlers don't behave like human visitors: Googlebot supp
 
 ## Crawlers Get the Real Image
 
-unlazy exports an `isCrawler` constant that is `true` when the current visitor is detected as a bot or crawler. For a crawler, `data-src` and `data-srcset` become `src` and `srcset` immediately, so the full-quality image is what gets indexed.
+unlazy exports an `isCrawler` constant that is `true` for every user agent containing `bot`, `crawl`, or `spider` in any letter case. For a crawler, `data-src` and `data-srcset` become `src` and `srcset` immediately, without a hash placeholder, so the full-quality image is what gets indexed.
 
 Use the `sizes` attribute (or [`data-sizes="auto"`](/guide/usage#calculate-the-sizes-attribute-automatically) for automatic calculation) to provide search engines with the intended display size.

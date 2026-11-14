@@ -10,15 +10,17 @@ Install the `unlazy` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
-  pnpm add -D unlazy
+  pnpm add unlazy
   ```
   ```bash [yarn]
-  yarn add -D unlazy
+  yarn add unlazy
   ```
   ```bash [npm]
-  npm install -D unlazy
+  npm install unlazy
   ```
 :::
+
+unlazy ships as ES modules. Without a bundler, use the [CDN builds](/guide/cdn).
 
 ## Mark Up an Image
 
@@ -49,7 +51,7 @@ In your frontend code, import the [`lazyLoad`](/api/lazy-load) function from the
 ```ts
 import { lazyLoad } from 'unlazy'
 
-// Lazily load all `img[loading="lazy"]` images
+// Process every image with a `data-src` or `data-srcset`
 const cleanup = lazyLoad()
 ```
 

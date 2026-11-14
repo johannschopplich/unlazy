@@ -31,17 +31,25 @@ unlazy includes [BlurHash](/guide/placeholders#blurhash) and [ThumbHash](/guide/
 The bundler then removes the hash-related code paths in `lazyLoad()` and both decoding libraries from the final bundle.
 
 ::: warning
-This flag only removes hash decoding from `lazyLoad`. `createPlaceholderFromHash`, `unlazy/blurhash`, and `unlazy/thumbhash` still bundle their decoder when you import them. `@unlazy/nuxt` always sets the flag to `true`, so defining it in a Nuxt app has no effect.
+This flag only removes hash decoding from `lazyLoad`. `createPlaceholderFromHash`, `unlazy/blurhash`, and `unlazy/thumbhash` still bundle their decoder when you import them. `@unlazy/vue` and `@unlazy/nuxt` import `createPlaceholderFromHash`, so their apps keep both decoders. In a Nuxt app, the flag drops only the placeholders of lazy-loaded images with `ssr: false`.
 :::
 
 ## Disable Client Logging
 
-unlazy emits dev-time console output to help you catch configuration mistakes. Set `__UNLAZY_LOGGING__` to `false` to strip all of it from production builds. Default is `true`.
+The development build of `unlazy` logs configuration mistakes to the console:
 
-When disabled, the bundler removes:
+- **Missing `data-src` / `data-srcset` error**: an image passed to `lazyLoad` has neither these attributes nor a `src` or `srcset`.
+- **Hash decoder failure error**: a BlurHash or ThumbHash string cannot be decoded.
+- **Largest Contentful Paint warning**: the LCP element is still configured for lazy loading.
 
-- **Missing `data-src` / `data-srcset` errors**: logged when an image passed to `lazyLoad` is missing both attributes.
-- **Hash decoder failure errors**: logged when a BlurHash or ThumbHash string cannot be decoded.
-- **Largest Contentful Paint warning**: logged when the LCP element is still configured for lazy loading.
+Your bundler or runtime picks this build when it resolves the `development` export condition:
 
-This is recommended for production IIFE bundles.
+- **Vite, Vitest, webpack, Rspack, and Parcel** resolve it in development mode, so your production build logs nothing.
+- **Rollup** with `@rollup/plugin-node-resolve` 16 or later resolves it when `NODE_ENV` is set to anything but `production`, or with `exportConditions: ['development']`.
+- **esbuild, Bun, and Node** resolve it only with `--conditions=development`.
+
+A server bundle that resolves `development` logs too: a hash that fails to decode during server-side rendering logs the hash decoder failure error to the server console.
+
+The other builds, including the [CDN builds](/guide/cdn), log nothing.
+
+Set `__UNLAZY_LOGGING__` to `false` to silence the development build as well. Default is `true`.

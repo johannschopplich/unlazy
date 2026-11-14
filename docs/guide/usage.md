@@ -69,6 +69,33 @@ triggerLoad(coolImage)
 Manually loading images may negatively affect perceived performance by forcing immediate load, even when not visible in the viewport.
 :::
 
+## Style a Failed Image
+
+When an image fails to load, its placeholder stays – in a `<picture>` too – and the `<img>` gets a `data-error` attribute. Style the attribute to tell a failed image from one that is still loading:
+
+```css
+img[data-error] {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+```
+
+A later successful load removes `data-error`, for example after you set a new `data-src` and call [`triggerLoad`](/api/trigger-load) again. An eager image has no placeholder to keep, so the browser shows its broken-image rendering, but it still gets `data-error`. So does a lazy image whose preload succeeds but whose visible `<img>` then fails to load the swapped-in source.
+
+To react in code, pass `onImageError`. unlazy also dispatches an `error` event on the `<img>` first, so native `onerror` listeners fire as well:
+
+```ts
+import { lazyLoad } from 'unlazy'
+
+lazyLoad(undefined, {
+  onImageError: (image, error) => {
+    console.warn('Failed to load', image, error)
+  },
+})
+```
+
+The framework components set the same attribute and emit `image-error` (Vue, Nuxt) or call `onImageError` (React, Solid, Svelte).
+
 ## Lazy Load `<picture>` Elements
 
 unlazy fully supports the `<picture>` element for art direction and format selection. Each `<source>` element should use `data-srcset` instead of `srcset`:
@@ -98,4 +125,4 @@ unlazy fully supports the `<picture>` element for art direction and format selec
 </picture>
 ```
 
-When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`. The `onImageLoad` and `onImageError` callbacks fire once the browser resolves a source on the visible `<img>`.
+When the image loads, unlazy automatically swaps `data-srcset` to `srcset` on all `<source>` elements within the `<picture>`. The `onImageLoad` callback fires once the visible `<img>` has loaded the selected source.
