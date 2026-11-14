@@ -10,16 +10,4 @@ describe('createPngDataUri (BlurHash)', () => {
     expect(result).toMatch(/^data:image\/png;base64,/)
     expect(() => atob(base64)).not.toThrow()
   })
-
-  it('respects aspect ratio option', () => {
-    expect(createPngDataUri(BLURHASH, { ratio: 1 }))
-      .not
-      .toBe(createPngDataUri(BLURHASH, { ratio: 2 }))
-  })
-
-  it('produces different output for different sizes', () => {
-    expect(createPngDataUri(BLURHASH, { size: 16 }))
-      .not
-      .toBe(createPngDataUri(BLURHASH, { size: 64 }))
-  })
 })

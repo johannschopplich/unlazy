@@ -35,9 +35,12 @@ function makeEntry(element: Element | null): unknown {
 
 let originalPO: typeof PerformanceObserver | undefined
 let consoleWarn: ReturnType<typeof vi.spyOn>
+let installLcpWarning: typeof import('../src/lcpWarning').installLcpWarning
+let moduleVersion = 0
 
-beforeEach(() => {
-  vi.resetModules()
+beforeEach(async () => {
+  // `vi.resetModules` does not reset modules in browser mode, so each test imports a fresh copy.
+  ({ installLcpWarning } = await import(/* @vite-ignore */ `../src/lcpWarning.ts?t=${++moduleVersion}`) as typeof import('../src/lcpWarning'))
   FakePerformanceObserver.instances = []
   FakePerformanceObserver.observeCalls = []
   FakePerformanceObserver.shouldThrow = false
@@ -54,9 +57,7 @@ afterEach(() => {
 })
 
 describe('installLcpWarning', () => {
-  it('constructs a single observer across multiple install calls', async () => {
-    const { installLcpWarning } = await import('../src/lcpWarning')
-
+  it('constructs a single observer across multiple install calls', () => {
     installLcpWarning()
     installLcpWarning()
     installLcpWarning()
@@ -65,8 +66,7 @@ describe('installLcpWarning', () => {
     expect(FakePerformanceObserver.observeCalls).toHaveLength(1)
   })
 
-  it('warns when the LCP element is an img with loading="lazy"', async () => {
-    const { installLcpWarning } = await import('../src/lcpWarning')
+  it('warns when the LCP element is an img with loading="lazy"', () => {
     installLcpWarning()
 
     const img = document.createElement('img')
@@ -82,8 +82,7 @@ describe('installLcpWarning', () => {
     )
   })
 
-  it('warns when the LCP element is an img still holding data-src', async () => {
-    const { installLcpWarning } = await import('../src/lcpWarning')
+  it('warns when the LCP element is an img still holding data-src', () => {
     installLcpWarning()
 
     const img = document.createElement('img')
@@ -97,8 +96,7 @@ describe('installLcpWarning', () => {
     expect(consoleWarn).toHaveBeenCalled()
   })
 
-  it('does not warn when the LCP element is not an img', async () => {
-    const { installLcpWarning } = await import('../src/lcpWarning')
+  it('does not warn when the LCP element is not an img', () => {
     installLcpWarning()
 
     const div = document.createElement('div')
@@ -110,9 +108,8 @@ describe('installLcpWarning', () => {
     expect(consoleWarn).not.toHaveBeenCalled()
   })
 
-  it('silently no-ops when PerformanceObserver.observe throws', async () => {
+  it('silently no-ops when PerformanceObserver.observe throws', () => {
     FakePerformanceObserver.shouldThrow = true
-    const { installLcpWarning } = await import('../src/lcpWarning')
 
     expect(() => installLcpWarning()).not.toThrow()
     expect(consoleWarn).not.toHaveBeenCalled()

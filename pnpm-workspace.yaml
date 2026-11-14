@@ -44,7 +44,6 @@ catalog:
   eslint-plugin-solid: ^0.17.1
   eslint-plugin-svelte: ^3.24.1
   fast-blurhash: ^1.2.0
-  happy-dom: ^21.0.4
   nuxt: ^4.6.4
   playwright: ^1.65.0
   publint: ^0.3.25
