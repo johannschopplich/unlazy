@@ -12,14 +12,14 @@ export function lazyLoad<T extends HTMLImageElement>(
   /**
    * A CSS selector, a DOM element, a list of DOM elements, or an array of DOM elements to lazy-load.
    *
-   * @default 'img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-srcset]'
+   * @default 'img[data-src], img[data-srcset]'
    */
   selectorsOrElements?: string | T | NodeListOf<T> | T[],
   options?: UnLazyLoadOptions,
 ): () => void
 // #endregion lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
-  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[loading="lazy"], img[loading="eager"][data-src], img[loading="eager"][data-srcset]',
+  selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-src], img[data-srcset]',
   {
     hash = true,
     hashType = 'blurhash',

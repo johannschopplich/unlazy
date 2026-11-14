@@ -26,6 +26,16 @@ describe('lazyLoad', () => {
     )
   })
 
+  it('ignores a native lazy image without data attributes by default', () => {
+    const img = makeLazyImg()
+    document.body.append(img)
+
+    lazyLoad()
+
+    expect(consoleError).not.toHaveBeenCalled()
+    expect(img.hasAttribute('src')).toBe(false)
+  })
+
   it('sets BlurHash placeholder on src when data-blurhash is present', () => {
     const img = makeLazyImg({ dataSrc: 'real.jpg', dataBlurhash: BLURHASH })
 
@@ -121,6 +131,19 @@ describe('lazyLoad', () => {
       lazyLoad(img)
 
       expect(img.hasAttribute('fetchpriority')).toBe(false)
+    })
+
+    it('selects eager images with data-src by default and skips those without', () => {
+      const eager = makeLazyImg({ loading: 'eager', dataSrc: 'eager.jpg' })
+      const eagerNoData = makeLazyImg({ loading: 'eager' })
+      document.body.append(eager, eagerNoData)
+
+      lazyLoad()
+
+      expect(eager.getAttribute('fetchpriority')).toBe('high')
+      expect(eager.src).toContain('eager.jpg')
+      // Image without `data-src` is not in the selector, left untouched.
+      expect(eagerNoData.hasAttribute('fetchpriority')).toBe(false)
     })
 
     it('populates numeric sizes on data-sizes="auto" sources for eager picture-wrapped images', () => {
