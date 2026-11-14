@@ -7,6 +7,7 @@ const blurhash = 'LKO2:N%2Tw=w]~RBVZRi};RPxuwH'
 const thumbhash = '1QcSHQRnh493V4dIh4eXh1h4kJUI'
 
 const shouldLoadImage = ref(false)
+const shouldMountMoreImages = ref(false)
 
 const artDirectionSources: UnLazySource[] = [
   {
@@ -29,6 +30,10 @@ function onImageLoad(image: HTMLImageElement) {
 <template>
   <main>
     <h1>@unlazy/nuxt Playground</h1>
+
+    <button type="button" data-testid="mount-more" @click="shouldMountMoreImages = true">
+      Mount more images sharing the BlurHash below
+    </button>
 
     <div class="grid">
       <section>
@@ -127,6 +132,42 @@ function onImageLoad(image: HTMLImageElement) {
         <p>Resize past 600px to switch between portrait and landscape sources.</p>
       </section>
     </div>
+
+    <section>
+      <h2>Repeated BlurHash</h2>
+      <p>Off-screen images sharing one hash stay unfetched until scrolled into view.</p>
+      <div class="spacer" />
+      <UnLazyImage
+        v-for="index in 4"
+        :key="`server-${index}`"
+        :blurhash="blurhash"
+        :src="`/images/fall-evan-wallace.jpg?server=${index}`"
+        width="640"
+        height="427"
+        data-testid="repeated-server"
+      />
+      <UnLazyImage
+        v-for="index in 4"
+        :key="`client-${index}`"
+        :ssr="false"
+        :blurhash="blurhash"
+        :src="`/images/fall-evan-wallace.jpg?client=${index}`"
+        width="640"
+        height="427"
+        data-testid="repeated-client"
+      />
+      <template v-if="shouldMountMoreImages">
+        <UnLazyImage
+          v-for="index in 4"
+          :key="`later-${index}`"
+          :blurhash="blurhash"
+          :src="`/images/fall-evan-wallace.jpg?later=${index}`"
+          width="640"
+          height="427"
+          data-testid="repeated-later"
+        />
+      </template>
+    </section>
   </main>
 </template>
 
@@ -152,6 +193,9 @@ section p {
   margin-top: 0.5rem;
   font-size: 0.875rem;
   color: #999;
+}
+.spacer {
+  height: 400vh;
 }
 img {
   display: block;

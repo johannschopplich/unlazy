@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@nuxt/kit": "catalog:",
+    "@unlazy/vue": "workspace:*",
     "defu": "catalog:",
     "unlazy": "workspace:*"
   },

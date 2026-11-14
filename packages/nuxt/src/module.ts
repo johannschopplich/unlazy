@@ -1,6 +1,9 @@
-import { addComponent, createResolver, defineNuxtModule, extendViteConfig } from '@nuxt/kit'
+import type { NuxtModule } from '@nuxt/schema'
+import { addComponent, createResolver, defineNuxtModule } from '@nuxt/kit'
 import { defu } from 'defu'
 import { name, version } from '../package.json'
+
+export type { UnLazySource } from 'unlazy'
 
 // #region ModuleOptions
 export interface ModuleOptions {
@@ -25,13 +28,13 @@ export interface ModuleOptions {
 }
 // #endregion ModuleOptions
 
-export default defineNuxtModule<ModuleOptions>({
+const module: NuxtModule<ModuleOptions, ModuleOptions, false> = defineNuxtModule<ModuleOptions>({
   meta: {
     name,
     version,
     configKey: 'unlazy',
     compatibility: {
-      nuxt: '>=3.5',
+      nuxt: '>=4',
     },
   },
   defaults: {
@@ -48,14 +51,11 @@ export default defineNuxtModule<ModuleOptions>({
 
     nuxt.options.build.transpile.push(resolve('runtime'))
 
-    extendViteConfig((config) => {
-      config.define ||= {}
-      config.define.__UNLAZY_HASH_DECODING__ = true
-    })
-
     addComponent({
       name: 'UnLazyImage',
       filePath: resolve('runtime/components/UnLazyImage.vue'),
     })
   },
 })
+
+export default module

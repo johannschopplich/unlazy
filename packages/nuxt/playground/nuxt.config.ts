@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   vite: {
     resolve: {
       alias: {
-        unlazy: fileURLToPath(new URL('../../unlazy/src/', import.meta.url)),
+        'unlazy': fileURLToPath(new URL('../../unlazy/src/', import.meta.url)),
+        '@unlazy/vue/components': fileURLToPath(new URL('../../vue/src/components/index.ts', import.meta.url)),
       },
     },
 
