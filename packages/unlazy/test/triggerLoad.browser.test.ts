@@ -33,6 +33,27 @@ describe('triggerLoad', () => {
     expect(img.src).toBe(TINY_PNG)
   }, 2000)
 
+  it('keeps the placeholder of a picture-wrapped image and sets data-error when its source fails to load', async () => {
+    const { picture, img } = makePictureImg({
+      dataSrc: createImageUrl(),
+      sources: [
+        {
+          dataSrcset: createImageUrl({ status: '404' }),
+        },
+      ],
+    })
+    img.src = TINY_PNG
+    document.body.appendChild(picture)
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageError: () => resolve(),
+    }))
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(img.currentSrc).toBe(TINY_PNG)
+    expect(img.hasAttribute('data-error')).toBe(true)
+  }, 2000)
+
   it('fetches the source a picture-wrapped image selects once', async () => {
     const sourceUrl = createImageUrl()
     const { picture, img } = makePictureImg({
@@ -143,6 +164,42 @@ describe('triggerLoad', () => {
     const requests = await fetchImageRequests(url)
 
     expect(requests.map(request => request.referer)).toEqual([undefined])
+  }, 2000)
+
+  it('keeps the placeholder, sets data-error and dispatches error before onImageError when the image fails to load', async () => {
+    const img = document.createElement('img')
+    img.src = TINY_PNG
+    img.dataset.src = createImageUrl({ status: '404' })
+    document.body.appendChild(img)
+    const events: string[] = []
+    img.addEventListener('error', () => events.push('error'))
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageError: () => {
+        events.push('onImageError')
+        resolve()
+      },
+    }))
+
+    expect(events).toEqual(['error', 'onImageError'])
+    expect(img.getAttribute('src')).toBe(TINY_PNG)
+    expect(img.hasAttribute('data-error')).toBe(true)
+  }, 2000)
+
+  it('invokes onImageError and marks data-error when the visible image fails after the preload', async () => {
+    const img = document.createElement('img')
+    img.src = TINY_PNG
+    img.dataset.src = createImageUrl({ failAfter: '1' })
+    document.body.appendChild(img)
+
+    const failure = new Promise<void>(resolve => triggerLoad(img, {
+      onImageError: () => resolve(),
+    }))
+    // The visible image now misses the preloaded response and fetches again.
+    img.crossOrigin = 'anonymous'
+    await failure
+
+    expect(img.hasAttribute('data-error')).toBe(true)
   }, 2000)
 
   it('applies the resolved data-sizes="auto" width to the visible image', async () => {

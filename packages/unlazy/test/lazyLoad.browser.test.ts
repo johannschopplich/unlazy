@@ -245,6 +245,19 @@ describe('lazyLoad', () => {
       expect(img.dataset.src).toBeUndefined()
     }, 2000)
 
+    it('marks an eager image with data-error when it fails to load', async () => {
+      const img = document.createElement('img')
+      img.loading = 'eager'
+      img.dataset.src = createImageUrl({ status: '404' })
+      document.body.appendChild(img)
+
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageError: () => resolve(),
+      }))
+
+      expect(img.hasAttribute('data-error')).toBe(true)
+    }, 2000)
+
     it('ignores an error of a later source once an eager image has loaded', async () => {
       const img = document.createElement('img')
       img.loading = 'eager'
@@ -356,6 +369,27 @@ describe('lazyLoad', () => {
       }))
 
       expect(img.src).toBe(TINY_PNG)
+    }, 2000)
+
+    it('removes data-error once a new source loads after a failure', async () => {
+      const img = makeLazyImg({
+        dataSrc: createImageUrl({ status: '404' }),
+      })
+      document.body.append(img)
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageError: () => resolve(),
+        })
+      })
+      cleanup()
+      img.dataset.src = createImageUrl()
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.hasAttribute('data-error')).toBe(false)
     }, 2000)
 
     it('leaves a loaded image untouched and silent when called again after cleanup', async () => {

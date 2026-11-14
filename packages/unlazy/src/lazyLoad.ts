@@ -97,10 +97,7 @@ export function lazyLoad<T extends HTMLImageElement>(
         swapSources(image)
       const outcomeHandler = (event: Event) => {
         listeners.abort()
-        if (event.type === 'error')
-          onImageError?.(image, event)
-        else
-          onImageLoad?.(image)
+        reportImageOutcome(image, event, { onImageLoad, onImageError })
       }
       image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
       image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
@@ -272,6 +269,26 @@ export function createPlaceholderFromHash(
   }
 }
 
+/**
+ * Applies the `load` or `error` event of an image that loads its own sources:
+ * a `load` removes the `data-error` attribute and calls `onImageLoad`, an
+ * `error` sets `data-error` and calls `onImageError`.
+ */
+export function reportImageOutcome(
+  image: HTMLImageElement,
+  event: Event,
+  { onImageLoad, onImageError }: TriggerLoadOptions = {},
+): void {
+  if (event.type === 'error') {
+    image.setAttribute('data-error', '')
+    onImageError?.(image, event)
+  }
+  else {
+    image.removeAttribute('data-error')
+    onImageLoad?.(image)
+  }
+}
+
 function observeAutoSizes(
   element: HTMLImageElement | HTMLSourceElement,
   updateOnResize: boolean,
@@ -386,10 +403,7 @@ function loadImage(
       return
     }
     visibleListeners.abort()
-    if (event.type === 'error')
-      onImageError?.(image, event)
-    else
-      onImageLoad?.(image)
+    reportImageOutcome(image, event, { onImageLoad, onImageError })
   }
   const preloadLoadHandler = () => {
     // A detached `<picture>` selects its source again on a viewport change in
@@ -411,6 +425,7 @@ function loadImage(
   }
   const preloadErrorHandler = (event: Event) => {
     preloadListeners.abort()
+    image.setAttribute('data-error', '')
     // Dispatch the synthetic error on the visible `<img>` first so the public
     // contract (native error fires) is fulfilled before user code runs.
     image.dispatchEvent(new Event('error'))
