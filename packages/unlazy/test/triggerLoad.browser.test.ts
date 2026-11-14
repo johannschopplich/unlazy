@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import { triggerLoad } from '../src/lazyLoad'
-import { createImageUrl, makePictureImg, TINY_PNG } from './fixtures'
+import { autoSizes, triggerLoad } from '../src/lazyLoad'
+import { createImageUrl, fetchImageRequests, makePictureImg, TINY_PNG } from './fixtures'
 
 describe('triggerLoad', () => {
   function loadPicture(picture: HTMLPictureElement, img: HTMLImageElement): Promise<void> {
@@ -58,6 +58,87 @@ describe('triggerLoad', () => {
     cleanup()
     expect(() => cleanup()).not.toThrow()
   })
+
+  it('invokes onImageLoad once the visible image has loaded the real source', async () => {
+    const url = createImageUrl()
+    const img = document.createElement('img')
+    img.crossOrigin = 'anonymous'
+    img.src = TINY_PNG
+    img.dataset.src = url
+    document.body.appendChild(img)
+
+    const loadedState = await new Promise((resolve) => {
+      triggerLoad(img, {
+        onImageLoad: image => resolve({ currentSrc: image.currentSrc, isComplete: image.complete }),
+      })
+    })
+
+    expect(loadedState).toEqual({ currentSrc: url, isComplete: true })
+  }, 2000)
+
+  it('fetches a crossorigin="anonymous" image once', async () => {
+    const url = createImageUrl()
+    const img = document.createElement('img')
+    img.crossOrigin = 'anonymous'
+    img.src = TINY_PNG
+    img.dataset.src = url
+    document.body.appendChild(img)
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+
+    expect(await fetchImageRequests(url)).toHaveLength(1)
+  }, 2000)
+
+  it('sends no Referer for referrerpolicy="no-referrer"', async () => {
+    const url = createImageUrl()
+    const img = document.createElement('img')
+    img.referrerPolicy = 'no-referrer'
+    img.src = TINY_PNG
+    img.dataset.src = url
+    document.body.appendChild(img)
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+    const requests = await fetchImageRequests(url)
+
+    expect(requests.map(request => request.referer)).toEqual([undefined])
+  }, 2000)
+
+  it('applies the resolved data-sizes="auto" width to the visible image', async () => {
+    const img = document.createElement('img')
+    img.style.width = '300px'
+    img.src = TINY_PNG
+    img.dataset.sizes = 'auto'
+    img.dataset.srcset = `${createImageUrl()} 300w, ${createImageUrl()} 600w`
+    document.body.appendChild(img)
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+
+    expect(img.sizes).toBe('300px')
+  }, 2000)
+
+  it('keeps a data-sizes="auto" width resolved while the preload runs', async () => {
+    const img = document.createElement('img')
+    img.style.width = '300px'
+    img.src = TINY_PNG
+    img.dataset.sizes = 'auto'
+    img.dataset.srcset = `${createImageUrl({ delay: '100' })} 300w, ${createImageUrl({ delay: '100' })} 600w`
+    document.body.appendChild(img)
+
+    const loaded = new Promise<void>(resolve => triggerLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+    img.style.width = '600px'
+    autoSizes(img)
+    await loaded
+
+    expect(img.sizes).toBe('600px')
+  }, 2000)
 
   it('swaps data-srcset to srcset for picture element child', async () => {
     const srcset = `${createImageUrl()} 1x, ${createImageUrl()} 2x`

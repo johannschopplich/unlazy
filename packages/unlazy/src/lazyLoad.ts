@@ -6,6 +6,12 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { debounce, isCrawler, toElementArray } from './utils'
 
 const processedImages = new WeakSet<HTMLImageElement>()
+const PRELOAD_ATTRIBUTES = [
+  'referrerpolicy',
+  'crossorigin',
+  'fetchpriority',
+  'decoding',
+] as const
 let placeholderCount = 0
 
 // #region lazyLoad
@@ -83,20 +89,22 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     processedImages.add(image)
 
+    const listeners = new AbortController()
+    cleanups.add(() => listeners.abort())
+
     // Swap immediately for eager images (above-the-fold) and crawlers.
     // Listeners are attached pre-swap so the spec-async `load` task is caught
     // after the swap; cleanup detaches them if the consumer aborts early.
     if (isEager || isCrawler) {
-      if (onImageLoad) {
-        const loadHandler = () => onImageLoad(image)
-        image.addEventListener('load', loadHandler, { once: true })
-        cleanups.add(() => image.removeEventListener('load', loadHandler))
+      const outcomeHandler = (event: Event) => {
+        listeners.abort()
+        if (event.type === 'error')
+          onImageError?.(image, event)
+        else
+          onImageLoad?.(image)
       }
-      if (onImageError) {
-        const errorHandler = (event: Event) => onImageError(image, event)
-        image.addEventListener('error', errorHandler, { once: true })
-        cleanups.add(() => image.removeEventListener('error', errorHandler))
-      }
+      image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
+      image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
       swapPictureSources(image)
       swapDataAttribute(image, 'srcset')
       swapDataAttribute(image, 'src')
@@ -115,14 +123,10 @@ export function lazyLoad<T extends HTMLImageElement>(
     }
 
     // Otherwise, load the image when it enters the viewport.
-    const loadHandler = () => {
+    image.addEventListener('load', () => {
+      listeners.abort()
       cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
-    }
-    image.addEventListener('load', loadHandler, { once: true })
-
-    cleanups.add(
-      () => image.removeEventListener('load', loadHandler),
-    )
+    }, { signal: listeners.signal })
   }
 
   return () => {
@@ -221,51 +225,7 @@ export function triggerLoad(
     return cleanup
   }
 
-  const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
-
-  if (!dataSrcset && !dataSrc)
-    return cleanup
-
-  const temporaryImage = new Image()
-
-  const loadHandler = () => {
-    swapDataAttribute(image, 'srcset')
-    swapDataAttribute(image, 'src')
-    onImageLoad?.(image)
-  }
-  const errorHandler = (event: Event) => {
-    // Dispatch the synthetic error on the visible `<img>` first so the public
-    // contract (native error fires) is fulfilled before user code runs.
-    image.dispatchEvent(new Event('error'))
-    onImageError?.(image, event)
-  }
-
-  temporaryImage.addEventListener('load', loadHandler, { once: true })
-  temporaryImage.addEventListener('error', errorHandler, { once: true })
-
-  cleanups.push(() => {
-    temporaryImage.removeEventListener('load', loadHandler)
-    temporaryImage.removeEventListener('error', errorHandler)
-    // Empty `src` aborts the pending fetch per HTML "update the image data".
-    temporaryImage.src = ''
-  })
-
-  // Calculate the correct `sizes` attribute if `data-sizes="auto"` is set.
-  if (dataSizes === 'auto') {
-    const width = getOffsetWidth(image)
-    if (width)
-      temporaryImage.sizes = `${width}px`
-  }
-  else if (image.sizes) {
-    temporaryImage.sizes = image.sizes
-  }
-
-  if (dataSrcset)
-    temporaryImage.srcset = dataSrcset
-  if (dataSrc)
-    temporaryImage.src = dataSrc
-
-  return cleanup
+  return loadImage(image, { onImageLoad, onImageError })
 }
 
 // #region createPlaceholderFromHash
@@ -375,6 +335,83 @@ function collectAutoSizeTargets(
   }
 
   return targets
+}
+
+function loadImage(
+  image: HTMLImageElement,
+  { onImageLoad, onImageError }: TriggerLoadOptions,
+): () => void {
+  const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
+
+  if (!dataSrcset && !dataSrc)
+    return noop
+
+  let sizes = image.sizes
+  if (dataSizes === 'auto') {
+    const width = getOffsetWidth(image)
+    if (width)
+      sizes = `${width}px`
+  }
+
+  // The temporary image fetches what the visible image will request: matching
+  // `crossorigin` and `referrerpolicy` keep it to one request and one `Referer`
+  // policy, and `fetchpriority` and `decoding` carry over the author's hints.
+  const temporaryImage = new Image()
+  for (const name of PRELOAD_ATTRIBUTES) {
+    const value = image.getAttribute(name)
+    if (value !== null)
+      temporaryImage.setAttribute(name, value)
+  }
+  if (sizes)
+    temporaryImage.sizes = sizes
+
+  const preloadListeners = new AbortController()
+  const visibleListeners = new AbortController()
+
+  // The swapped-in source loads on the visible image after the preload. Writing
+  // `sizes` on the loaded placeholder fires `load` again, so a `load` that
+  // still shows the placeholder is skipped.
+  let placeholderSource = ''
+  const visibleOutcomeHandler = (event: Event) => {
+    if (event.type === 'load' && image.currentSrc === placeholderSource)
+      return
+    visibleListeners.abort()
+    if (event.type === 'error')
+      onImageError?.(image, event)
+    else
+      onImageLoad?.(image)
+  }
+  const preloadLoadHandler = () => {
+    preloadListeners.abort()
+    placeholderSource = image.currentSrc
+    updateSizesAttribute(image)
+    swapDataAttribute(image, 'srcset')
+    swapDataAttribute(image, 'src')
+    image.addEventListener('load', visibleOutcomeHandler, { signal: visibleListeners.signal })
+    image.addEventListener('error', visibleOutcomeHandler, { signal: visibleListeners.signal })
+  }
+  const preloadErrorHandler = (event: Event) => {
+    preloadListeners.abort()
+    // Dispatch the synthetic error on the visible `<img>` first so the public
+    // contract (native error fires) is fulfilled before user code runs.
+    image.dispatchEvent(new Event('error'))
+    onImageError?.(image, event)
+  }
+
+  temporaryImage.addEventListener('load', preloadLoadHandler, { signal: preloadListeners.signal })
+  temporaryImage.addEventListener('error', preloadErrorHandler, { signal: preloadListeners.signal })
+
+  if (dataSrcset)
+    temporaryImage.srcset = dataSrcset
+  if (dataSrc)
+    temporaryImage.src = dataSrc
+
+  return () => {
+    preloadListeners.abort()
+    visibleListeners.abort()
+    // Empty `src` aborts the pending fetch per HTML "update the image data".
+    temporaryImage.src = ''
+  }
 }
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): void {

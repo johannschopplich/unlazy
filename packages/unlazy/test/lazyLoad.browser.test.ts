@@ -177,6 +177,25 @@ describe('lazyLoad', () => {
       expect(img.dataset.src).toBeUndefined()
     }, 2000)
 
+    it('ignores an error of a later source once an eager image has loaded', async () => {
+      const img = document.createElement('img')
+      img.loading = 'eager'
+      img.dataset.src = TINY_PNG
+      document.body.appendChild(img)
+      const onImageError = vi.fn()
+
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+        onImageError,
+      }))
+      await new Promise((resolve) => {
+        img.addEventListener('error', resolve, { once: true })
+        img.src = createImageUrl({ status: '404' })
+      })
+
+      expect(onImageError).not.toHaveBeenCalled()
+    }, 2000)
+
     it('cleanup detaches eager-priority callbacks before they fire', async () => {
       const img = document.createElement('img')
       img.loading = 'eager'
