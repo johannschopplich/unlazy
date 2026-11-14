@@ -22,6 +22,6 @@ Use the result as the `src` attribute of an `<img>` element:
 
 ## Type Declarations
 
-<<< @/../packages/core/src/blurhash.ts#BlurHashOptions{ts}
+<<< @/../packages/unlazy/src/blurhash.ts#BlurHashOptions{ts}
 
-<<< @/../packages/core/src/blurhash.ts#createPngDataUri{ts}
+<<< @/../packages/unlazy/src/blurhash.ts#createPngDataUri{ts}

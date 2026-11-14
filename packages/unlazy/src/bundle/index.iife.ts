@@ -1,6 +1,6 @@
-import { lazyLoad } from '../../../core/src'
+import { lazyLoad } from '../lazyLoad'
 
-export { autoSizes, lazyLoad, triggerLoad } from '../../../core/src'
+export { autoSizes, lazyLoad, triggerLoad } from '../lazyLoad'
 
 // Automatically initiate if `init` attribute is present.
 if (document.currentScript?.hasAttribute('init'))

@@ -1,8 +1,3 @@
-export {
-  autoSizes,
-  createPlaceholderFromHash,
-  isCrawler,
-  lazyLoad,
-  triggerLoad,
-} from '@unlazy/core'
-export type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions, UnLazySource } from '@unlazy/core'
+export { autoSizes, createPlaceholderFromHash, lazyLoad, triggerLoad } from './lazyLoad'
+export type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions, UnLazySource } from './types'
+export { isCrawler } from './utils'

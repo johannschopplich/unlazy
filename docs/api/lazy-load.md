@@ -14,9 +14,9 @@ Call `lazyLoad()` again after inserting images into the DOM to process the new o
 
 ## Type Declarations
 
-<<< @/../packages/core/src/types.ts#UnLazyLoadOptions{ts}
+<<< @/../packages/unlazy/src/types.ts#UnLazyLoadOptions{ts}
 
-<<< @/../packages/core/src/lazyLoad.ts#lazyLoad{ts}
+<<< @/../packages/unlazy/src/lazyLoad.ts#lazyLoad{ts}
 
 ## Options
 

@@ -17,14 +17,12 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@unlazy/core': `${resolve(currentDir, '../core/src')}/`,
-      'unlazy': `${resolve(currentDir, '../unlazy/src')}/`,
+      unlazy: `${resolve(currentDir, '../unlazy/src')}/`,
     },
   },
 
   optimizeDeps: {
     exclude: [
-      '@unlazy/core',
       'unlazy',
     ],
   },

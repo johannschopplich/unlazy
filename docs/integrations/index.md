@@ -16,7 +16,7 @@ To decode hashes on the server in another framework, see [Server-Side Rendering]
 
 Every `UnLazyImage` component takes a `sources` prop. Each `UnLazySource` entry renders one `<source>` inside a `<picture>`:
 
-<<< @/../packages/core/src/types.ts#UnLazySource{ts}
+<<< @/../packages/unlazy/src/types.ts#UnLazySource{ts}
 
 ## Creating Custom Integrations
 

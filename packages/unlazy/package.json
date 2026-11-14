@@ -71,7 +71,8 @@
     "test:types": "tsc --noEmit",
     "test:build": "publint --strict && attw --pack --profile node16"
   },
-  "dependencies": {
-    "@unlazy/core": "workspace:*"
+  "devDependencies": {
+    "fast-blurhash": "^1.2.0",
+    "thumbhash": "^0.1.1"
   }
 }

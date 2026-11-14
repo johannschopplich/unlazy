@@ -48,7 +48,7 @@ For server-side rendering, use the specialized functions instead:
 
 ## Type Declarations
 
-<<< @/../packages/core/src/lazyLoad.ts#createPlaceholderFromHash{ts}
+<<< @/../packages/unlazy/src/lazyLoad.ts#createPlaceholderFromHash{ts}
 
 ## Options
 

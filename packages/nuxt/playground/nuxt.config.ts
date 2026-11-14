@@ -12,8 +12,7 @@ export default defineNuxtConfig({
   vite: {
     resolve: {
       alias: {
-        '@unlazy/core': `${resolve(currentDir, '../../core/src')}/`,
-        'unlazy': `${resolve(currentDir, '../../unlazy/src')}/`,
+        unlazy: `${resolve(currentDir, '../../unlazy/src')}/`,
       },
     },
 
@@ -26,7 +25,6 @@ export default defineNuxtConfig({
       ],
 
       exclude: [
-        '@unlazy/core',
         'unlazy',
       ],
     },

@@ -29,9 +29,9 @@ For most users, calling [`lazyLoad`](/api/lazy-load) with `updateSizesOnResize: 
 
 ## Type Declarations
 
-<<< @/../packages/core/src/types.ts#AutoSizesOptions{ts}
+<<< @/../packages/unlazy/src/types.ts#AutoSizesOptions{ts}
 
-<<< @/../packages/core/src/lazyLoad.ts#autoSizes{ts}
+<<< @/../packages/unlazy/src/lazyLoad.ts#autoSizes{ts}
 
 ## Options
 

@@ -21,9 +21,9 @@ cleanup()
 
 ## Type Declarations
 
-<<< @/../packages/core/src/types.ts#TriggerLoadOptions{ts}
+<<< @/../packages/unlazy/src/types.ts#TriggerLoadOptions{ts}
 
-<<< @/../packages/core/src/lazyLoad.ts#triggerLoad{ts}
+<<< @/../packages/unlazy/src/lazyLoad.ts#triggerLoad{ts}
 
 ## Return Value
 
