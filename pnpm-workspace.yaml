@@ -13,3 +13,60 @@ packages:
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
+  workerd: false
+
+catalog:
+  '@antfu/eslint-config': ^10.0.0
+  '@arethetypeswrong/cli': ^0.18.5
+  '@eslint-react/eslint-plugin': ^5.30.2
+  '@iconify-json/carbon': ^1.2.30
+  '@nuxt/kit': ^4.6.4
+  '@nuxt/module-builder': ^1.0.4
+  '@nuxt/schema': ^4.6.4
+  '@sveltejs/adapter-auto': ^8.0.1
+  '@sveltejs/kit': ^3.2.0
+  '@sveltejs/package': ^3.0.2
+  '@sveltejs/vite-plugin-svelte': ~7.3.1
+  '@types/node': ^26.6.6
+  '@types/react': ^19.3.0
+  '@types/react-dom': ^19.3.0
+  '@unocss/nuxt': ^66.12.0
+  '@unocss/reset': ^66.12.0
+  '@vitejs/plugin-react': ^6.3.0
+  '@vitejs/plugin-vue': ^6.0.11
+  '@vitest/browser': ^5.1.0
+  '@vitest/browser-playwright': ^5.1.0
+  bumpp: ^12.3.0
+  changelogithub: ^15.0.5
+  defu: ^6.1.7
+  eslint: ^10.14.0
+  eslint-plugin-react-refresh: ^0.5.7
+  eslint-plugin-solid: ^0.17.1
+  eslint-plugin-svelte: ^3.24.1
+  fast-blurhash: ^1.2.0
+  happy-dom: ^21.0.4
+  nuxt: ^4.6.4
+  playwright: ^1.65.0
+  publint: ^0.3.25
+  react: ^19.3.1
+  react-dom: ^19.3.1
+  solid-js: ^1.9.19
+  svelte: ^5.57.3
+  svelte-check: ^4.7.8
+  thumbhash: ^0.1.1
+  tsdown: ^0.23.7
+  tslib: ^2.9.1
+  typescript: ^6.0.3
+  unocss: ^66.12.0
+  unplugin-solid: ^2.0.0
+  unplugin-vue: ^8.0.1
+  vite: ^8.3.8
+  vite-plugin-solid: ^2.11.16
+  vitepress: ^1.6.4
+  vitest: ^5.1.0
+  vitest-browser-react: ^2.3.0
+  vitest-browser-svelte: ^3.1.0
+  vitest-browser-vue: ^3.1.0
+  vue: ^3.5.45
+  vue-tsc: ^3.3.14
+  wrangler: ^4.161.0

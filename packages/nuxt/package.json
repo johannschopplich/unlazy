@@ -44,16 +44,15 @@
     "test:build": "publint --strict"
   },
   "dependencies": {
-    "@nuxt/kit": "^4.6.4",
-    "defu": "^6.1.7",
+    "@nuxt/kit": "catalog:",
+    "defu": "catalog:",
     "unlazy": "workspace:*"
   },
   "devDependencies": {
-    "@nuxt/module-builder": "^1.0.4",
-    "@nuxt/schema": "^4.6.4",
-    "@types/node": "^26.6.6",
-    "@unocss/nuxt": "^66.12.0",
-    "@unocss/reset": "^66.12.0",
-    "nuxt": "^4.6.4"
+    "@nuxt/module-builder": "catalog:",
+    "@nuxt/schema": "catalog:",
+    "@unocss/nuxt": "catalog:",
+    "@unocss/reset": "catalog:",
+    "nuxt": "catalog:"
   }
 }

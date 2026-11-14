@@ -51,7 +51,7 @@
     "test:build": "publint --strict && attw --pack --profile esm-only"
   },
   "devDependencies": {
-    "fast-blurhash": "^1.2.0",
-    "thumbhash": "^0.1.1"
+    "fast-blurhash": "catalog:",
+    "thumbhash": "catalog:"
   }
 }
