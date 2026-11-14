@@ -137,3 +137,98 @@ export interface UnLazySource {
   height?: number
 }
 // #endregion UnLazySource
+
+export interface UnLazyImageProps {
+  /** Image source URL to be lazy-loaded. */
+  src?: string
+
+  /** Image source set to be lazy-loaded. */
+  srcSet?: string
+
+  /** Sources of the `<picture>` rendered around the `<img>`. */
+  sources?: UnLazySource[]
+
+  /**
+   * Whether the `sizes` attribute should be automatically calculated.
+   *
+   * @default false
+   */
+  autoSizes?: boolean
+
+  /** A BlurHash string representing the blurry placeholder image. */
+  blurhash?: string
+
+  /** A ThumbHash string representing the blurry placeholder image, which takes precedence over `blurhash`. */
+  thumbhash?: string
+
+  /** Custom placeholder image URL, ignored if a BlurHash or ThumbHash is provided. */
+  placeholderSrc?: string
+
+  /**
+   * Longer edge of the decoded BlurHash image, capped at `100`. Ignored for a ThumbHash.
+   *
+   * @default 32
+   */
+  placeholderSize?: number
+
+  /**
+   * Whether the image should be preloaded, even if it is not in the viewport yet.
+   *
+   * @default false
+   */
+  preload?: boolean
+
+  /**
+   * Loading strategy of the image. `'eager'` without `autoSizes` renders the
+   * real sources.
+   *
+   * @default 'lazy'
+   */
+  loading?: 'eager' | 'lazy'
+}
+
+export interface ResolveImageAttributesOptions extends UnLazyImageProps {
+  /**
+   * Whether the image may load. `false` holds it on its placeholder until this
+   * turns `true` and defaults `loading` to `'eager'`, unless `preload` is set.
+   *
+   * @default true
+   */
+  lazyLoad?: boolean
+}
+
+export interface UnLazyImageAttributes {
+  /** Whether the attributes carry the real sources, so the caller skips `lazyLoad` and calls `reportImageOutcome`. */
+  hasRealSources: boolean
+
+  /** Attributes of the `<img>`, under their HTML names. */
+  image: {
+    'src'?: string
+    'srcset'?: string
+    'data-src'?: string
+    'data-srcset'?: string
+    'data-sizes'?: string
+    'loading': 'eager' | 'lazy'
+  }
+
+  /** Attributes of each `<source>`, under their HTML names and in the order of `sources`. */
+  sources: {
+    'type'?: string
+    'media'?: string
+    'width'?: number
+    'height'?: number
+    'srcset'?: string
+    'sizes'?: string
+    'data-srcset'?: string
+    'data-sizes'?: string
+  }[]
+
+  /**
+   * Content of `sources`, for an effect to compare, since an inline array is a
+   * new array on every render.
+   */
+  sourcesKey: string
+
+  hash?: string
+  hashType: 'blurhash' | 'thumbhash'
+}
