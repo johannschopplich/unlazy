@@ -3,5 +3,5 @@
   "compilerOptions": {
     "jsx": "react-jsx"
   },
-  "include": ["src", "playground", "tsdown.config.ts"]
+  "include": ["src", "test", "playground", "tsdown.config.ts"]
 }
