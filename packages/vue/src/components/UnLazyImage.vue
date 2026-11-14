@@ -1,44 +1,15 @@
 <script setup lang="ts">
-import type { UnLazySource } from 'unlazy'
-import type { ImgHTMLAttributes } from 'vue'
-import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
-import { ref, watchEffect } from 'vue'
+import type { ResolveImageAttributesOptions } from 'unlazy'
+import { createPlaceholderFromHash, lazyLoad as lazyLoadImage, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+import { computed, ref, watchPostEffect } from 'vue'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps<{
-  /** Image source URL to be lazy-loaded. */
-  src?: ImgHTMLAttributes['src']
-  /** Image source set to be lazy-loaded. */
-  srcSet?: ImgHTMLAttributes['srcset']
-  /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
-  sources?: UnLazySource[]
-  /**
-   * Whether the `sizes` attribute should be automatically calculated.
-   * @default false
-   */
-  autoSizes?: boolean
-  /** A BlurHash string representing the blurry placeholder image. */
-  blurhash?: string
-  /** A ThumbHash string representing the blurry placeholder image. */
-  thumbhash?: string
-  /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
-  placeholderSrc?: string
-  /** The size of the longer edge (width or height) of the BlurHash image to be decoded, depending on the aspect ratio. This option only applies when the `blurhash` prop is used. */
-  placeholderSize?: number
-  /**
-   * Whether the image should be preloaded, even if it is not in the viewport yet.
-   * @default false
-   */
-  preload?: boolean
-  /**
-   * Loading strategy of the image.
-   * @default 'lazy'
-   */
-  loading?: ImgHTMLAttributes['loading']
-}>()
+const props = withDefaults(defineProps<ResolveImageAttributesOptions>(), {
+  lazyLoad: true,
+})
 
 const emit = defineEmits<{
   (event: 'imageLoad', image: HTMLImageElement): void
@@ -46,73 +17,78 @@ const emit = defineEmits<{
 }>()
 
 const target = ref<HTMLImageElement | undefined>()
+const outcomeCallbacks = {
+  onImageLoad: (image: HTMLImageElement) => emit('imageLoad', image),
+  onImageError: (image: HTMLImageElement, error: Event) => emit('imageError', image, error),
+}
+const attributes = computed(() => resolveImageAttributes(props))
+// The effect reads single fields, since `attributes` changes with every new
+// `sources` array.
+const hasRealSources = computed(() => attributes.value.hasRealSources)
+const sourcesKey = computed(() => attributes.value.sourcesKey)
+const hash = computed(() => attributes.value.hash)
+const hashType = computed(() => attributes.value.hashType)
 
-watchEffect((onCleanup) => {
-  if (!target.value)
+// Runs after the patch, so it reads the `data-*` attributes of the new props.
+watchPostEffect((onCleanup) => {
+  const image = target.value
+  if (!image || hasRealSources.value)
     return
 
   // Track changes to image sources to trigger reactivity.
   void props.src
   void props.srcSet
-  void props.sources
+  void sourcesKey.value
 
-  if (props.preload) {
-    const cleanupSizes = props.autoSizes
-      ? _autoSizes(target.value, { updateOnResize: true })
-      : undefined
-    const cleanupLoad = triggerLoad(target.value, {
-      onImageLoad: image => emit('imageLoad', image),
-      onImageError: (image, error) => emit('imageError', image, error),
+  if (!props.lazyLoad && !props.preload) {
+    const placeholder = createPlaceholderFromHash({
+      image,
+      hash: hash.value,
+      hashType: hashType.value,
+      size: props.placeholderSize,
     })
-    onCleanup(() => {
-      cleanupSizes?.()
-      cleanupLoad()
-    })
+    if (placeholder)
+      image.src = placeholder
     return
   }
 
-  const cleanup = lazyLoad(target.value, {
-    hash: props.thumbhash || props.blurhash,
-    hashType: props.thumbhash ? 'thumbhash' : 'blurhash',
+  onCleanup(lazyLoadImage(image, {
+    hash: hash.value,
+    hashType: hashType.value,
     placeholderSize: props.placeholderSize,
     updateSizesOnResize: props.autoSizes,
-    onImageLoad: image => emit('imageLoad', image),
-    onImageError: (image, error) => emit('imageError', image, error),
-  })
-  onCleanup(cleanup)
+    preload: props.preload,
+    ...outcomeCallbacks,
+  }))
 })
+
+// `lazyLoadImage` reports the outcome of the images it swaps; an image with its
+// real sources in the markup reports its own.
+function handleOutcome(event: Event) {
+  if (hasRealSources.value)
+    reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
+}
 </script>
 
 <template>
   <picture v-if="sources?.length">
     <source
-      v-for="(source, index) in sources"
+      v-for="(sourceAttributes, index) in attributes.sources"
       :key="index"
-      :type="source.type"
-      :media="source.media"
-      :width="source.width"
-      :height="source.height"
-      :data-srcset="source.srcSet"
-      :data-sizes="source.sizes || (autoSizes ? 'auto' : undefined)"
+      v-bind="sourceAttributes"
     >
     <img
       ref="target"
-      v-bind="$attrs"
-      :src="placeholderSrc"
-      :data-src="src"
-      :data-srcset="srcSet"
-      :data-sizes="autoSizes ? 'auto' : undefined"
-      :loading="loading || 'lazy'"
+      v-bind="{ ...$attrs, ...attributes.image }"
+      @load="handleOutcome"
+      @error="handleOutcome"
     >
   </picture>
   <img
     v-else
     ref="target"
-    v-bind="$attrs"
-    :src="placeholderSrc"
-    :data-src="src"
-    :data-srcset="srcSet"
-    :data-sizes="autoSizes ? 'auto' : undefined"
-    :loading="loading || 'lazy'"
+    v-bind="{ ...$attrs, ...attributes.image }"
+    @load="handleOutcome"
+    @error="handleOutcome"
   >
 </template>
