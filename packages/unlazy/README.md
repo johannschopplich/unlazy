@@ -37,7 +37,7 @@ npm i unlazy
 ```ts
 import { lazyLoad } from 'unlazy'
 
-// Processes `img[loading="lazy"]` and `img[loading="eager"][data-src|data-srcset]`
+// Processes every image with a `data-src` or `data-srcset`
 const cleanup = lazyLoad()
 ```
 
@@ -47,9 +47,9 @@ For above-the-fold / LCP images, use `loading="eager"` – unlazy swaps the sour
 
 [📖 Read the full documentation](https://unlazy.byjohann.dev), including [hash-based placeholders](https://unlazy.byjohann.dev/guide/placeholders), [Core Web Vitals](https://unlazy.byjohann.dev/guide/core-web-vitals), and [SSR](https://unlazy.byjohann.dev/advanced/ssr).
 
-## Migrating From v1
+## Migrating From v2
 
-See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v2.
+See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v3.
 
 ## License
 

@@ -20,6 +20,8 @@ pnpm add @unlazy/nuxt
 npm i @unlazy/nuxt
 ```
 
+Requires **Nuxt 4**.
+
 ## Quick Start
 
 ```ts
@@ -45,9 +47,9 @@ The `UnLazyImage` component is auto-imported globally:
 
 [📖 Read the full documentation](https://unlazy.byjohann.dev/integrations/nuxt), including [hash-based placeholders](https://unlazy.byjohann.dev/guide/placeholders), [Core Web Vitals](https://unlazy.byjohann.dev/guide/core-web-vitals), and [SSR](https://unlazy.byjohann.dev/advanced/ssr).
 
-## Migrating From v1
+## Migrating From v2
 
-See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v2, including the `@loaded` → `@image-load` rename and the new `@image-error` event.
+See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v3.
 
 ## License
 

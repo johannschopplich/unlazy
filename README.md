@@ -24,10 +24,10 @@ Universal lazy loading library leveraging native browser APIs. Built around the 
 
 ```bash
 # pnpm
-pnpm add -D unlazy
+pnpm add unlazy
 
 # npm
-npm i -D unlazy
+npm i unlazy
 ```
 
 For a framework, install its integration instead:
@@ -51,7 +51,7 @@ Then import the [`lazyLoad`](https://unlazy.byjohann.dev/api/lazy-load) function
 ```ts
 import { lazyLoad } from 'unlazy'
 
-// Processes `img[loading="lazy"]` and `img[loading="eager"][data-src|data-srcset]`
+// Processes every image with a `data-src` or `data-srcset`
 lazyLoad()
 ```
 

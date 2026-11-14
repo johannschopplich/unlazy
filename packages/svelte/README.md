@@ -41,9 +41,9 @@ Requires **Svelte 5+** (uses runes).
 
 [📖 Read the full documentation](https://unlazy.byjohann.dev/integrations/svelte), including [hash-based placeholders](https://unlazy.byjohann.dev/guide/placeholders), [Core Web Vitals](https://unlazy.byjohann.dev/guide/core-web-vitals), and [SSR](https://unlazy.byjohann.dev/advanced/ssr).
 
-## Migrating From v1
+## Migrating From v2
 
-See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v2.
+See the [migration guide](https://unlazy.byjohann.dev/guide/migration) for breaking changes in v3.
 
 ## License
 

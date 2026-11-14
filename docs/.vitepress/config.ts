@@ -117,7 +117,7 @@ function nav(): DefaultTheme.NavItem[] {
             { text: 'Placeholders', link: '/guide/placeholders' },
             { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
             { text: 'SEO Considerations', link: '/guide/seo-considerations' },
-            { text: 'Migrating to v2', link: '/guide/migration' },
+            { text: 'Migrating to v3', link: '/guide/migration' },
           ],
         },
       ],
@@ -209,7 +209,7 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Placeholders', link: '/guide/placeholders' },
         { text: 'Core Web Vitals', link: '/guide/core-web-vitals' },
         { text: 'SEO Considerations', link: '/guide/seo-considerations' },
-        { text: 'Migrating to v2', link: '/guide/migration' },
+        { text: 'Migrating to v3', link: '/guide/migration' },
       ],
     },
     {
