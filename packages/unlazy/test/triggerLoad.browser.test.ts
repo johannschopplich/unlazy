@@ -33,6 +33,27 @@ describe('triggerLoad', () => {
     expect(img.src).toBe(TINY_PNG)
   }, 2000)
 
+  it('fetches the source a picture-wrapped image selects once', async () => {
+    const sourceUrl = createImageUrl()
+    const { picture, img } = makePictureImg({
+      dataSrc: createImageUrl(),
+      sources: [
+        {
+          dataSrcset: sourceUrl,
+        },
+      ],
+    })
+    img.src = TINY_PNG
+    document.body.appendChild(picture)
+
+    await new Promise<void>(resolve => triggerLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+
+    expect(img.currentSrc).toBe(sourceUrl)
+    expect(await fetchImageRequests(sourceUrl)).toHaveLength(1)
+  }, 2000)
+
   it('cleanup cancels an in-flight standalone preload', async () => {
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG

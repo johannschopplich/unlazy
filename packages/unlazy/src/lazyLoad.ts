@@ -174,23 +174,8 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 /**
  * Triggers the loading of a lazy image by swapping `data-src`/`data-srcset` to `src`/`srcset`.
  *
- * @returns A cleanup function that detaches listeners and, for standalone images, aborts any
- * in-flight network fetch by clearing the temporary image's `src`. Calling it after the
- * load completes is a no-op.
- *
- * @remarks
- * For standalone `<img>` elements, the image is preloaded via a temporary `Image` before
- * the swap; `onImageLoad` fires on success and `onImageError` on failure. On failure unlazy
- * also dispatches a synthetic `error` event on the visible `<img>` so consumers using
- * native `addEventListener('error', …)` or framework-native `onError` / `@error` get notified.
- *
- * For `<img>` elements inside `<picture>`, the browser handles source selection. Listeners
- * are attached on the visible `<img>` before the swap so the queued `load` task is caught
- * once the browser resolves a source. If `data-src` resolves to the URL already on the
- * `<img>`, the browser fires no `load` event and the callback never runs.
- *
- * `triggerLoad` does not install a `ResizeObserver`. Pair it with
- * `autoSizes(img, { updateOnResize: true })` for ongoing source-size tracking.
+ * @returns A cleanup function that detaches listeners and aborts any in-flight preload fetch.
+ * Calling it after the load completes is a no-op.
  */
 export function triggerLoad(
   image: HTMLImageElement,
@@ -199,33 +184,9 @@ export function triggerLoad(
 // #endregion triggerLoad
 export function triggerLoad(
   image: HTMLImageElement,
-  { onImageLoad, onImageError }: TriggerLoadOptions = {},
+  options: TriggerLoadOptions = {},
 ): () => void {
-  const cleanups: (() => void)[] = []
-  const cleanup = () => {
-    for (const fn of cleanups) fn()
-    cleanups.length = 0
-  }
-
-  if (isDescendantOfPicture(image)) {
-    if (onImageLoad) {
-      const handler = () => onImageLoad(image)
-      image.addEventListener('load', handler, { once: true })
-      cleanups.push(() => image.removeEventListener('load', handler))
-    }
-    if (onImageError) {
-      const handler = (event: Event) => onImageError(image, event)
-      image.addEventListener('error', handler, { once: true })
-      cleanups.push(() => image.removeEventListener('error', handler))
-    }
-
-    swapPictureSources(image)
-    swapDataAttribute(image, 'srcset')
-    swapDataAttribute(image, 'src')
-    return cleanup
-  }
-
-  return loadImage(image, { onImageLoad, onImageError })
+  return loadImage(image, options)
 }
 
 // #region createPlaceholderFromHash
@@ -341,9 +302,12 @@ function loadImage(
   image: HTMLImageElement,
   { onImageLoad, onImageError }: TriggerLoadOptions,
 ): () => void {
+  const picture = isDescendantOfPicture(image)
+    ? image.parentElement
+    : undefined
   const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
 
-  if (!dataSrcset && !dataSrc)
+  if (!dataSrcset && !dataSrc && !picture?.querySelector('source[data-srcset]'))
     return noop
 
   let sizes = image.sizes
@@ -365,16 +329,35 @@ function loadImage(
   if (sizes)
     temporaryImage.sizes = sizes
 
+  // A detached copy of the `<picture>` evaluates its sources against the same
+  // window, so it preloads the source the visible picture selects after the swap.
+  if (picture) {
+    const temporaryPicture = document.createElement('picture')
+    for (const source of picture.querySelectorAll<HTMLSourceElement>('source')) {
+      updateSizesAttribute(source)
+      const temporarySource = source.cloneNode() as HTMLSourceElement
+      if (source.dataset.srcset)
+        temporarySource.srcset = source.dataset.srcset
+      temporaryPicture.append(temporarySource)
+    }
+    temporaryPicture.append(temporaryImage)
+  }
+
   const preloadListeners = new AbortController()
   const visibleListeners = new AbortController()
 
   // The swapped-in source loads on the visible image after the preload. Writing
   // `sizes` on the loaded placeholder fires `load` again, so a `load` that
-  // still shows the placeholder is skipped.
+  // still shows the placeholder only counts if the preload fetched that URL.
   let placeholderSource = ''
   const visibleOutcomeHandler = (event: Event) => {
-    if (event.type === 'load' && image.currentSrc === placeholderSource)
+    if (
+      event.type === 'load'
+      && image.currentSrc === placeholderSource
+      && image.currentSrc !== temporaryImage.currentSrc
+    ) {
       return
+    }
     visibleListeners.abort()
     if (event.type === 'error')
       onImageError?.(image, event)
@@ -382,9 +365,12 @@ function loadImage(
       onImageLoad?.(image)
   }
   const preloadLoadHandler = () => {
+    // A detached `<picture>` selects its source again on a viewport change in
+    // WebKit and Firefox, and a later error must not fail the visible image.
     preloadListeners.abort()
     placeholderSource = image.currentSrc
     updateSizesAttribute(image)
+    swapPictureSources(image)
     swapDataAttribute(image, 'srcset')
     swapDataAttribute(image, 'src')
     image.addEventListener('load', visibleOutcomeHandler, { signal: visibleListeners.signal })
