@@ -1,7 +1,11 @@
 export * from './png'
 
 export const isSSR = typeof window === 'undefined'
-export const isCrawler = !isSSR && (!('onscroll' in window) || /(?:gle|ing|ro)bot|crawl|spider/i.test(navigator.userAgent))
+export const isCrawler = !isSSR && (!('onscroll' in window) || isCrawlerUserAgent(navigator.userAgent))
+
+export function isCrawlerUserAgent(userAgent: string): boolean {
+  return /bot|crawl|spider/i.test(userAgent)
+}
 
 export function toElementArray<T extends HTMLElement>(
   target: string | T | NodeListOf<T> | T[],
