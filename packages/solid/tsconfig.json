@@ -4,5 +4,5 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "include": ["src", "playground", "tsdown.config.ts"]
+  "include": ["src", "test", "playground", "tsdown.config.ts"]
 }

@@ -1,41 +1,14 @@
 import type { JSX } from 'solid-js'
-import type { UnLazyLoadOptions, UnLazySource } from 'unlazy'
-import { createEffect, createSignal, For, onCleanup, Show, splitProps } from 'solid-js'
-import { autoSizes as _autoSizes, lazyLoad, triggerLoad } from 'unlazy'
+import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
+import { createEffect, createMemo, createSignal, Index, onCleanup, Show, splitProps } from 'solid-js'
+import { lazyLoad, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+
+export type { UnLazySource } from 'unlazy'
 
 interface Props
-  extends JSX.ImgHTMLAttributes<HTMLImageElement>,
-  Pick<UnLazyLoadOptions, 'placeholderSize'> {
-  /** Image source URL to be lazy-loaded. */
-  src?: JSX.ImgHTMLAttributes<HTMLImageElement>['src']
-  /** Image source set to be lazy-loaded. */
-  srcSet?: JSX.ImgHTMLAttributes<HTMLImageElement>['srcSet']
-  /** Image source URLs for different resolutions. This will render the `<picture>` element instead of `<img>`. */
-  sources?: UnLazySource[]
-  /**
-   * Whether the `sizes` attribute should be automatically calculated.
-   * @default false
-   */
-  autoSizes?: boolean
-  /** A BlurHash string representing the blurry placeholder image. */
-  blurhash?: string
-  /** A ThumbHash string representing the blurry placeholder image. */
-  thumbhash?: string
-  /** Optional image source URL for a custom placeholder image. Will be ignored if a BlurHash or ThumbHash is provided. */
-  placeholderSrc?: string
-  /**
-   * Whether the image should be preloaded, even if it is not in the viewport yet.
-   * @default false
-   */
-  preload?: boolean
-  /**
-   * Loading strategy of the image.
-   * @default 'lazy'
-   */
-  loading?: JSX.ImgHTMLAttributes<HTMLImageElement>['loading']
-  onImageLoad?: (image: HTMLImageElement) => void
-  onImageError?: (image: HTMLImageElement, error: Event) => void
-}
+  extends Omit<JSX.ImgHTMLAttributes<HTMLImageElement>, keyof UnLazyImageProps>,
+  UnLazyImageProps,
+  TriggerLoadOptions {}
 
 export function UnLazyImage(props: Props) {
   const [local, rest] = splitProps(
@@ -57,77 +30,64 @@ export function UnLazyImage(props: Props) {
   )
 
   const [target, setTarget] = createSignal<HTMLImageElement>()
+  const attributes = createMemo(() => resolveImageAttributes(local))
+  // The effect reads single fields, since `attributes` changes with every new
+  // `sources` array.
+  const hasRealSources = createMemo(() => attributes().hasRealSources)
+  const sourcesKey = createMemo(() => attributes().sourcesKey)
+  const hash = createMemo(() => attributes().hash)
+  const hashType = createMemo(() => attributes().hashType)
+  // Read the callbacks on call, so a new one does not reload the image.
+  const outcomeCallbacks = {
+    onImageLoad: (image: HTMLImageElement) => local.onImageLoad?.(image),
+    onImageError: (image: HTMLImageElement, error: Event) => local.onImageError?.(image, error),
+  }
 
   createEffect(() => {
-    const el = target()
-    if (!el)
+    const image = target()
+    if (!image || hasRealSources())
       return
 
-    if (local.preload) {
-      const cleanupSizes = local.autoSizes
-        ? _autoSizes(el, { updateOnResize: true })
-        : undefined
-      const cleanupLoad = triggerLoad(el, {
-        onImageLoad: local.onImageLoad,
-        onImageError: local.onImageError,
-      })
-      onCleanup(() => {
-        cleanupSizes?.()
-        cleanupLoad()
-      })
-      return
-    }
+    // Track changes to image sources to trigger reactivity.
+    void local.src
+    void local.srcSet
+    void sourcesKey()
 
-    const cleanup = lazyLoad(el, {
-      hash: local.thumbhash || local.blurhash,
-      hashType: local.thumbhash ? 'thumbhash' : 'blurhash',
+    const cleanup = lazyLoad(image, {
+      hash: hash(),
+      hashType: hashType(),
       placeholderSize: local.placeholderSize,
       updateSizesOnResize: local.autoSizes,
-      onImageLoad: local.onImageLoad,
-      onImageError: local.onImageError,
+      preload: local.preload,
+      ...outcomeCallbacks,
     })
-    onCleanup(() => {
-      cleanup()
-    })
+    onCleanup(cleanup)
   })
 
+  // `lazyLoad` reports the outcome of the images it swaps; an image with its
+  // real sources in the markup reports its own.
+  const handleOutcome = (event: Event) => {
+    if (hasRealSources())
+      reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
+  }
+
+  const renderImage = () => (
+    <img
+      ref={setTarget}
+      {...attributes().image}
+      on:load={handleOutcome}
+      on:error={handleOutcome}
+      {...rest}
+    />
+  )
+
   return (
-    <Show
-      when={local.sources?.length}
-      fallback={(
-        <img
-          ref={setTarget}
-          src={local.placeholderSrc}
-          data-src={local.src}
-          data-srcset={local.srcSet}
-          data-sizes={local.autoSizes ? 'auto' : undefined}
-          loading={local.loading || 'lazy'}
-          {...rest}
-        />
-      )}
-    >
+    <Show when={local.sources?.length} fallback={renderImage()}>
       <picture>
-        <For each={local.sources}>
-          {source => (
-            <source
-              type={source.type}
-              media={source.media}
-              width={source.width}
-              height={source.height}
-              data-srcset={source.srcSet}
-              data-sizes={source.sizes || (local.autoSizes ? 'auto' : undefined)}
-            />
-          )}
-        </For>
-        <img
-          ref={setTarget}
-          src={local.placeholderSrc}
-          data-src={local.src}
-          data-srcset={local.srcSet}
-          data-sizes={local.autoSizes ? 'auto' : undefined}
-          loading={local.loading || 'lazy'}
-          {...rest}
-        />
+        <Index each={attributes().sources}>
+          {sourceAttributes => <source {...sourceAttributes()} />}
+        </Index>
+        {renderImage()}
       </picture>
     </Show>
   )
