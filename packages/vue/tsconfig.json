@@ -1,5 +1,5 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src", "build.config.ts"],
+  "include": ["src", "src/**/*.vue", "playground", "build.config.ts"],
   "exclude": ["dist"]
 }

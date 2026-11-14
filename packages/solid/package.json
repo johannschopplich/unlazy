@@ -38,8 +38,8 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "pnpm -C playground run dev",
-    "dev:build": "pnpm -C playground run build",
+    "dev": "vite playground",
+    "dev:build": "vite build playground",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test:types": "tsc --noEmit",

@@ -1,11 +1,8 @@
-import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import adapter from '@sveltejs/adapter-auto'
 import { sveltekit } from '@sveltejs/kit/vite'
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
 import { defineConfig } from 'vite'
-
-const currentDir = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -17,13 +14,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      unlazy: `${resolve(currentDir, '../unlazy/src')}/`,
+      unlazy: fileURLToPath(new URL('../unlazy/src/', import.meta.url)),
     },
-  },
-
-  optimizeDeps: {
-    exclude: [
-      'unlazy',
-    ],
   },
 })

@@ -42,8 +42,8 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "dev": "pnpm -C playground run dev",
-    "dev:build": "pnpm -C playground run build",
+    "dev": "vite playground",
+    "dev:build": "vite build playground",
     "test:types": "vue-tsc --noEmit",
     "test:build": "publint --strict"
   },
