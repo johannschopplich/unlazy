@@ -8,13 +8,13 @@ Install the `@unlazy/vue` package using your favorite package manager:
 
 ::: code-group
   ```bash [pnpm]
-  pnpm add -D @unlazy/vue
+  pnpm add @unlazy/vue
   ```
   ```bash [yarn]
-  yarn add -D @unlazy/vue
+  yarn add @unlazy/vue
   ```
   ```bash [npm]
-  npm install -D @unlazy/vue
+  npm install @unlazy/vue
   ```
 :::
 
@@ -51,24 +51,19 @@ app.use(Unlazy)
 app.mount('#app')
 ```
 
+Once `@unlazy/vue` is imported, Vue's `GlobalComponents` type knows `UnLazyImage`, so its props type-check in every template.
+
 ## `UnLazyImage` Component
 
 `UnLazyImage` renders a lazy-loaded `<img>`, or a `<picture>` when you pass `sources`.
 
 ### Props
 
+`UnLazyImage` takes the [props every integration shares](/integrations/#unlazyimage-props) and `lazyLoad`:
+
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `src` | String | - | Image source URL to be lazy-loaded. |
-| `srcSet` | String | - | Image source set to be lazy-loaded. |
-| `sources` | Array | - | Array of [`UnLazySource`](/integrations/#unlazysource) objects to render a `<picture>` element. |
-| `autoSizes` | Boolean | `false` | Whether the sizes attribute should be automatically calculated. |
-| `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
-| `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
-| `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. |
-| `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding. Ignored for ThumbHash. |
-| `preload` | Boolean | `false` | Whether the image should be preloaded immediately, bypassing lazy loading. |
-| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). |
+| `lazyLoad` | Boolean | `true` | Whether the image should be lazy-loaded. Set to `false` to defer loading until changed to `true`. While it is `false` and `preload` is not set, `loading` defaults to `'eager'`. `preload` takes precedence. |
 
 The component also accepts all standard `<img>` HTML attributes via Vue's attribute inheritance.
 
@@ -77,11 +72,9 @@ The component also accepts all standard `<img>` HTML attributes via Vue's attrib
 | Event | Payload | Description |
 | --- | --- | --- |
 | `image-load` | `HTMLImageElement` | Fired once when the real image finishes loading. |
-| `image-error` | `HTMLImageElement, Event` | Fired when the preload fails. |
+| `image-error` | `HTMLImageElement, Event` | Fired when the image fails to load. |
 
-::: info
-Native `@error` listeners attach to the underlying `<img>` via Vue's attribute fallthrough and fire for both browser-level errors and the synthetic event unlazy dispatches when its preload fails. Reach for `@image-error` when you want the unwrapped element with a typed payload.
-:::
+A native `@error` listener falls through to the `<img>` and fires both for the browser's errors and for the synthetic `error` event unlazy dispatches when its preload fails. Use `@image-error` for the image element with a typed payload.
 
 ## Examples
 
@@ -103,11 +96,11 @@ When using BlurHash, set explicit `width` and `height` attributes. See [Hash-Bas
 
 ### Multiple Image Sources
 
-Pass `sources` to render a `<picture>` element with format negotiation and art direction. Each entry becomes a `<source>` child:
+Pass an array of [`UnLazySource`](/integrations/#unlazysource) objects as `sources` to render a `<picture>` element with format negotiation and art direction. Each entry becomes a `<source>` child:
 
 ```vue
 <script setup lang="ts">
-import type { UnLazySource } from 'unlazy'
+import type { UnLazySource } from '@unlazy/vue/components'
 import { UnLazyImage } from '@unlazy/vue/components'
 
 const sources: UnLazySource[] = [
@@ -127,25 +120,6 @@ const sources: UnLazySource[] = [
     :sources="sources"
     :width="640"
     :height="427"
-  />
-</template>
-```
-
-::: tip
-Set `width` and `height` per source to prevent layout shift when the breakpoint changes. Modern browsers use the matched `<source>`'s dimensions for the rendered `<img>`'s aspect ratio.
-:::
-
-### Preload Image
-
-Set `preload` to load the image before it enters the viewport, for example the next slide of a slider:
-
-```vue
-<template>
-  <UnLazyImage
-    :blurhash="blurhash"
-    src-set="image-320w.jpg 320w, image-640w.jpg 640w"
-    auto-sizes
-    preload
   />
 </template>
 ```

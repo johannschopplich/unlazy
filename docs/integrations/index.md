@@ -12,9 +12,26 @@ unlazy supports lazy loading images in your framework of choice. Each package pr
 
 To decode hashes on the server in another framework, see [Server-Side Rendering](/advanced/ssr).
 
+## `UnLazyImage` Props
+
+Every `UnLazyImage` component takes these props, typed as `UnLazyImageProps` in `unlazy`. Each integration page lists the props and events its component adds.
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `src` | String | - | Image source URL to be lazy-loaded. |
+| `srcSet` | String | - | Image source set to be lazy-loaded. |
+| `sources` | Array | - | Array of [`UnLazySource`](#unlazysource) objects to render a `<picture>` element. |
+| `autoSizes` | Boolean | `false` | Whether the `sizes` attribute should be automatically calculated. |
+| `blurhash` | String | - | A BlurHash string representing the blurry placeholder image. |
+| `thumbhash` | String | - | A ThumbHash string representing the blurry placeholder image. If both are provided, `thumbhash` takes precedence. |
+| `placeholderSrc` | String | - | Optional image source URL for a custom placeholder image. Ignored if a hash is provided. [Give each image its own URL](/guide/placeholders#give-every-image-its-own-placeholder-url). |
+| `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding, capped at `100`. Ignored for ThumbHash. |
+| `preload` | Boolean | `false` | Whether the image should load right away instead of when it nears the viewport, for example the next slide of a slider. The hash placeholder stays until the image has loaded. |
+| `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). `'eager'` without `autoSizes` renders the real sources – see [The Eager Path](/guide/core-web-vitals#the-eager-path). |
+
 ## `UnLazySource`
 
-Every `UnLazyImage` component takes a `sources` prop. Each `UnLazySource` entry renders one `<source>` inside a `<picture>`:
+Every `UnLazyImage` component takes a `sources` prop. Each `UnLazySource` entry renders one `<source>` inside a `<picture>`. Every adapter package exports the type, such as `import type { UnLazySource } from '@unlazy/react'`:
 
 <<< @/../packages/unlazy/src/types.ts#UnLazySource{ts}
 
@@ -32,19 +49,45 @@ import { lazyLoad } from 'unlazy'
 lazyLoad(target)
 ```
 
-4. If the component gets unmounted before the image is loaded, call the cleanup function returned by `lazyLoad`. Take the following example from the [Vue integration](/integrations/vue):
+4. Call the cleanup function returned by `lazyLoad` when the component unmounts or its sources change, and call `lazyLoad` again for the new sources once the DOM shows them. Take the following example from the [Vue integration](/integrations/vue):
 
-```ts
+```vue
+<script setup lang="ts">
 import { lazyLoad } from 'unlazy'
-import { ref, watchEffect } from 'vue'
+import { ref, watchPostEffect } from 'vue'
 
+const props = defineProps<{ src: string }>()
 const target = ref<HTMLImageElement | undefined>()
 
-watchEffect((onCleanup) => {
+// Runs after the DOM update, so `lazyLoad` reads the new `data-src`
+watchPostEffect((onCleanup) => {
   if (!target.value)
     return
 
-  const cleanup = lazyLoad(target.value)
-  onCleanup(cleanup)
+  // Re-run when the source changes
+  void props.src
+  onCleanup(lazyLoad(target.value))
 })
+</script>
+
+<template>
+  <img ref="target" :data-src="src" loading="lazy">
+</template>
 ```
+
+5. An image with its real `src` or `srcset` in the markup loads without `lazyLoad`. Pass its `load` and `error` events to `reportImageOutcome`, which sets or removes the [`data-error`](/guide/usage#style-a-failed-image) attribute and calls `onImageLoad` or `onImageError`:
+
+```ts
+import { reportImageOutcome } from 'unlazy'
+
+const handleOutcome = (event: Event) => reportImageOutcome(image, event, { onImageLoad, onImageError })
+image.addEventListener('load', handleOutcome)
+image.addEventListener('error', handleOutcome)
+```
+
+To take the same props as the official components, pass them to `resolveImageAttributes`. `UnLazyImageAttributes` types its result:
+
+- The attributes of the `<img>` and of every `<source>`, under their HTML names.
+- `hash` and `hashType`, to pass to `lazyLoad`.
+- `sourcesKey`, the content of `sources` as a string. Compare it instead of the array in your effect, so an inline `sources` array does not reload the image.
+- `hasRealSources`, which marks an image that renders its real sources and reports its outcome as in step 5.
