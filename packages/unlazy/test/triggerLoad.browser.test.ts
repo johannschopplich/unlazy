@@ -54,6 +54,23 @@ describe('triggerLoad', () => {
     expect(await fetchImageRequests(sourceUrl)).toHaveLength(1)
   }, 2000)
 
+  it('switches the image to loading="eager" as it swaps in the source', async () => {
+    const img = document.createElement('img')
+    img.loading = 'lazy'
+    img.dataset.src = createImageUrl()
+    const { img: pictureImg } = makePictureImg({
+      dataSrc: createImageUrl(),
+    })
+
+    const swaps = [img, pictureImg].map(image => new Promise<void>(resolve => triggerLoad(image, {
+      onImageLoad: () => resolve(),
+    })))
+
+    expect([img.loading, pictureImg.loading]).toEqual(['lazy', 'lazy'])
+    await Promise.all(swaps)
+    expect([img.loading, pictureImg.loading]).toEqual(['eager', 'eager'])
+  })
+
   it('cleanup cancels an in-flight standalone preload', async () => {
     const img = document.createElement('img')
     img.dataset.src = TINY_PNG

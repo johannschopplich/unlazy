@@ -118,14 +118,14 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Load the image immediately if it is already in the viewport.
     if (image.complete && image.naturalWidth > 0) {
-      cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanups.add(loadImage(image, { onImageLoad, onImageError }))
       continue
     }
 
     // Otherwise, load the image when it enters the viewport.
     image.addEventListener('load', () => {
       listeners.abort()
-      cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
+      cleanups.add(loadImage(image, { onImageLoad, onImageError }))
     }, { signal: listeners.signal })
   }
 
@@ -172,7 +172,8 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
 
 // #region triggerLoad
 /**
- * Triggers the loading of a lazy image by swapping `data-src`/`data-srcset` to `src`/`srcset`.
+ * Loads a lazy image right away, even far from the viewport, by swapping
+ * `data-src`/`data-srcset` to `src`/`srcset`.
  *
  * @returns A cleanup function that detaches listeners and aborts any in-flight preload fetch.
  * Calling it after the load completes is a no-op.
@@ -186,7 +187,7 @@ export function triggerLoad(
   image: HTMLImageElement,
   options: TriggerLoadOptions = {},
 ): () => void {
-  return loadImage(image, options)
+  return loadImage(image, options, { shouldLoadEagerly: true })
 }
 
 // #region createPlaceholderFromHash
@@ -301,6 +302,7 @@ function collectAutoSizeTargets(
 function loadImage(
   image: HTMLImageElement,
   { onImageLoad, onImageError }: TriggerLoadOptions,
+  { shouldLoadEagerly = false }: { shouldLoadEagerly?: boolean } = {},
 ): () => void {
   const picture = isDescendantOfPicture(image)
     ? image.parentElement
@@ -369,6 +371,11 @@ function loadImage(
     // WebKit and Firefox, and a later error must not fail the visible image.
     preloadListeners.abort()
     placeholderSource = image.currentSrc
+    // A lazy image defers the swapped-in source until it nears the viewport,
+    // even once the preload has fetched it, in WebKit and Firefox. Switching
+    // only now keeps the image lazy for a `lazyLoad` call after an early cleanup.
+    if (shouldLoadEagerly)
+      image.loading = 'eager'
     updateSizesAttribute(image)
     swapPictureSources(image)
     swapDataAttribute(image, 'srcset')

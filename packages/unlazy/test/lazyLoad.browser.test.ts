@@ -65,6 +65,24 @@ describe('lazyLoad', () => {
     expect(a.src).not.toBe(c.src)
   })
 
+  it('keeps a picture-wrapped image lazy while loading it', async () => {
+    const { picture, img } = makePictureImg({
+      dataSrc: createImageUrl(),
+      sources: [
+        {
+          dataSrcset: createImageUrl(),
+        },
+      ],
+    })
+    document.body.append(picture)
+
+    await new Promise<void>(resolve => lazyLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+
+    expect(img.loading).toBe('lazy')
+  }, 2000)
+
   it('cleanup detaches the callbacks of a lazy image before they fire', async () => {
     const img = document.createElement('img')
     img.loading = 'lazy'
