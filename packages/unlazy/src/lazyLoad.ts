@@ -1,4 +1,4 @@
-import type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions } from './types'
+import type { AutoSizesOptions, CreatePlaceholderFromHashOptions, TriggerLoadOptions, UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
 import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { installLcpWarning } from './lcpWarning'
@@ -232,16 +232,7 @@ export function triggerLoad(
 }
 
 // #region createPlaceholderFromHash
-export function createPlaceholderFromHash(options?: {
-  /** If present, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions. */
-  image?: HTMLImageElement
-  hash?: string
-  hashType?: 'blurhash' | 'thumbhash'
-  /** @default 32 */
-  size?: number
-  /** Will be calculated from the image's actual dimensions if image is provided and ratio is not. */
-  ratio?: number
-}): string | undefined
+export function createPlaceholderFromHash(options?: CreatePlaceholderFromHashOptions): string | undefined
 // #endregion createPlaceholderFromHash
 export function createPlaceholderFromHash(
   {
@@ -250,16 +241,7 @@ export function createPlaceholderFromHash(
     hashType = 'blurhash',
     size = DEFAULT_PLACEHOLDER_SIZE,
     ratio,
-  }: {
-    /** If present, the hash will be extracted from the image's `data-blurhash` or `data-thumbhash` attribute and ratio will be calculated from the image's actual dimensions. */
-    image?: HTMLImageElement
-    hash?: string
-    hashType?: 'blurhash' | 'thumbhash'
-    /** @default 32 */
-    size?: number
-    /** Will be calculated from the image's actual dimensions if image is provided and ratio is not. */
-    ratio?: number
-  } = {},
+  }: CreatePlaceholderFromHashOptions = {},
 ): string | undefined {
   if (image && !hash) {
     const { blurhash, thumbhash } = image.dataset
