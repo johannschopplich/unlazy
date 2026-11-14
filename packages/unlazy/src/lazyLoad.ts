@@ -1,11 +1,12 @@
 import type { AutoSizesOptions, TriggerLoadOptions, UnLazyLoadOptions } from './types'
 import { createPngDataUri as createPngDataUriFromBlurHash } from './blurhash'
-import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { DEFAULT_IMAGE_PLACEHOLDER, DEFAULT_PLACEHOLDER_SIZE } from './constants'
 import { installLcpWarning } from './lcpWarning'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
-import { createIndexedImagePlaceholder, debounce, isCrawler, toElementArray } from './utils'
+import { debounce, isCrawler, toElementArray } from './utils'
 
 const processedImages = new WeakSet<HTMLImageElement>()
+let placeholderCount = 0
 
 // #region lazyLoad
 export function lazyLoad<T extends HTMLImageElement>(
@@ -37,7 +38,7 @@ export function lazyLoad<T extends HTMLImageElement>(
   if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
     installLcpWarning()
 
-  for (const [index, image] of toElementArray<T>(selectorsOrElements).entries()) {
+  for (const image of toElementArray<T>(selectorsOrElements)) {
     // Skip images already processed in a prior call so callers can safely
     // re-invoke `lazyLoad` after dynamic DOM insertions.
     if (processedImages.has(image))
@@ -69,7 +70,7 @@ export function lazyLoad<T extends HTMLImageElement>(
         size: placeholderSize,
       })
       if (placeholder)
-        image.src = placeholder
+        image.src = withUniqueFragment(placeholder)
     }
 
     // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
@@ -102,12 +103,10 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
-    // Ensure that `loading="lazy"` works correctly by setting a default placeholder.
-    // For Chrome, it is necessary to generate a unique placeholder. Otherwise, as
-    // soon as the first placeholder is loaded, the `load` event will be triggered
-    // for all subsequent images, even if they are not in the viewport.
+    // A lazy image needs a placeholder `src` to defer its `load` event until it
+    // nears the viewport.
     if (!image.src)
-      image.src = createIndexedImagePlaceholder(index)
+      image.src = withUniqueFragment(DEFAULT_IMAGE_PLACEHOLDER)
 
     // Load the image immediately if it is already in the viewport.
     if (image.complete && image.naturalWidth > 0) {
@@ -425,6 +424,16 @@ function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | unde
 
 function isDescendantOfPicture(element: HTMLElement): element is HTMLElement & { parentElement: HTMLPictureElement } {
   return element.parentElement?.tagName.toLowerCase() === 'picture'
+}
+
+/**
+ * Appends a fragment that no other generated placeholder carries. Browsers
+ * serve a URL that already loaded in the document from memory and fire `load`
+ * at once, even for an off-screen lazy image, which would start loading the
+ * real image right away.
+ */
+function withUniqueFragment(placeholder: string): string {
+  return `${placeholder}#${++placeholderCount}`
 }
 
 function noop() {}

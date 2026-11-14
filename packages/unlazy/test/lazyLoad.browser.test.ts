@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { autoSizes, lazyLoad } from '../src/lazyLoad'
-import { BLURHASH, makeLazyImg, makePictureImg, TINY_PNG } from './fixtures'
+import { BLURHASH, createImageUrl, fetchImageRequests, makeLazyImg, makePictureImg, TINY_PNG } from './fixtures'
 
 let consoleError: ReturnType<typeof vi.spyOn>
 
@@ -192,6 +192,44 @@ describe('lazyLoad', () => {
       expect(onLoad).not.toHaveBeenCalled()
     })
   })
+
+  it('keeps off-screen images unfetched beside a loaded image with the same hash and box until they scroll into view', async () => {
+    const loadedImage = makeLazyImg({
+      dataSrc: createImageUrl(),
+      dataBlurhash: BLURHASH,
+      width: 30,
+      height: 20,
+    })
+    document.body.append(loadedImage)
+    await new Promise<void>(resolve => lazyLoad(loadedImage, {
+      onImageLoad: () => resolve(),
+    }))
+
+    const spacer = document.createElement('div')
+    spacer.style.height = '10000px'
+    const urls = [
+      createImageUrl(),
+      createImageUrl(),
+      createImageUrl(),
+    ]
+    const images = urls.map(url => makeLazyImg({
+      dataSrc: url,
+      dataBlurhash: BLURHASH,
+      width: 30,
+      height: 20,
+    }))
+    document.body.append(spacer, ...images)
+    const loads = images.map(image => new Promise<void>(resolve => lazyLoad(image, {
+      onImageLoad: () => resolve(),
+    })))
+    await new Promise(resolve => setTimeout(resolve, 300))
+    const requestCounts = await Promise.all(urls.map(async url => (await fetchImageRequests(url)).length))
+
+    expect(requestCounts).toEqual([0, 0, 0])
+
+    images[0]!.scrollIntoView()
+    await Promise.all(loads)
+  }, 5000)
 })
 
 describe('autoSizes', () => {
