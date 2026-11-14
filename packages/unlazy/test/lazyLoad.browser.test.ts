@@ -358,6 +358,38 @@ describe('lazyLoad', () => {
     await loaded
   }, 5000)
 
+  describe('preload', () => {
+    it('shows the hash placeholder while loading an off-screen image', async () => {
+      const spacer = document.createElement('div')
+      spacer.style.height = '10000px'
+      const url = createImageUrl()
+      const img = makeLazyImg({ dataSrc: url, dataBlurhash: BLURHASH })
+      document.body.append(spacer, img)
+
+      const loadedImage = new Promise<HTMLImageElement>(resolve => lazyLoad(img, {
+        preload: true,
+        onImageLoad: resolve,
+      }))
+      const placeholderSource = img.src
+
+      expect(placeholderSource).toMatch(/^data:image\/png;base64,/)
+      expect((await loadedImage).currentSrc).toBe(url)
+    }, 2000)
+
+    it('shows the hash placeholder when called again after cleanup', () => {
+      const img = makeLazyImg({
+        dataSrc: createImageUrl({ delay: '200' }),
+        dataBlurhash: BLURHASH,
+      })
+      document.body.append(img)
+
+      lazyLoad(img, { preload: true })()
+      lazyLoad(img, { preload: true })
+
+      expect(img.getAttribute('src')).toMatch(/^data:image\/png;base64,/)
+    })
+  })
+
   describe('re-run', () => {
     it('loads the image when called again after cleanup', async () => {
       const img = makeLazyImg({ dataSrc: TINY_PNG })

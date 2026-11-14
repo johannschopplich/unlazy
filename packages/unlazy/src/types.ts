@@ -44,6 +44,15 @@ export interface UnLazyLoadOptions extends TriggerLoadOptions {
    * @default false
    */
   updateSizesOnResize?: boolean
+
+  /**
+   * Whether to load the image right away instead of when it nears the
+   * viewport. The hash placeholder is decoded first and stays until the image
+   * has loaded. Internally delegates to `triggerLoad`.
+   *
+   * @default false
+   */
+  preload?: boolean
 }
 // #endregion UnLazyLoadOptions
 

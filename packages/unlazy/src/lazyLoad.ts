@@ -35,6 +35,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     hashType = 'blurhash',
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
     updateSizesOnResize = false,
+    preload = false,
     onImageLoad,
     onImageError,
   }: UnLazyLoadOptions = {},
@@ -112,7 +113,7 @@ export function lazyLoad<T extends HTMLImageElement>(
       && !hasOwnPendingSource(image)
       && (image.hasAttribute('src') || image.hasAttribute('srcset'))
     ) {
-      cleanups.add(loadImage(image, { onImageLoad, onImageError }))
+      cleanups.add(loadImage(image, { onImageLoad, onImageError }, { shouldLoadEagerly: preload }))
       continue
     }
 
@@ -132,6 +133,11 @@ export function lazyLoad<T extends HTMLImageElement>(
       })
       if (placeholder)
         image.src = withUniqueFragment(placeholder)
+    }
+
+    if (preload) {
+      cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
+      continue
     }
 
     // A lazy image needs a placeholder `src` to defer its `load` event until it
