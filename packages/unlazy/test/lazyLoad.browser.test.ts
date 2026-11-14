@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPngDataUri } from '../src/blurhash'
 import { autoSizes, lazyLoad } from '../src/lazyLoad'
-import { BLURHASH, createImageUrl, fetchImageRequests, makeLazyImg, makePictureImg, TINY_PNG } from './fixtures'
+import { BLURHASH, createImageUrl, fetchImageRequests, makeLazyImg, makePictureImg, recordSourceValues, TINY_PNG } from './fixtures'
 
 vi.mock('../src/blurhash', { spy: true })
 
@@ -189,6 +189,31 @@ describe('lazyLoad', () => {
       expect(img.src).toContain('hero.jpg')
     })
 
+    it('keeps the real sources of an eager image without data attributes and logs nothing', () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      img.src = TINY_PNG
+      img.srcset = `${TINY_PNG} 1x`
+      img.sizes = '50vw'
+
+      lazyLoad(img)
+
+      expect(consoleError).not.toHaveBeenCalled()
+      expect(img.getAttribute('fetchpriority')).toBe('high')
+      expect([img.src, img.srcset, img.sizes]).toEqual([TINY_PNG, `${TINY_PNG} 1x`, '50vw'])
+    })
+
+    it('skips onImageLoad for an eager image without data attributes whose own source is still loading', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      img.src = createImageUrl({ delay: '100' })
+      document.body.append(img)
+      const onImageLoad = vi.fn()
+
+      lazyLoad(img, { onImageLoad })
+      await new Promise(resolve => img.addEventListener('load', resolve, { once: true }))
+
+      expect(onImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+
     it('populates numeric sizes on data-sizes="auto" sources for eager picture-wrapped images', () => {
       const { img, sources } = makePictureImg({
         loading: 'eager',
@@ -292,6 +317,221 @@ describe('lazyLoad', () => {
     images[0]!.scrollIntoView()
     await Promise.all(loads)
   }, 5000)
+
+  it('keeps the source of an off-screen picture whose image shows only a placeholder unfetched until it scrolls into view', async () => {
+    const spacer = document.createElement('div')
+    spacer.style.height = '10000px'
+    const url = createImageUrl()
+    const { picture, img } = makePictureImg({
+      sources: [
+        {
+          dataSrcset: url,
+        },
+      ],
+    })
+    // A fragment of its own keeps the placeholder from loading at once, as an
+    // image already loaded in the document would.
+    img.src = `${TINY_PNG}#${crypto.randomUUID()}`
+    document.body.append(spacer, picture)
+
+    const loaded = new Promise<void>(resolve => lazyLoad(img, {
+      onImageLoad: () => resolve(),
+    }))
+    await new Promise(resolve => setTimeout(resolve, 300))
+
+    expect(await fetchImageRequests(url)).toHaveLength(0)
+
+    img.scrollIntoView()
+    await loaded
+  }, 5000)
+
+  describe('re-run', () => {
+    it('loads the image when called again after cleanup', async () => {
+      const img = makeLazyImg({ dataSrc: TINY_PNG })
+      document.body.append(img)
+
+      lazyLoad(img)()
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.src).toBe(TINY_PNG)
+    }, 2000)
+
+    it('leaves a loaded image untouched and silent when called again after cleanup', async () => {
+      const img = makeLazyImg({ dataSrc: TINY_PNG, dataBlurhash: BLURHASH })
+      document.body.append(img)
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      lazyLoad(img)
+
+      expect(img.src).toBe(TINY_PNG)
+      expect(consoleError).not.toHaveBeenCalled()
+    }, 2000)
+
+    it('keeps the fallback of a loaded image free of the hash placeholder while loading a changed picture source', async () => {
+      const { picture, img, sources: [source] } = makePictureImg({
+        dataSrc: createImageUrl(),
+        sources: [
+          {
+            dataSrcset: createImageUrl(),
+          },
+        ],
+      })
+      document.body.append(picture)
+      const changedSourceUrl = createImageUrl()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          hash: BLURHASH,
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      const readSourceValues = recordSourceValues(img)
+      source!.dataset.srcset = changedSourceUrl
+      await new Promise<void>(resolve => lazyLoad(img, {
+        hash: BLURHASH,
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.currentSrc).toBe(changedSourceUrl)
+      expect(readSourceValues().filter(value => value?.startsWith('data:'))).toEqual([])
+    }, 2000)
+
+    it('keeps the fallback of a loaded image and invokes onImageLoad when a changed picture source does not match', async () => {
+      const fallbackUrl = createImageUrl()
+      const { picture, img, sources: [source] } = makePictureImg({
+        dataSrc: fallbackUrl,
+        sources: [
+          {
+            dataSrcset: createImageUrl(),
+          },
+        ],
+      })
+      source!.media = '(max-width: 1px)'
+      document.body.append(picture)
+      const changedSourceUrl = createImageUrl()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      const readSourceValues = recordSourceValues(img)
+      source!.dataset.srcset = changedSourceUrl
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.currentSrc).toBe(fallbackUrl)
+      expect(source!.srcset).toBe(changedSourceUrl)
+      expect(readSourceValues()).toEqual([fallbackUrl])
+    }, 2000)
+
+    it('invokes onImageLoad for a loading eager image when called again after cleanup', async () => {
+      const url = createImageUrl({ delay: '100' })
+      const img = makeLazyImg({ loading: 'eager', dataSrc: url })
+      document.body.append(img)
+
+      lazyLoad(img)()
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.currentSrc).toBe(url)
+    }, 2000)
+
+    it('invokes onImageLoad for an eager image with a cached data-src when called again after cleanup in the same task', async () => {
+      const url = createImageUrl()
+      const loadedImage = new Image()
+      loadedImage.src = url
+      await loadedImage.decode()
+      const img = makeLazyImg({ loading: 'eager', dataSrc: url })
+      document.body.append(img)
+
+      lazyLoad(img)()
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+
+      expect(img.currentSrc).toBe(url)
+    }, 2000)
+
+    it('leaves a loaded eager image silent when called again after cleanup', async () => {
+      const img = makeLazyImg({
+        loading: 'eager',
+        dataSrc: createImageUrl(),
+      })
+      document.body.append(img)
+      const onImageLoad = vi.fn()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      await new Promise(resolve => setTimeout(resolve))
+      cleanup()
+      lazyLoad(img, { onImageLoad })
+      await new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true })
+        img.src = createImageUrl()
+      })
+
+      expect(onImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+
+    it('skips onImageLoad for an eager image called again after cleanup in the microtask after its load', async () => {
+      const img = makeLazyImg({
+        loading: 'eager',
+        dataSrc: createImageUrl(),
+      })
+      document.body.append(img)
+      const onImageLoad = vi.fn()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      lazyLoad(img, { onImageLoad })
+      await new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true })
+        img.src = createImageUrl()
+      })
+
+      expect(onImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+
+    it('cleanup of a later default-selector call keeps the images of an earlier call', async () => {
+      const img = makeLazyImg({ dataSrc: TINY_PNG })
+      document.body.append(img)
+      const onLaterImageLoad = vi.fn()
+
+      const firstLoad = new Promise<void>(resolve => lazyLoad(undefined, {
+        onImageLoad: () => resolve(),
+      }))
+      lazyLoad()()
+      lazyLoad(undefined, { onImageLoad: onLaterImageLoad })
+      await firstLoad
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(onLaterImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+  })
 })
 
 describe('autoSizes', () => {

@@ -6,6 +6,9 @@ import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { debounce, isCrawler, toElementArray } from './utils'
 
 const processedImages = new WeakSet<HTMLImageElement>()
+// A cleanup keeps the entry, so a re-run tells an image unlazy swapped from one
+// it never touched, even before its queued `load` fires.
+const swapStates = new WeakMap<HTMLImageElement, 'pending' | 'settled'>()
 const PRELOAD_ATTRIBUTES = [
   'referrerpolicy',
   'crossorigin',
@@ -61,24 +64,37 @@ export function lazyLoad<T extends HTMLImageElement>(
     // optionally installing a single `ResizeObserver` to retrack on resize.
     cleanups.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
 
-    // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
-    if (!image.dataset.src && !image.dataset.srcset) {
-      // @ts-expect-error: Build-time variable.
-      if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+    const shouldSwapEagerly = isEager || isCrawler
+    const isSwapPending = hasPendingSource(image)
+    const isLoadingEagerly = shouldSwapEagerly && !isSwapPending && swapStates.get(image) === 'pending'
+
+    // Bail before the hash decode if there is nothing to swap in, so an image
+    // that already has a source keeps it.
+    if (!isSwapPending && !isLoadingEagerly) {
+      if (
+        !image.hasAttribute('src') && !image.hasAttribute('srcset')
+        // @ts-expect-error: Build-time variable.
+        && (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+      ) {
         console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
+      }
       continue
     }
 
     processedImages.add(image)
+    cleanups.add(() => processedImages.delete(image))
 
     const listeners = new AbortController()
     cleanups.add(() => listeners.abort())
 
     // Swap immediately for eager images (above-the-fold) and crawlers. A hash
     // placeholder would be replaced in the same task, before it is painted.
-    // Listeners are attached pre-swap so the spec-async `load` task is caught
-    // after the swap; cleanup detaches them if the consumer aborts early.
-    if (isEager || isCrawler) {
+    if (shouldSwapEagerly) {
+      // Swapping first runs the settle listener ahead of the outcome listener,
+      // so a re-run from a callback, or from a microtask it queues, finds the
+      // image settled.
+      if (isSwapPending)
+        swapSources(image)
       const outcomeHandler = (event: Event) => {
         listeners.abort()
         if (event.type === 'error')
@@ -88,9 +104,18 @@ export function lazyLoad<T extends HTMLImageElement>(
       }
       image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
       image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
-      swapPictureSources(image)
-      swapDataAttribute(image, 'srcset')
-      swapDataAttribute(image, 'src')
+      continue
+    }
+
+    // An image unlazy already swapped that waits only on a `<source>` of its
+    // `<picture>` keeps its own sources as the fallback, so it skips the
+    // placeholders.
+    if (
+      swapStates.has(image)
+      && !hasOwnPendingSource(image)
+      && (image.hasAttribute('src') || image.hasAttribute('srcset'))
+    ) {
+      cleanups.add(loadImage(image, { onImageLoad, onImageError }))
       continue
     }
 
@@ -310,7 +335,7 @@ function loadImage(
     : undefined
   const { srcset: dataSrcset, src: dataSrc, sizes: dataSizes } = image.dataset
 
-  if (!dataSrcset && !dataSrc && !picture?.querySelector('source[data-srcset]'))
+  if (!hasPendingSource(image))
     return noop
 
   let sizes = image.sizes
@@ -378,9 +403,10 @@ function loadImage(
     if (shouldLoadEagerly)
       image.loading = 'eager'
     updateSizesAttribute(image)
-    swapPictureSources(image)
-    swapDataAttribute(image, 'srcset')
-    swapDataAttribute(image, 'src')
+    // Swapping first runs the settle listener ahead of the outcome listener,
+    // so a re-run from a callback, or from a microtask it queues, finds the
+    // image settled.
+    swapSources(image)
     image.addEventListener('load', visibleOutcomeHandler, { signal: visibleListeners.signal })
     image.addEventListener('error', visibleOutcomeHandler, { signal: visibleListeners.signal })
   }
@@ -395,10 +421,19 @@ function loadImage(
   temporaryImage.addEventListener('load', preloadLoadHandler, { signal: preloadListeners.signal })
   temporaryImage.addEventListener('error', preloadErrorHandler, { signal: preloadListeners.signal })
 
-  if (dataSrcset)
-    temporaryImage.srcset = dataSrcset
-  if (dataSrc)
-    temporaryImage.src = dataSrc
+  // An image waiting only on a `<picture>` source keeps its own sources as the
+  // fallback, so the preload settles even when no source matches.
+  const isOwnSourcePending = hasOwnPendingSource(image)
+  const temporarySrcset = isOwnSourcePending
+    ? dataSrcset
+    : image.getAttribute('srcset')
+  const temporarySrc = isOwnSourcePending
+    ? dataSrc
+    : image.getAttribute('src')
+  if (temporarySrcset)
+    temporaryImage.srcset = temporarySrcset
+  if (temporarySrc)
+    temporaryImage.src = temporarySrc
 
   return () => {
     preloadListeners.abort()
@@ -422,29 +457,60 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): vo
     element.sizes = next
 }
 
+function hasPendingSource(image: HTMLImageElement): boolean {
+  return hasOwnPendingSource(image)
+    || (isDescendantOfPicture(image) && Boolean(image.parentElement.querySelector('source[data-srcset]')))
+}
+
+function hasOwnPendingSource(image: HTMLImageElement): boolean {
+  return Boolean(image.dataset.src || image.dataset.srcset)
+}
+
+function swapSources(image: HTMLImageElement): void {
+  const hasSwappedPictureSources = swapPictureSources(image)
+  const hasSwappedSrcset = swapDataAttribute(image, 'srcset')
+  const hasSwappedSrc = swapDataAttribute(image, 'src')
+  if (!hasSwappedPictureSources && !hasSwappedSrcset && !hasSwappedSrc)
+    return
+
+  // Tracked apart from the callback listeners, which a cleanup detaches.
+  swapStates.set(image, 'pending')
+  const settleListeners = new AbortController()
+  const settleHandler = () => {
+    settleListeners.abort()
+    swapStates.set(image, 'settled')
+  }
+  image.addEventListener('load', settleHandler, { signal: settleListeners.signal })
+  image.addEventListener('error', settleHandler, { signal: settleListeners.signal })
+}
+
 function swapDataAttribute(
   element: HTMLImageElement | HTMLSourceElement,
   attr: 'src' | 'srcset',
-) {
+): boolean {
   const value = element.dataset[attr]
   if (!value)
-    return
+    return false
 
   element[attr] = value
   element.removeAttribute(`data-${attr}`)
+  return true
 }
 
-function swapPictureSources(image: HTMLImageElement) {
+function swapPictureSources(image: HTMLImageElement): boolean {
   const picture = image.parentElement
   if (picture?.tagName.toLowerCase() !== 'picture')
-    return
+    return false
 
+  let hasSwapped = false
   for (const source of picture.querySelectorAll<HTMLSourceElement>('source[data-srcset]')) {
     // Resolve `data-sizes="auto"` to a numeric pixel width before swapping
     // `srcset` so the browser sees a final value at source-selection time.
     updateSizesAttribute(source)
-    swapDataAttribute(source, 'srcset')
+    if (swapDataAttribute(source, 'srcset'))
+      hasSwapped = true
   }
+  return hasSwapped
 }
 
 function getOffsetWidth(element: HTMLElement | HTMLSourceElement): number | undefined {
