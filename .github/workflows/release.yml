@@ -21,13 +21,25 @@ jobs:
         with:
           runtime: node@24
 
-      - name: Publish changelog
-        run: pnpm dlx changelogithub
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Test
+        run: pnpm run test
 
       - name: Build
         run: pnpm run build
 
+      - name: Check built packages
+        run: pnpm run test:build
+
       - name: Publish to npm
         run: pnpm -r publish --access public --no-git-checks
+
+      - name: Publish changelog
+        run: pnpm exec changelogithub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

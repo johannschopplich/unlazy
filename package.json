@@ -16,6 +16,7 @@
     "test:unit": "vitest run --project unit",
     "test:browser": "vitest run --project browser",
     "test:types": "tsc && pnpm -r test:types",
+    "test:build": "pnpm -r --filter \"./packages/*\" run test:build",
     "release": "bumpp -r",
     "prepare": "pnpm run dev:prepare"
   },
@@ -27,6 +28,7 @@
     "@vitest/browser": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "bumpp": "catalog:",
+    "changelogithub": "catalog:",
     "eslint": "catalog:",
     "eslint-plugin-react-refresh": "catalog:",
     "eslint-plugin-solid": "catalog:",
@@ -37,6 +39,7 @@
     "tsdown": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:",
-    "vue-tsc": "catalog:"
+    "vue-tsc": "catalog:",
+    "wrangler": "catalog:"
   }
 }
