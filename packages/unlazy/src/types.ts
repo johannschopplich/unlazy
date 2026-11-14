@@ -37,9 +37,9 @@ export interface UnLazyLoadOptions {
   placeholderSize?: number
 
   /**
-   * Whether `data-sizes="auto"` should retrack the rendered image width on
-   * viewport resize. Applies to both `<img>` elements and their `<source>`
-   * siblings inside a `<picture>`. Internally delegates to `autoSizes`.
+   * Whether `data-sizes="auto"` should be resolved again when the rendered
+   * width of the image changes. Applies to both `<img>` elements and their
+   * `<source>` siblings inside a `<picture>`. Internally delegates to `autoSizes`.
    *
    * @default false
    */
@@ -66,8 +66,8 @@ export interface TriggerLoadOptions {
 // #region AutoSizesOptions
 export interface AutoSizesOptions {
   /**
-   * Whether `data-sizes="auto"` should retrack the rendered width on viewport
-   * resize. Sets up a debounced `ResizeObserver` per call; the returned
+   * Whether `data-sizes="auto"` should be resolved again when the rendered
+   * width changes. Sets up a debounced `ResizeObserver` per call; the returned
    * cleanup function disconnects it.
    *
    * @default false

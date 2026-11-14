@@ -632,6 +632,20 @@ describe('autoSizes resize tracking', () => {
     expect(source.sizes).toBe('800px')
   })
 
+  it('cleanup drops a resize update still waiting for its debounce', () => {
+    const img = makeLazyImg({ dataSrcset: 'image.jpg 1x, image@2x.jpg 2x', dataSizes: 'auto' })
+    document.body.append(img)
+    Object.defineProperty(img, 'offsetWidth', { value: 600, configurable: true })
+
+    const cleanup = autoSizes(img, { updateOnResize: true })
+    Object.defineProperty(img, 'offsetWidth', { value: 900, configurable: true })
+    fireResize(img)
+    cleanup()
+    vi.advanceTimersByTime(500)
+
+    expect(img.sizes).toBe('600px')
+  })
+
   it('retracks source sizes on resize for eager picture-wrapped images via lazyLoad', () => {
     const { picture, img, sources } = makePictureImg({
       loading: 'eager',
@@ -652,6 +666,22 @@ describe('autoSizes resize tracking', () => {
     vi.advanceTimersByTime(500)
 
     expect(source.sizes).toBe('1200px')
+  })
+
+  it('observes a picture once when the default selector matches its img and sources', () => {
+    const { picture, img } = makePictureImg({
+      dataSrc: 'image.jpg',
+      sources: [
+        { dataSrcset: 'image.avif', type: 'image/avif', dataSizes: 'auto' },
+        { dataSrcset: 'image.webp', type: 'image/webp', dataSizes: 'auto' },
+      ],
+    })
+    img.dataset.sizes = 'auto'
+    document.body.append(picture)
+
+    autoSizes(undefined, { updateOnResize: true })
+
+    expect(observers.filter(observer => observer.target === img)).toHaveLength(1)
   })
 
   it('retracks standalone img sizes on resize when data-sizes="auto" is set', () => {

@@ -26,16 +26,19 @@ export function toElementArray<T extends HTMLElement>(
 export function debounce<T extends (...args: any[]) => void>(
   fn: T,
   delay: number,
-) {
+): ((...args: Parameters<T>) => void) & { cancel: () => void } {
   let timeoutId: number | undefined
 
-  return function (...args: Parameters<T>) {
-    if (timeoutId != null)
-      clearTimeout(timeoutId)
-
-    timeoutId = (setTimeout as Window['setTimeout'])(() => {
-      fn(...args)
-      timeoutId = undefined
-    }, delay)
+  const cancel = () => {
+    clearTimeout(timeoutId)
+    timeoutId = undefined
   }
+
+  return Object.assign((...args: Parameters<T>) => {
+    cancel()
+    timeoutId = (setTimeout as Window['setTimeout'])(() => {
+      timeoutId = undefined
+      fn(...args)
+    }, delay)
+  }, { cancel })
 }

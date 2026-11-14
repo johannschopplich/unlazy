@@ -166,7 +166,7 @@ export function lazyLoad<T extends HTMLImageElement>(
  * Resolves `data-sizes="auto"` to a numeric pixel width. Given an `<img>`
  * inside a `<picture>`, walks to every `<source data-sizes="auto">` sibling and
  * resolves them too. With `{ updateOnResize: true }`, a debounced
- * `ResizeObserver` retracks the rendered width on viewport changes.
+ * `ResizeObserver` resolves them again when the rendered width changes.
  *
  * @returns A cleanup function that disconnects every observer created by this call.
  * Calling it on a one-shot invocation is a no-op.
@@ -181,14 +181,29 @@ export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   options?: AutoSizesOptions,
 ): () => void
 // #endregion autoSizes
+// TODO: Switch to native `sizes="auto"` once it is Baseline Widely available.
+// It applies to lazy images only, so eager images then need an explicit
+// `sizes`, and the preload in `loadImage` must stop resolving a width of its own.
 export function autoSizes<T extends HTMLImageElement | HTMLSourceElement>(
   selectorsOrElements: string | T | NodeListOf<T> | T[] = 'img[data-sizes="auto"], source[data-sizes="auto"]',
   { updateOnResize = false }: AutoSizesOptions = {},
 ): () => void {
   const cleanups: (() => void)[] = []
+  const elements = toElementArray<T>(selectorsOrElements)
+  // An `<img>` inside a `<picture>` resolves and observes its `<source>`
+  // siblings itself, so a listed sibling would get a second observer.
+  const imagePictures = new Set<Element>()
+  for (const element of elements) {
+    if (element instanceof HTMLImageElement && isDescendantOfPicture(element))
+      imagePictures.add(element.parentElement)
+  }
 
-  for (const element of toElementArray<T>(selectorsOrElements))
+  for (const element of elements) {
+    if (element instanceof HTMLSourceElement && element.parentElement && imagePictures.has(element.parentElement))
+      continue
+
     cleanups.push(observeAutoSizes(element, updateOnResize))
+  }
 
   return () => {
     for (const fn of cleanups) fn()
@@ -302,7 +317,10 @@ function observeAutoSizes(
   const observer = new ResizeObserver(update)
   observer.observe(observedImage)
 
-  return () => observer.disconnect()
+  return () => {
+    observer.disconnect()
+    update.cancel()
+  }
 }
 
 function hasAutoSizes(element: HTMLImageElement | HTMLSourceElement): boolean {
