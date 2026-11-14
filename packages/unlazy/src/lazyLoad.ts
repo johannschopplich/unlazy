@@ -31,7 +31,9 @@ export function lazyLoad<T extends HTMLImageElement>(
 ): () => void {
   const cleanups = new Set<() => void>()
 
-  // @ts-expect-error: Build-time variable
+  // Every build but the `development` one defines `__UNLAZY_LOGGING__` as
+  // `false`, so the logs ship only there and in an import of the source.
+  // @ts-expect-error: Build-time variable.
   if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
     installLcpWarning()
 
@@ -54,7 +56,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable.
     if (
-      // @ts-expect-error: Build-time variable
+      // @ts-expect-error: Build-time variable.
       (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
       && hash
     ) {
@@ -72,7 +74,7 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
     if (!image.dataset.src && !image.dataset.srcset) {
-      // @ts-expect-error: Build-time variable
+      // @ts-expect-error: Build-time variable.
       if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
         console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
       continue
@@ -321,7 +323,7 @@ export function createPlaceholderFromHash(
     return createPngDataUriFromThumbHash(hash)
   }
   catch (error) {
-    // @ts-expect-error: Build-time variable
+    // @ts-expect-error: Build-time variable.
     if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
       console.error(`[unlazy] Failed to generate ${hashType} placeholder:`, error)
   }

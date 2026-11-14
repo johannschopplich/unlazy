@@ -1,6 +1,3 @@
-// Dev-mode only: warns when the Largest Contentful Paint element is still
-// marked for lazy loading. Tree-shaken in production via `__UNLAZY_LOGGING__`.
-
 interface LargestContentfulPaint extends PerformanceEntry {
   element: Element | null
 }
@@ -33,8 +30,7 @@ export function installLcpWarning(): void {
       }
     })
 
-    // Safari rejects this entry type until 16; catch the `NotSupportedError`
-    // rather than feature-detect, since the type is Newly (not Widely) Available.
+    // Safari supports this entry type only from 26.2.
     observer.observe({ type: 'largest-contentful-paint', buffered: true })
   }
   catch {
