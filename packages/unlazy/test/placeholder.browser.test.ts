@@ -53,6 +53,28 @@ describe('createPlaceholderFromHash', () => {
     expect(result).toBe(blurhashOnly)
   })
 
+  it('decodes a square placeholder for a hidden image with only a width', () => {
+    const container = document.createElement('div')
+    container.hidden = true
+    const img = document.createElement('img')
+    img.width = 800
+    img.dataset.blurhash = BLURHASH
+    container.append(img)
+    document.body.append(container)
+
+    const placeholder = createPlaceholderFromHash({ image: img })
+    container.remove()
+    const base64 = placeholder!.replace('data:image/png;base64,', '')
+    const bytes = Uint8Array.from(atob(base64), character => character.charCodeAt(0))
+    const view = new DataView(bytes.buffer)
+
+    // The IHDR chunk stores width and height as 32-bit integers from byte 16.
+    expect([
+      view.getUint32(16),
+      view.getUint32(20),
+    ]).toEqual([32, 32])
+  })
+
   it('returns undefined when no hash provided', () => {
     const result = createPlaceholderFromHash({})
 

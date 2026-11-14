@@ -27,7 +27,7 @@ export interface UnLazyLoadOptions {
 
   /**
    * The size of the longer edge (width or height) of the BlurHash image to be
-   * decoded, depending on the aspect ratio.
+   * decoded, depending on the aspect ratio. Values above 100 are capped at 100.
    *
    * @remarks
    * This option is ignored if the `hashType` option is set to `thumbhash`.

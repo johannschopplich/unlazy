@@ -257,12 +257,11 @@ export function createPlaceholderFromHash(
 
   try {
     if (hashType === 'blurhash') {
-      // Preserve the original image's aspect ratio.
-      if (image && !ratio) {
-        const elementWidth = image.width || image.offsetWidth || size
-        const elementHeight = image.height || image.offsetHeight || size
-        ratio = elementWidth / elementHeight
-      }
+      // Preserve the original image's aspect ratio. `width` and `height` read
+      // the rendered box, else the attributes or the natural size; with either
+      // side unknown, the placeholder stays square.
+      if (image && !ratio && image.width && image.height)
+        ratio = image.width / image.height
 
       return createPngDataUriFromBlurHash(hash, { ratio, size })
     }

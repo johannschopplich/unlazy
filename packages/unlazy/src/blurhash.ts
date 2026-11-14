@@ -1,5 +1,5 @@
 import { decodeBlurHash } from 'fast-blurhash'
-import { DEFAULT_PLACEHOLDER_SIZE } from './constants'
+import { DEFAULT_PLACEHOLDER_SIZE, MAX_PLACEHOLDER_SIZE } from './constants'
 import { rgbaToDataUri } from './utils'
 
 // #region BlurHashOptions
@@ -13,7 +13,7 @@ export interface BlurHashOptions {
 
   /**
    * The size of the longer edge (width or height) of the BlurHash image to be
-   * decoded, depending on the aspect ratio.
+   * decoded, depending on the aspect ratio. Values above 100 are capped at 100.
    *
    * @default 32
    */
@@ -34,7 +34,7 @@ export function createPngDataUri(
     size = DEFAULT_PLACEHOLDER_SIZE,
   }: BlurHashOptions = {},
 ): string {
-  const { width, height } = getAspectRatioDimensions(ratio, size)
+  const { width, height } = getAspectRatioDimensions(ratio, Math.min(size, MAX_PLACEHOLDER_SIZE))
   const rgba = decodeBlurHash(hash, width, height)
   return rgbaToDataUri(width, height, rgba)
 }
