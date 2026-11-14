@@ -27,49 +27,28 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./blurhash": {
-      "import": {
-        "types": "./dist/blurhash.d.ts",
-        "default": "./dist/blurhash.js"
-      },
-      "require": {
-        "types": "./dist/blurhash.d.cts",
-        "default": "./dist/blurhash.cjs"
-      }
+      "types": "./dist/blurhash.d.ts",
+      "default": "./dist/blurhash.js"
     },
     "./thumbhash": {
-      "import": {
-        "types": "./dist/thumbhash.d.ts",
-        "default": "./dist/thumbhash.js"
-      },
-      "require": {
-        "types": "./dist/thumbhash.d.cts",
-        "default": "./dist/thumbhash.cjs"
-      }
+      "types": "./dist/thumbhash.d.ts",
+      "default": "./dist/thumbhash.js"
     },
     "./package.json": "./package.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
   "unpkg": "./dist/unlazy.iife.js",
   "jsdelivr": "./dist/unlazy.iife.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "tsdown",
     "test:types": "tsc --noEmit",
-    "test:build": "publint --strict && attw --pack --profile node16"
+    "test:build": "publint --strict && attw --pack --profile esm-only"
   },
   "devDependencies": {
     "fast-blurhash": "^1.2.0",

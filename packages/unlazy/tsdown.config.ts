@@ -26,13 +26,15 @@ export default defineConfig([
       './src/blurhash.ts',
       './src/thumbhash.ts',
     ],
-    format: ['esm', 'cjs'],
-    dts: true,
+    platform: 'neutral',
+    // The neutral platform reads no main fields, but `thumbhash` ships only a
+    // `main` field and must still be bundled.
+    inputOptions: {
+      resolve: {
+        mainFields: ['module', 'main'],
+      },
+    },
     clean: true,
-    outExtensions: ({ format }) =>
-      format === 'es'
-        ? { js: '.js', dts: '.d.ts' }
-        : { js: '.cjs', dts: '.d.cts' },
   },
   {
     ...iifeBase,
