@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPngDataUri } from '../src/blurhash'
 import { autoSizes, lazyLoad } from '../src/lazyLoad'
 import { BLURHASH, createImageUrl, fetchImageRequests, makeLazyImg, makePictureImg, TINY_PNG } from './fixtures'
+
+vi.mock('../src/blurhash', { spy: true })
 
 let consoleError: ReturnType<typeof vi.spyOn>
 
@@ -127,6 +130,18 @@ describe('lazyLoad', () => {
       expect(img.dataset.src).toBeUndefined()
     })
 
+    it('swaps data-src immediately on an image without a loading attribute', () => {
+      const img = document.createElement('img')
+      img.dataset.src = 'hero.jpg'
+
+      lazyLoad(img)
+
+      expect([
+        img.getAttribute('src'),
+        img.getAttribute('fetchpriority'),
+      ]).toEqual(['hero.jpg', 'high'])
+    })
+
     it('sets fetchpriority="high" on eager images when absent', () => {
       const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg' })
 
@@ -162,6 +177,16 @@ describe('lazyLoad', () => {
       expect(eager.src).toContain('eager.jpg')
       // Image without `data-src` is not in the selector, left untouched.
       expect(eagerNoData.hasAttribute('fetchpriority')).toBe(false)
+    })
+
+    it('skips the hash decode for eager images', () => {
+      vi.mocked(createPngDataUri).mockClear()
+
+      const img = makeLazyImg({ loading: 'eager', dataSrc: 'hero.jpg', dataBlurhash: BLURHASH })
+      lazyLoad(img)
+
+      expect(createPngDataUri).not.toHaveBeenCalled()
+      expect(img.src).toContain('hero.jpg')
     })
 
     it('populates numeric sizes on data-sizes="auto" sources for eager picture-wrapped images', () => {

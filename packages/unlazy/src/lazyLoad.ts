@@ -50,7 +50,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     if (processedImages.has(image))
       continue
 
-    const isEager = image.loading === 'eager'
+    const isEager = image.loading !== 'lazy'
 
     // Hint the browser to prioritize the fetch of above-the-fold images,
     // but respect an explicit author value if present.
@@ -60,6 +60,39 @@ export function lazyLoad<T extends HTMLImageElement>(
     // Resolve `data-sizes="auto"` for the img and any picture-source siblings,
     // optionally installing a single `ResizeObserver` to retrack on resize.
     cleanups.add(autoSizes(image, { updateOnResize: updateSizesOnResize }))
+
+    // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
+    if (!image.dataset.src && !image.dataset.srcset) {
+      // @ts-expect-error: Build-time variable.
+      if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+        console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
+      continue
+    }
+
+    processedImages.add(image)
+
+    const listeners = new AbortController()
+    cleanups.add(() => listeners.abort())
+
+    // Swap immediately for eager images (above-the-fold) and crawlers. A hash
+    // placeholder would be replaced in the same task, before it is painted.
+    // Listeners are attached pre-swap so the spec-async `load` task is caught
+    // after the swap; cleanup detaches them if the consumer aborts early.
+    if (isEager || isCrawler) {
+      const outcomeHandler = (event: Event) => {
+        listeners.abort()
+        if (event.type === 'error')
+          onImageError?.(image, event)
+        else
+          onImageLoad?.(image)
+      }
+      image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
+      image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
+      swapPictureSources(image)
+      swapDataAttribute(image, 'srcset')
+      swapDataAttribute(image, 'src')
+      continue
+    }
 
     // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable.
     if (
@@ -77,38 +110,6 @@ export function lazyLoad<T extends HTMLImageElement>(
       })
       if (placeholder)
         image.src = withUniqueFragment(placeholder)
-    }
-
-    // Bail if the image does not provide a `data-src` or `data-srcset` attribute.
-    if (!image.dataset.src && !image.dataset.srcset) {
-      // @ts-expect-error: Build-time variable.
-      if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
-        console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
-      continue
-    }
-
-    processedImages.add(image)
-
-    const listeners = new AbortController()
-    cleanups.add(() => listeners.abort())
-
-    // Swap immediately for eager images (above-the-fold) and crawlers.
-    // Listeners are attached pre-swap so the spec-async `load` task is caught
-    // after the swap; cleanup detaches them if the consumer aborts early.
-    if (isEager || isCrawler) {
-      const outcomeHandler = (event: Event) => {
-        listeners.abort()
-        if (event.type === 'error')
-          onImageError?.(image, event)
-        else
-          onImageLoad?.(image)
-      }
-      image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
-      image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
-      swapPictureSources(image)
-      swapDataAttribute(image, 'srcset')
-      swapDataAttribute(image, 'src')
-      continue
     }
 
     // A lazy image needs a placeholder `src` to defer its `load` event until it
