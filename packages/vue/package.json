@@ -2,7 +2,6 @@
   "name": "@unlazy/vue",
   "type": "module",
   "version": "2.0.1",
-  "packageManager": "pnpm@12.18.0",
   "description": "Vue lazy loading library for placeholder images",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
@@ -44,7 +43,7 @@
     "build": "tsdown",
     "dev": "vite playground",
     "dev:build": "vite build playground",
-    "test:types": "vue-tsc --noEmit",
+    "test:types": "vue-tsc",
     "test:build": "publint --strict"
   },
   "peerDependencies": {

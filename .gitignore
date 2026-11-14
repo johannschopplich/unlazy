@@ -1,8 +1,12 @@
 .nuxt
 .output
 .svelte-kit
+.vitest
+.wrangler
 **/.vitepress/cache
 *.log*
+*.tsbuildinfo
 .DS_Store
+__screenshots__
 dist
 node_modules

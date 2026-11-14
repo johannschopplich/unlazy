@@ -2,7 +2,6 @@
   "name": "@unlazy/solid",
   "type": "module",
   "version": "2.0.1",
-  "packageManager": "pnpm@12.18.0",
   "description": "Solid lazy loading library for placeholder images",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
@@ -40,9 +39,7 @@
     "build": "tsdown",
     "dev": "vite playground",
     "dev:build": "vite build playground",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test:types": "tsc --noEmit",
+    "test:types": "tsc",
     "test:build": "publint --strict"
   },
   "peerDependencies": {

@@ -7,7 +7,7 @@
     "dev": "vitepress dev",
     "build": "vitepress build",
     "serve": "vitepress serve",
-    "test:types": "tsc --noEmit"
+    "test:types": "tsc"
   },
   "devDependencies": {
     "@iconify-json/carbon": "catalog:",

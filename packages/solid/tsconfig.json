@@ -4,6 +4,5 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js"
   },
-  "include": ["src", "playground", "build.config.ts"],
-  "exclude": ["dist"]
+  "include": ["src", "playground", "tsdown.config.ts"]
 }

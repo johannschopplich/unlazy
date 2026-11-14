@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": ["ESNext", "DOM"],
     "moduleDetection": "force",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
     "paths": {
       "unlazy": ["./packages/unlazy/src/index.ts"],
       "unlazy/blurhash": ["./packages/unlazy/src/blurhash.ts"],
       "unlazy/thumbhash": ["./packages/unlazy/src/thumbhash.ts"]
     },
-    "resolveJsonModule": true,
     "types": ["node"],
     "noUncheckedIndexedAccess": true,
     "noEmit": true,

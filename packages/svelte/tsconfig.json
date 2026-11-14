@@ -1,7 +1,6 @@
 {
   "extends": "$app/tsconfig",
   "compilerOptions": {
-    "strict": true,
     "sourceMap": true
   },
   "include": ["src", "test", "*"],
