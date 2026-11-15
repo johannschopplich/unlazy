@@ -9,11 +9,10 @@ export function isCrawlerUserAgent(userAgent: string): boolean {
 
 export function toElementArray<T extends HTMLElement>(
   target: string | T | NodeListOf<T> | T[],
-  parentElement: Element | Document = document,
 ): T[] {
   if (typeof target === 'string') {
     return [
-      ...parentElement.querySelectorAll<T>(target),
+      ...document.querySelectorAll<T>(target),
     ]
   }
 

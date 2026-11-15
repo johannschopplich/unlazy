@@ -5,6 +5,10 @@ import { installLcpWarning } from './lcpWarning'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { debounce, isCrawler, toElementArray } from './utils'
 
+// Build-time flags, replaced by the build or by the consumer's bundler.
+declare const __UNLAZY_LOGGING__: boolean | undefined
+declare const __UNLAZY_HASH_DECODING__: boolean | undefined
+
 interface PendingSwap {
   settleListeners: AbortController
   /** Reports the outcome to the callbacks of the `lazyLoad` call that is not cleaned up yet. */
@@ -54,7 +58,6 @@ export function lazyLoad<T extends HTMLImageElement>(
 
   // Every build but the `development` one defines `__UNLAZY_LOGGING__` as
   // `false`, so the logs ship only there and in an import of the source.
-  // @ts-expect-error: Build-time variable.
   if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
     installLcpWarning()
 
@@ -96,7 +99,6 @@ export function lazyLoad<T extends HTMLImageElement>(
     // An image with nothing to swap in keeps its own sources, skipping the hash decode.
     if (!isSwapPending) {
       if (!image.hasAttribute('src') && !image.hasAttribute('srcset')) {
-        // @ts-expect-error: Build-time variable.
         if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
           console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
         continue
@@ -267,7 +269,6 @@ export function createPlaceholderFromHash(
     return createPngDataUriFromThumbHash(hash)
   }
   catch (error) {
-    // @ts-expect-error: Build-time variable.
     if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
       console.error(`[unlazy] Failed to generate ${hashType} placeholder:`, error)
   }
@@ -483,7 +484,6 @@ function applyHashPlaceholder(
   image: HTMLImageElement,
   { hash, hashType, size }: Pick<UnLazyLoadOptions, 'hash' | 'hashType'> & { size: number },
 ): void {
-  // @ts-expect-error: Build-time variable.
   if ((typeof __UNLAZY_HASH_DECODING__ !== 'undefined' && !__UNLAZY_HASH_DECODING__) || !hash)
     return
 
