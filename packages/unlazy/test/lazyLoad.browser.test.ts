@@ -202,18 +202,6 @@ describe('lazyLoad', () => {
       expect([img.src, img.srcset, img.sizes]).toEqual([TINY_PNG, `${TINY_PNG} 1x`, '50vw'])
     })
 
-    it('skips onImageLoad for an eager image without data attributes whose own source is still loading', async () => {
-      const img = makeLazyImg({ loading: 'eager' })
-      img.src = createImageUrl({ delay: '100' })
-      document.body.append(img)
-      const onImageLoad = vi.fn()
-
-      lazyLoad(img, { onImageLoad })
-      await new Promise(resolve => img.addEventListener('load', resolve, { once: true }))
-
-      expect(onImageLoad).not.toHaveBeenCalled()
-    }, 2000)
-
     it('populates numeric sizes on data-sizes="auto" sources for eager picture-wrapped images', () => {
       const { img, sources } = makePictureImg({
         loading: 'eager',
@@ -388,6 +376,110 @@ describe('lazyLoad', () => {
 
       expect(img.getAttribute('src')).toMatch(/^data:image\/png;base64,/)
     })
+  })
+
+  describe('real sources', () => {
+    it('invokes onImageLoad for an image that loaded its src before the call', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      await settleSource(img, createImageUrl())
+      const onImageLoad = vi.fn()
+
+      lazyLoad(img, { onImageLoad })
+
+      await expect.poll(() => onImageLoad).toHaveBeenCalledWith(img)
+    })
+
+    it('marks an image whose src failed before the call with data-error and invokes onImageError', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      await settleSource(img, createImageUrl({ status: '404' }))
+      const onImageError = vi.fn()
+
+      lazyLoad(img, { onImageError })
+
+      await expect.poll(() => onImageError).toHaveBeenCalledOnce()
+      expect(img.hasAttribute('data-error')).toBe(true)
+    })
+
+    it('invokes onImageLoad for an image whose src is still loading', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      img.src = createImageUrl({ delay: '100' })
+      document.body.append(img)
+
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+    }, 2000)
+
+    it('leaves an image silent when called again after reporting its outcome', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      await settleSource(img, createImageUrl())
+      const onImageLoad = vi.fn()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      lazyLoad(img, { onImageLoad })
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(onImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+
+    it('cleanup stops the report of an image that loaded its src before the call', async () => {
+      const img = makeLazyImg({ loading: 'eager' })
+      await settleSource(img, createImageUrl())
+      const onImageLoad = vi.fn()
+
+      lazyLoad(img, { onImageLoad })()
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(onImageLoad).not.toHaveBeenCalled()
+    })
+
+    it('leaves an image silent when called again after a sizes change selects another srcset candidate', async () => {
+      const smallUrl = createImageUrl()
+      const largeUrl = createImageUrl()
+      const img = makeLazyImg({ loading: 'eager' })
+      img.sizes = '100px'
+      img.srcset = `${smallUrl} 100w, ${largeUrl} 1000w`
+      await settleSource(img, smallUrl)
+      const onImageLoad = vi.fn()
+
+      let cleanup!: () => void
+      await new Promise<void>((resolve) => {
+        cleanup = lazyLoad(img, {
+          onImageLoad: () => resolve(),
+        })
+      })
+      cleanup()
+      expect(img.currentSrc).toBe(smallUrl)
+      await new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true })
+        img.sizes = '1000px'
+      })
+      lazyLoad(img, { onImageLoad })
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      expect(img.currentSrc).toBe(largeUrl)
+      expect(onImageLoad).not.toHaveBeenCalled()
+    }, 2000)
+
+    it('invokes onImageLoad for an eager image beside a picture source with an empty data-srcset', async () => {
+      const picture = document.createElement('picture')
+      const source = document.createElement('source')
+      source.dataset.srcset = ''
+      const img = makeLazyImg({ loading: 'eager' })
+      picture.append(source, img)
+      document.body.append(picture)
+      img.src = createImageUrl({ delay: '100' })
+
+      await new Promise<void>(resolve => lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      }))
+    }, 2000)
   })
 
   describe('re-run', () => {
@@ -786,3 +878,12 @@ describe('autoSizes resize tracking', () => {
     expect(img.sizes).toBe('900px')
   })
 })
+
+async function settleSource(image: HTMLImageElement, src: string): Promise<void> {
+  document.body.append(image)
+  await new Promise((resolve) => {
+    image.addEventListener('load', resolve, { once: true })
+    image.addEventListener('error', resolve, { once: true })
+    image.src = src
+  })
+}

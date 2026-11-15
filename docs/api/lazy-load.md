@@ -12,6 +12,8 @@ An image marked `loading="lazy"` loads as it nears the viewport. Every other mat
 
 Call `lazyLoad()` again after inserting images into the DOM to process the new ones. A call after the cleanup of an earlier one picks up the images that have not loaded yet, so a framework component can run `lazyLoad` on every mount or source change.
 
+Pass `lazyLoad` an image with its own `src` or `srcset` and no `data-src` or `data-srcset` – the default selector skips it – and it keeps the sources and calls `onImageLoad` or `onImageError` once they settle. An image that loaded or failed before the call, for example before hydration, gets its callback too, unless an earlier call or `reportImageOutcome` already reported the same sources.
+
 ## Type Declarations
 
 <<< @/../packages/unlazy/src/types.ts#UnLazyLoadOptions{ts}

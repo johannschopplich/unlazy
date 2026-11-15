@@ -86,6 +86,7 @@ These changes need no edit. Drop a workaround if you wrote one.
 - Eager images and crawlers no longer get a hash placeholder, since the real image would replace it before it is painted. A `data-blurhash` or `data-thumbhash` on an eager image does nothing.
 - With `loading="eager"` and without `autoSizes`, `UnLazyImage` renders the real `src`, `srcset`, and `sources` and no placeholder. For the LCP image, pass `sizes` instead of `autoSizes` – see [The Eager Path](/guide/core-web-vitals#the-eager-path).
 - `onImageLoad` fires once the visible image has loaded the real source, not once the preload has.
+- `lazyLoad` now calls `onImageLoad` or `onImageError` for an image with its own `src` or `srcset` and no `data-src` or `data-srcset`, even when it settled before the call, and a failed one gets `data-error`. It no longer replaces their `src` with the hash placeholder or logs the missing-attribute error. Drop the `load` and `error` listeners you added for such an image, or its callback runs twice.
 - A failed image keeps its placeholder, in a `<picture>` too, and gets a `data-error` attribute until a later load succeeds – see [Style a Failed Image](/guide/usage#style-a-failed-image).
 - A changed `src`, `srcSet`, or `sources` loads the new image in every adapter.
 - `placeholderSize` is capped at `100`, so a larger value now decodes a 100-pixel BlurHash.

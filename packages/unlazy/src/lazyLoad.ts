@@ -15,6 +15,9 @@ const processedImages = new WeakSet<HTMLImageElement>()
 // A cleanup keeps the entry, so a re-run tells an image unlazy swapped from one
 // it never touched, even before its queued `load` fires.
 const swapStates = new WeakMap<HTMLImageElement, PendingSwap | 'settled'>()
+// The sources whose outcome was reported last, so a re-run on a settled image
+// stays silent, even after a resize selects another `srcset` candidate.
+const reportedSources = new WeakMap<HTMLImageElement, string>()
 const PRELOAD_ATTRIBUTES = [
   'referrerpolicy',
   'crossorigin',
@@ -77,27 +80,26 @@ export function lazyLoad<T extends HTMLImageElement>(
     // A re-run after a cleanup between the swap and the visible outcome waits
     // for that outcome again.
     if (!isSwapPending && typeof swapStates.get(image) === 'object') {
-      processedImages.add(image)
-      cleanups.add(() => processedImages.delete(image))
+      cleanups.add(markProcessed(image))
       cleanups.add(listenForSwapOutcome(image, { onImageLoad, onImageError }))
       continue
     }
 
-    // Bail before the hash decode if there is nothing to swap in, so an image
-    // that already has a source keeps it.
+    // An image with nothing to swap in keeps its own sources, skipping the hash decode.
     if (!isSwapPending) {
-      if (
-        !image.hasAttribute('src') && !image.hasAttribute('srcset')
+      if (!image.hasAttribute('src') && !image.hasAttribute('srcset')) {
         // @ts-expect-error: Build-time variable.
-        && (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
-      ) {
-        console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
+        if (typeof __UNLAZY_LOGGING__ === 'undefined' || __UNLAZY_LOGGING__)
+          console.error('[unlazy] Missing `data-src` or `data-srcset` attribute', image)
+        continue
       }
+
+      cleanups.add(markProcessed(image))
+      cleanups.add(listenForOwnSourceOutcome(image, { onImageLoad, onImageError }))
       continue
     }
 
-    processedImages.add(image)
-    cleanups.add(() => processedImages.delete(image))
+    cleanups.add(markProcessed(image))
 
     // Swap immediately for eager images (above-the-fold) and crawlers. A hash
     // placeholder would be replaced in the same task, before it is painted.
@@ -289,6 +291,7 @@ export function reportImageOutcome(
   event: Event,
   { onImageLoad, onImageError }: TriggerLoadOptions = {},
 ): void {
+  reportedSources.set(image, getSourcesKey(image))
   if (event.type === 'error') {
     image.setAttribute('data-error', '')
     onImageError?.(image, event)
@@ -447,6 +450,43 @@ function loadImage(
   }
 }
 
+function markProcessed(image: HTMLImageElement): () => void {
+  processedImages.add(image)
+  return () => processedImages.delete(image)
+}
+
+function listenForOwnSourceOutcome(image: HTMLImageElement, callbacks: TriggerLoadOptions): () => void {
+  if (image.complete) {
+    if (reportedSources.get(image) === getSourcesKey(image))
+      return noop
+
+    // Firefox reports a `naturalWidth` of 0 for an SVG without an intrinsic
+    // size, so a decode tells a loaded image from a broken one.
+    const source = image.currentSrc
+    const outcomeTypePromise = image.naturalWidth > 0
+      ? Promise.resolve('load')
+      : image.decode().then(() => 'load', () => 'error')
+    let isStopped = false
+    void outcomeTypePromise.then((type) => {
+      if (!isStopped && image.currentSrc === source)
+        reportImageOutcome(image, new Event(type), callbacks)
+    })
+    return () => {
+      isStopped = true
+    }
+  }
+
+  const listeners = new AbortController()
+
+  const outcomeHandler = (event: Event) => {
+    listeners.abort()
+    reportImageOutcome(image, event, callbacks)
+  }
+  image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
+  image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
+  return () => listeners.abort()
+}
+
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): void {
   if (element.dataset.sizes !== 'auto')
     return
@@ -463,7 +503,20 @@ function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): vo
 
 function hasPendingSource(image: HTMLImageElement): boolean {
   return hasOwnPendingSource(image)
-    || (isDescendantOfPicture(image) && Boolean(image.parentElement.querySelector('source[data-srcset]')))
+    || (isDescendantOfPicture(image) && Boolean(image.parentElement.querySelector('source[data-srcset]:not([data-srcset=""])')))
+}
+
+function getSourcesKey(image: HTMLImageElement): string {
+  const sources = isDescendantOfPicture(image)
+    ? [
+        ...image.parentElement.getElementsByTagName('source'),
+      ].map(source => source.srcset)
+    : []
+  return JSON.stringify([
+    image.getAttribute('src'),
+    image.getAttribute('srcset'),
+    ...sources,
+  ])
 }
 
 function hasOwnPendingSource(image: HTMLImageElement): boolean {
