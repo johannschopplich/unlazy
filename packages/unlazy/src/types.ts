@@ -53,6 +53,16 @@ export interface UnLazyLoadOptions extends TriggerLoadOptions {
    * @default false
    */
   preload?: boolean
+
+  /**
+   * Whether to hold the image on its hash placeholder and load nothing, even
+   * with `preload` set. A later call without `hold` loads it. An image that has
+   * loaded, or that has its own `src` or `srcset` and no `data-src` or
+   * `data-srcset`, keeps its sources. A held image reports no outcome.
+   *
+   * @default false
+   */
+  hold?: boolean
 }
 // #endregion UnLazyLoadOptions
 
@@ -185,9 +195,7 @@ export interface UnLazyImageProps {
    * @default 'lazy'
    */
   loading?: 'eager' | 'lazy'
-}
 
-export interface ResolveImageAttributesOptions extends UnLazyImageProps {
   /**
    * Whether the image may load. `false` holds it on its placeholder until this
    * turns `true` and defaults `loading` to `'eager'`, unless `preload` is set.

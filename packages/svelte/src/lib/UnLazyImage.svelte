@@ -15,6 +15,7 @@
     placeholderSize,
     preload,
     loading,
+    lazyLoad: isLoadAllowed,
     onImageLoad,
     onImageError,
     ...restProps
@@ -45,6 +46,7 @@
     placeholderSize,
     preload,
     loading: loading ?? undefined,
+    lazyLoad: isLoadAllowed,
   }))
   // `attributes` changes with every new `sources` array, `loadKey` only with its content.
   const loadKey = $derived(attributes.loadKey)

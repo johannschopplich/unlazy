@@ -28,6 +28,7 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
     placeholderSize,
     preload,
     loading,
+    lazyLoad: _lazyLoad,
     onImageLoad,
     onImageError,
     ...rest

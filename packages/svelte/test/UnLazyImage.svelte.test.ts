@@ -35,6 +35,29 @@ it('loads the new image after a src change', async () => {
   expect(screen.container.querySelector('img')!.currentSrc).toBe(nextSrc)
 })
 
+it('defers loading behind the blurhash placeholder until lazyLoad is true', async () => {
+  const src = createImageUrl()
+  const onImageLoad = vi.fn()
+  const props = $state<ComponentProps<typeof UnLazyImage>>({
+    src,
+    blurhash: BLURHASH,
+    lazyLoad: false,
+    onImageLoad,
+  })
+  const screen = await render(UnLazyImage, props)
+  const image = screen.container.querySelector('img')!
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  expect(image.getAttribute('src')).toMatch(/^data:image\/png/)
+  expect(await fetchImageRequests(src)).toEqual([])
+
+  props.lazyLoad = true
+  flushSync()
+
+  await expect.poll(() => onImageLoad.mock.calls.length).toBe(1)
+  expect(image.currentSrc).toBe(src)
+})
+
 it('keeps the placeholder when a parent passes a new onImageLoad and sources', async () => {
   const src = createImageUrl({ delay: '300' })
   const onImageLoad = vi.fn()

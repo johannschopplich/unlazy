@@ -1,4 +1,4 @@
-import type { ResolveImageAttributesOptions, UnLazyImageAttributes } from './types'
+import type { UnLazyImageAttributes, UnLazyImageProps } from './types'
 
 export function resolveImageAttributes(
   {
@@ -13,7 +13,7 @@ export function resolveImageAttributes(
     preload = false,
     loading,
     lazyLoad = true,
-  }: ResolveImageAttributesOptions,
+  }: UnLazyImageProps,
 ): UnLazyImageAttributes {
   // An eager image without automatic sizes needs no script to load, so it
   // renders its real sources for the browser's preload scanner.
@@ -50,6 +50,7 @@ export function resolveImageAttributes(
     placeholderSize,
     updateSizesOnResize: autoSizes,
     preload,
+    hold: isDeferred,
   }
 
   return {

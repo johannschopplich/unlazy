@@ -31,7 +31,7 @@ unlazy includes [BlurHash](/guide/placeholders#blurhash) and [ThumbHash](/guide/
 The bundler then removes the hash-related code paths in `lazyLoad()` and both decoding libraries from the final bundle.
 
 ::: warning
-This flag only removes hash decoding from `lazyLoad`. `createPlaceholderFromHash`, `unlazy/blurhash`, and `unlazy/thumbhash` still bundle their decoder when you import them. `@unlazy/vue` and `@unlazy/nuxt` import `createPlaceholderFromHash`, so their apps keep both decoders. In a Nuxt app, the flag drops only the placeholders of lazy-loaded images with `ssr: false`.
+This flag only removes hash decoding from `lazyLoad`. `createPlaceholderFromHash`, `unlazy/blurhash`, and `unlazy/thumbhash` still bundle their decoder when you import them. `@unlazy/nuxt` imports `createPlaceholderFromHash` to decode on the server, so Nuxt apps keep both decoders. In a Nuxt app, the flag drops only the placeholders of images with `ssr: false`.
 :::
 
 ## Disable Client Logging

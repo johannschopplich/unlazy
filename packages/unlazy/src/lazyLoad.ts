@@ -45,6 +45,7 @@ export function lazyLoad<T extends HTMLImageElement>(
     placeholderSize = DEFAULT_PLACEHOLDER_SIZE,
     updateSizesOnResize = false,
     preload = false,
+    hold = false,
     onImageLoad,
     onImageError,
   }: UnLazyLoadOptions = {},
@@ -62,6 +63,13 @@ export function lazyLoad<T extends HTMLImageElement>(
     // re-invoke `lazyLoad` after dynamic DOM insertions.
     if (processedImages.has(image))
       continue
+
+    if (hold) {
+      const shouldKeepSources = !hasPendingSource(image) && (image.hasAttribute('src') || image.hasAttribute('srcset'))
+      if (!shouldKeepSources)
+        applyHashPlaceholder(image, { hash, hashType, size: placeholderSize })
+      continue
+    }
 
     const isEager = image.loading !== 'lazy'
 
@@ -121,23 +129,7 @@ export function lazyLoad<T extends HTMLImageElement>(
       continue
     }
 
-    // Generate the blurry placeholder from a Blurhash or ThumbHash string if applicable.
-    if (
-      // @ts-expect-error: Build-time variable.
-      (typeof __UNLAZY_HASH_DECODING__ === 'undefined' || __UNLAZY_HASH_DECODING__)
-      && hash
-    ) {
-      const placeholder = createPlaceholderFromHash({
-        image,
-        hash: typeof hash === 'string'
-          ? hash
-          : undefined,
-        hashType,
-        size: placeholderSize,
-      })
-      if (placeholder)
-        image.src = withUniqueFragment(placeholder)
-    }
+    applyHashPlaceholder(image, { hash, hashType, size: placeholderSize })
 
     if (preload) {
       cleanups.add(triggerLoad(image, { onImageLoad, onImageError }))
@@ -485,6 +477,26 @@ function listenForOwnSourceOutcome(image: HTMLImageElement, callbacks: TriggerLo
   image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
   image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
   return () => listeners.abort()
+}
+
+function applyHashPlaceholder(
+  image: HTMLImageElement,
+  { hash, hashType, size }: Pick<UnLazyLoadOptions, 'hash' | 'hashType'> & { size: number },
+): void {
+  // @ts-expect-error: Build-time variable.
+  if ((typeof __UNLAZY_HASH_DECODING__ !== 'undefined' && !__UNLAZY_HASH_DECODING__) || !hash)
+    return
+
+  const placeholder = createPlaceholderFromHash({
+    image,
+    hash: typeof hash === 'string'
+      ? hash
+      : undefined,
+    hashType,
+    size,
+  })
+  if (placeholder)
+    image.src = withUniqueFragment(placeholder)
 }
 
 function updateSizesAttribute(element: HTMLImageElement | HTMLSourceElement): void {

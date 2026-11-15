@@ -28,6 +28,7 @@ Every `UnLazyImage` component takes these props, typed as `UnLazyImageProps` in 
 | `placeholderSize` | Number | `32` | The size of the longer edge for BlurHash decoding, capped at `100`. Ignored for ThumbHash. |
 | `preload` | Boolean | `false` | Whether the image should load right away instead of when it nears the viewport, for example the next slide of a slider. The hash placeholder stays until the image has loaded. |
 | `loading` | String | `'lazy'` | Loading strategy for the image (`'lazy'` or `'eager'`). `'eager'` without `autoSizes` renders the real sources – see [The Eager Path](/guide/core-web-vitals#the-eager-path). |
+| `lazyLoad` | Boolean | `true` | Whether the image may load. Set to `false` to hold it on its placeholder until it turns `true`; `loading` then defaults to `'eager'`, and an eager image renders no real sources. `preload` takes precedence: with it set, the image loads and `loading` defaults to `'lazy'`. |
 
 ## `UnLazySource`
 

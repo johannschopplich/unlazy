@@ -24,6 +24,7 @@ export function UnLazyImage(props: Props) {
       'placeholderSize',
       'preload',
       'loading',
+      'lazyLoad',
       'onImageLoad',
       'onImageError',
     ],

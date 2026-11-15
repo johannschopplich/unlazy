@@ -60,6 +60,11 @@ describe('resolveImageAttributes', () => {
     expect(resolveImageAttributes({ lazyLoad: false, preload: true }).image.loading).toBe('lazy')
   })
 
+  it('holds an image with lazyLoad set to false unless preload is set', () => {
+    expect(resolveImageAttributes({ lazyLoad: false }).lazyLoadOptions.hold).toBe(true)
+    expect(resolveImageAttributes({ lazyLoad: false, preload: true }).lazyLoadOptions.hold).toBe(false)
+  })
+
   it('prefers a ThumbHash over a BlurHash', () => {
     expect(resolveImageAttributes({ blurhash: 'blur', thumbhash: 'thumb' }).lazyLoadOptions).toMatchObject({ hash: 'thumb', hashType: 'thumbhash' })
     expect(resolveImageAttributes({ blurhash: 'blur' }).lazyLoadOptions).toMatchObject({ hash: 'blur', hashType: 'blurhash' })
@@ -72,6 +77,7 @@ describe('resolveImageAttributes', () => {
       placeholderSize: 64,
       updateSizesOnResize: true,
       preload: true,
+      hold: false,
     })
   })
 

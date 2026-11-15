@@ -57,12 +57,11 @@ The `UnLazyImage` component is [globally available](https://nuxt.com/docs/guide/
 
 ### Props
 
-`UnLazyImage` takes the [props every integration shares](/integrations/#unlazyimage-props) and three of its own:
+`UnLazyImage` takes the [props every integration shares](/integrations/#unlazyimage-props) and two of its own:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `placeholderRatio` | Number | - | Aspect ratio (width / height) of a BlurHash decoded on the server. Defaults to the ratio of the `width` and `height` attributes when both are positive numbers, otherwise square. |
-| `lazyLoad` | Boolean | `true` | Whether the image should be lazy-loaded. Set to `false` to defer loading until changed to `true`. While it is `false` and `preload` is not set, `loading` defaults to `'eager'`. `preload` takes precedence. |
 | `ssr` | Boolean | Module option `ssr` | Whether hashes should be decoded on the server. Overrides the module option. |
 
 The component also accepts all standard `<img>` HTML attributes via Nuxt's attribute inheritance.

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ResolveImageAttributesOptions } from 'unlazy'
+import type { UnLazyImageProps } from 'unlazy'
 import type { ModuleOptions } from '../../module'
 import { UnLazyImage as VueUnLazyImage } from '@unlazy/vue/components'
 import { createPlaceholderFromHash, resolveImageAttributes } from 'unlazy'
@@ -8,7 +8,7 @@ import { computed, toRaw, useAttrs, useId, useRuntimeConfig } from '#imports'
 const props = withDefaults(
   // The listeners stay out of the runtime props, so they fall through to the
   // Vue component, which declares them as events.
-  defineProps<ResolveImageAttributesOptions & /* @vue-ignore */ Pick<InstanceType<typeof VueUnLazyImage>['$props'], 'onImageLoad' | 'onImageError'> & {
+  defineProps<UnLazyImageProps & /* @vue-ignore */ Pick<InstanceType<typeof VueUnLazyImage>['$props'], 'onImageLoad' | 'onImageError'> & {
     /** Aspect ratio (width / height) of the decoded BlurHash image. Only applies to a BlurHash decoded on the server, where it defaults to the ratio of the `width` and `height` attributes when both are positive numbers; a BlurHash decoded in the browser takes the ratio of the rendered image. */
     placeholderRatio?: number
     /** Whether the ThumbHash or BlurHash should be decoded on the server. Overrides the global module configuration if set. */

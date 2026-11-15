@@ -27,5 +27,4 @@
 | `CreatePlaceholderFromHashOptions` | `unlazy` | Options for the `createPlaceholderFromHash` function |
 | [`UnLazySource`](/integrations/#unlazysource) | `unlazy` and every adapter package | One `<source>` of the `sources` prop |
 | [`UnLazyImageProps`](/integrations/#unlazyimage-props) | `unlazy` | Props every `UnLazyImage` component shares |
-| `ResolveImageAttributesOptions` | `unlazy` | Options for the `resolveImageAttributes` function: `UnLazyImageProps` plus the `lazyLoad` prop of the Vue and Nuxt components |
 | `UnLazyImageAttributes` | `unlazy` | Return type of `resolveImageAttributes` |

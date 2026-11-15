@@ -93,7 +93,7 @@ These changes need no edit. Drop a workaround if you wrote one.
 - A BlurHash decodes square unless the image's `width` and `height` are both known. Nuxt's server-decoded BlurHash is square without both attributes and without `placeholderRatio`.
 - React: the package carries the `'use client'` directive. Drop a `'use client'` wrapper you added around `UnLazyImage`.
 - Solid: the `solid` export condition lets SolidStart render `UnLazyImage` on the server. Drop a `clientOnly` wrapper you added for it.
-- Nuxt: `placeholderRatio` defaults to the ratio of the `width` and `height` attributes, so drop a `placeholder-ratio` that repeats them. `@unlazy/nuxt` no longer defines `__UNLAZY_HASH_DECODING__` as `true`, so a `false` define of yours now drops the hash placeholder of lazy-loaded images with `ssr: false`.
+- Nuxt: `placeholderRatio` defaults to the ratio of the `width` and `height` attributes, so drop a `placeholder-ratio` that repeats them. `@unlazy/nuxt` no longer defines `__UNLAZY_HASH_DECODING__` as `true`, so a `false` define of yours now drops the hash placeholder of images with `ssr: false`, lazy-loaded or held by `lazy-load="false"`.
 - The missing-attribute error, the hash decoder failure error, and the LCP warning appear only where your bundler resolves the `development` export condition – see [Disable Client Logging](/advanced/build-flags#disable-client-logging). The CDN builds log nothing. Drop a `__UNLAZY_LOGGING__` define of `false` that only kept the logs out of production.
 
 ## Migrating From v1 to v2

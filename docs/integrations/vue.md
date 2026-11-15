@@ -59,11 +59,7 @@ Once `@unlazy/vue` is imported, Vue's `GlobalComponents` type knows `UnLazyImage
 
 ### Props
 
-`UnLazyImage` takes the [props every integration shares](/integrations/#unlazyimage-props) and `lazyLoad`:
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `lazyLoad` | Boolean | `true` | Whether the image should be lazy-loaded. Set to `false` to defer loading until changed to `true`. While it is `false` and `preload` is not set, `loading` defaults to `'eager'`. `preload` takes precedence. |
+`UnLazyImage` takes the [props every integration shares](/integrations/#unlazyimage-props).
 
 The component also accepts all standard `<img>` HTML attributes via Vue's attribute inheritance.
 

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { ResolveImageAttributesOptions } from 'unlazy'
-import { createPlaceholderFromHash, lazyLoad as lazyLoadImage, resolveImageAttributes } from 'unlazy'
+import type { UnLazyImageProps } from 'unlazy'
+import { lazyLoad as lazyLoadImage, resolveImageAttributes } from 'unlazy'
 import { computed, ref, watch } from 'vue'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = withDefaults(defineProps<ResolveImageAttributesOptions>(), {
+const props = withDefaults(defineProps<UnLazyImageProps>(), {
   lazyLoad: true,
 })
 
@@ -30,20 +30,7 @@ watch([target, loadKey], ([image], _, onCleanup) => {
   if (!image)
     return
 
-  const { lazyLoadOptions } = attributes.value
-  if (!props.lazyLoad && !props.preload) {
-    const placeholder = createPlaceholderFromHash({
-      image,
-      hash: lazyLoadOptions.hash,
-      hashType: lazyLoadOptions.hashType,
-      size: lazyLoadOptions.placeholderSize,
-    })
-    if (placeholder)
-      image.src = placeholder
-    return
-  }
-
-  onCleanup(lazyLoadImage(image, { ...lazyLoadOptions, ...outcomeCallbacks }))
+  onCleanup(lazyLoadImage(image, { ...attributes.value.lazyLoadOptions, ...outcomeCallbacks }))
 }, { flush: 'post', immediate: true })
 </script>
 

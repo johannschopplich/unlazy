@@ -24,6 +24,23 @@ it('loads the image and calls onImageLoad once', async () => {
   expect(container.querySelector('img')!.currentSrc).toBe(src)
 })
 
+it('defers loading behind the blurhash placeholder until lazyLoad is true', async () => {
+  const src = createImageUrl()
+  const [lazyLoad, setLazyLoad] = createSignal(false)
+  const onImageLoad = vi.fn()
+  const container = mount(() => <UnLazyImage src={src} blurhash={BLURHASH} lazyLoad={lazyLoad()} onImageLoad={onImageLoad} />)
+  const image = container.querySelector('img')!
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  expect(image.getAttribute('src')).toMatch(/^data:image\/png/)
+  expect(await fetchImageRequests(src)).toEqual([])
+
+  setLazyLoad(true)
+
+  await expect.poll(() => onImageLoad.mock.calls.length).toBe(1)
+  expect(image.currentSrc).toBe(src)
+})
+
 it('loads the new image after a src change', async () => {
   const nextSrc = createImageUrl()
   const [src, setSrc] = createSignal(createImageUrl())

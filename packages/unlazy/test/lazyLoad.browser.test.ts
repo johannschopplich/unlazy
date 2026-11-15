@@ -378,6 +378,43 @@ describe('lazyLoad', () => {
     })
   })
 
+  it('decodes the hash placeholder of an image with hold and loads nothing', async () => {
+    const src = createImageUrl()
+    const img = makeLazyImg({ loading: 'eager', dataSrc: src, dataBlurhash: BLURHASH })
+    document.body.append(img)
+
+    lazyLoad(img, { hold: true })
+    await new Promise(resolve => setTimeout(resolve, 100))
+
+    expect(img.getAttribute('src')).toMatch(/^data:image\/png/)
+    expect(await fetchImageRequests(src)).toEqual([])
+  })
+
+  it('decodes the hash placeholder of an image without sources with hold', () => {
+    const img = makeLazyImg({ loading: 'eager', dataBlurhash: BLURHASH })
+
+    lazyLoad(img, { hold: true })
+
+    expect(img.getAttribute('src')).toMatch(/^data:image\/png/)
+  })
+
+  it('keeps the loaded source of an image called again with hold', async () => {
+    const url = createImageUrl()
+    const img = makeLazyImg({ loading: 'eager', dataSrc: url })
+    document.body.append(img)
+
+    let cleanup!: () => void
+    await new Promise<void>((resolve) => {
+      cleanup = lazyLoad(img, {
+        onImageLoad: () => resolve(),
+      })
+    })
+    cleanup()
+    lazyLoad(img, { hold: true, hash: BLURHASH })
+
+    expect(img.src).toBe(url)
+  }, 2000)
+
   describe('real sources', () => {
     it('invokes onImageLoad for an image that loaded its src before the call', async () => {
       const img = makeLazyImg({ loading: 'eager' })

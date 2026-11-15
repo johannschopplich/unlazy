@@ -136,6 +136,22 @@ it('calls onImageLoad of an eager image that loaded before hydration', async () 
   root.unmount()
 })
 
+it('defers loading behind the blurhash placeholder until lazyLoad is true', async () => {
+  const src = createImageUrl()
+  const onImageLoad = vi.fn()
+  const screen = await render(<UnLazyImage src={src} blurhash={BLURHASH} lazyLoad={false} onImageLoad={onImageLoad} />)
+  const image = screen.container.querySelector('img')!
+  await new Promise(resolve => setTimeout(resolve, 100))
+
+  expect(image.getAttribute('src')).toMatch(/^data:image\/png/)
+  expect(await fetchImageRequests(src)).toEqual([])
+
+  await screen.rerender(<UnLazyImage src={src} blurhash={BLURHASH} lazyLoad onImageLoad={onImageLoad} />)
+
+  await expect.poll(() => onImageLoad.mock.calls.length).toBe(1)
+  expect(image.currentSrc).toBe(src)
+})
+
 it('forwards a ref to the image and still loads it', async () => {
   const ref = createRef<HTMLImageElement>()
   const onImageLoad = vi.fn()

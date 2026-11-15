@@ -29,6 +29,7 @@ Pass `lazyLoad` an image with its own `src` or `srcset` and no `data-src` or `da
 | `placeholderSize` | `number` | `32` | The size of the longer edge for BlurHash decoding, capped at `100`. Ignored for ThumbHash. |
 | `updateSizesOnResize` | `boolean` | `false` | Re-resolve `data-sizes="auto"` when the rendered size of the image changes – applies to both `<img>` and `<source>` siblings inside a `<picture>`. Internally delegates to [`autoSizes`](/api/auto-sizes); the returned cleanup function disconnects every observer. |
 | `preload` | `boolean` | `false` | Load lazy images right away instead of when they near the viewport. The hash placeholder is decoded first and stays until the image has loaded. Internally delegates to [`triggerLoad`](/api/trigger-load). |
+| `hold` | `boolean` | `false` | Hold the image on its hash placeholder and load nothing, even with `preload` set. A later call without `hold` loads it. An image that has loaded, or that has its own `src` or `srcset` and no `data-src` or `data-srcset`, keeps its sources. A held image reports no outcome. |
 | `onImageLoad` | `(image: HTMLImageElement) => void` | - | Callback invoked once the visible image has loaded its real source. |
 | `onImageError` | `(image: HTMLImageElement, error: Event) => void` | - | Callback invoked when an image fails to load. A lazy image keeps its placeholder, and the image gets a [`data-error`](/guide/usage#style-a-failed-image) attribute. |
 
