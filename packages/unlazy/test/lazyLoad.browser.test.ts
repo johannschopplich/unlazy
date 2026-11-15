@@ -517,6 +517,27 @@ describe('lazyLoad', () => {
       expect(img.currentSrc).toBe(url)
     }, 2000)
 
+    it('invokes onImageLoad for a lazy image called again after cleanup between its swap and its load', async () => {
+      const url = createImageUrl({ delay: '100' })
+      const img = makeLazyImg({ dataSrc: url })
+      document.body.append(img)
+
+      await new Promise<void>((resolve) => {
+        const cleanup = lazyLoad(img)
+        new MutationObserver((_, observer) => {
+          observer.disconnect()
+          cleanup()
+          lazyLoad(img, {
+            onImageLoad: () => resolve(),
+          })
+        }).observe(img, {
+          attributeFilter: ['data-src'],
+        })
+      })
+
+      expect(img.currentSrc).toBe(url)
+    }, 2000)
+
     it('invokes onImageLoad for an eager image with a cached data-src when called again after cleanup in the same task', async () => {
       const url = createImageUrl()
       const loadedImage = new Image()

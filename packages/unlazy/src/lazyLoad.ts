@@ -5,10 +5,16 @@ import { installLcpWarning } from './lcpWarning'
 import { createPngDataUri as createPngDataUriFromThumbHash } from './thumbhash'
 import { debounce, isCrawler, toElementArray } from './utils'
 
+interface PendingSwap {
+  settleListeners: AbortController
+  /** Reports the outcome to the callbacks of the `lazyLoad` call that is not cleaned up yet. */
+  reportOutcome?: (event: Event) => void
+}
+
 const processedImages = new WeakSet<HTMLImageElement>()
 // A cleanup keeps the entry, so a re-run tells an image unlazy swapped from one
 // it never touched, even before its queued `load` fires.
-const swapStates = new WeakMap<HTMLImageElement, 'pending' | 'settled'>()
+const swapStates = new WeakMap<HTMLImageElement, PendingSwap | 'settled'>()
 const PRELOAD_ATTRIBUTES = [
   'referrerpolicy',
   'crossorigin',
@@ -67,11 +73,19 @@ export function lazyLoad<T extends HTMLImageElement>(
 
     const shouldSwapEagerly = isEager || isCrawler
     const isSwapPending = hasPendingSource(image)
-    const isLoadingEagerly = shouldSwapEagerly && !isSwapPending && swapStates.get(image) === 'pending'
+
+    // A re-run after a cleanup between the swap and the visible outcome waits
+    // for that outcome again.
+    if (!isSwapPending && typeof swapStates.get(image) === 'object') {
+      processedImages.add(image)
+      cleanups.add(() => processedImages.delete(image))
+      cleanups.add(listenForSwapOutcome(image, { onImageLoad, onImageError }))
+      continue
+    }
 
     // Bail before the hash decode if there is nothing to swap in, so an image
     // that already has a source keeps it.
-    if (!isSwapPending && !isLoadingEagerly) {
+    if (!isSwapPending) {
       if (
         !image.hasAttribute('src') && !image.hasAttribute('srcset')
         // @ts-expect-error: Build-time variable.
@@ -85,23 +99,11 @@ export function lazyLoad<T extends HTMLImageElement>(
     processedImages.add(image)
     cleanups.add(() => processedImages.delete(image))
 
-    const listeners = new AbortController()
-    cleanups.add(() => listeners.abort())
-
     // Swap immediately for eager images (above-the-fold) and crawlers. A hash
     // placeholder would be replaced in the same task, before it is painted.
     if (shouldSwapEagerly) {
-      // Swapping first runs the settle listener ahead of the outcome listener,
-      // so a re-run from a callback, or from a microtask it queues, finds the
-      // image settled.
-      if (isSwapPending)
-        swapSources(image)
-      const outcomeHandler = (event: Event) => {
-        listeners.abort()
-        reportImageOutcome(image, event, { onImageLoad, onImageError })
-      }
-      image.addEventListener('load', outcomeHandler, { signal: listeners.signal })
-      image.addEventListener('error', outcomeHandler, { signal: listeners.signal })
+      swapSources(image)
+      cleanups.add(listenForSwapOutcome(image, { onImageLoad, onImageError }))
       continue
     }
 
@@ -152,6 +154,8 @@ export function lazyLoad<T extends HTMLImageElement>(
     }
 
     // Otherwise, load the image when it enters the viewport.
+    const listeners = new AbortController()
+    cleanups.add(() => listeners.abort())
     image.addEventListener('load', () => {
       listeners.abort()
       cleanups.add(loadImage(image, { onImageLoad, onImageError }))
@@ -394,48 +398,28 @@ function loadImage(
   }
 
   const preloadListeners = new AbortController()
-  const visibleListeners = new AbortController()
+  let stopListeningForOutcome = noop
 
-  // The swapped-in source loads on the visible image after the preload. Writing
-  // `sizes` on the loaded placeholder fires `load` again, so a `load` that
-  // still shows the placeholder only counts if the preload fetched that URL.
-  let placeholderSource = ''
-  const visibleOutcomeHandler = (event: Event) => {
-    if (
-      event.type === 'load'
-      && image.currentSrc === placeholderSource
-      && image.currentSrc !== temporaryImage.currentSrc
-    ) {
-      return
-    }
-    visibleListeners.abort()
-    reportImageOutcome(image, event, { onImageLoad, onImageError })
-  }
   const preloadLoadHandler = () => {
     // A detached `<picture>` selects its source again on a viewport change in
     // WebKit and Firefox, and a later error must not fail the visible image.
     preloadListeners.abort()
-    placeholderSource = image.currentSrc
+    const placeholderSource = image.currentSrc
     // A lazy image defers the swapped-in source until it nears the viewport,
     // even once the preload has fetched it, in WebKit and Firefox. Switching
     // only now keeps the image lazy for a `lazyLoad` call after an early cleanup.
     if (shouldLoadEagerly)
       image.loading = 'eager'
     updateSizesAttribute(image)
-    // Swapping first runs the settle listener ahead of the outcome listener,
-    // so a re-run from a callback, or from a microtask it queues, finds the
-    // image settled.
-    swapSources(image)
-    image.addEventListener('load', visibleOutcomeHandler, { signal: visibleListeners.signal })
-    image.addEventListener('error', visibleOutcomeHandler, { signal: visibleListeners.signal })
+    swapSources(image, { placeholderSource, preloadedSource: temporaryImage.currentSrc })
+    stopListeningForOutcome = listenForSwapOutcome(image, { onImageLoad, onImageError })
   }
   const preloadErrorHandler = (event: Event) => {
     preloadListeners.abort()
+    // Set before the dispatch, so an `error` listener on the visible `<img>` sees it.
     image.setAttribute('data-error', '')
-    // Dispatch the synthetic error on the visible `<img>` first so the public
-    // contract (native error fires) is fulfilled before user code runs.
     image.dispatchEvent(new Event('error'))
-    onImageError?.(image, event)
+    reportImageOutcome(image, event, { onImageLoad, onImageError })
   }
 
   temporaryImage.addEventListener('load', preloadLoadHandler, { signal: preloadListeners.signal })
@@ -457,7 +441,7 @@ function loadImage(
 
   return () => {
     preloadListeners.abort()
-    visibleListeners.abort()
+    stopListeningForOutcome()
     // Empty `src` aborts the pending fetch per HTML "update the image data".
     temporaryImage.src = ''
   }
@@ -486,22 +470,57 @@ function hasOwnPendingSource(image: HTMLImageElement): boolean {
   return Boolean(image.dataset.src || image.dataset.srcset)
 }
 
-function swapSources(image: HTMLImageElement): void {
+function swapSources(
+  image: HTMLImageElement,
+  { placeholderSource, preloadedSource }: { placeholderSource?: string, preloadedSource?: string } = {},
+): void {
   const hasSwappedPictureSources = swapPictureSources(image)
   const hasSwappedSrcset = swapDataAttribute(image, 'srcset')
   const hasSwappedSrc = swapDataAttribute(image, 'src')
   if (!hasSwappedPictureSources && !hasSwappedSrcset && !hasSwappedSrc)
     return
 
-  // Tracked apart from the callback listeners, which a cleanup detaches.
-  swapStates.set(image, 'pending')
-  const settleListeners = new AbortController()
-  const settleHandler = () => {
-    settleListeners.abort()
-    swapStates.set(image, 'settled')
+  const previousSwap = swapStates.get(image)
+  if (typeof previousSwap === 'object')
+    previousSwap.settleListeners.abort()
+
+  // A cleanup detaches only `reportOutcome`, so the state settles either way.
+  // It settles before reporting, so a re-run from a callback, or from a
+  // microtask it queues, finds the image settled.
+  const swap: PendingSwap = {
+    settleListeners: new AbortController(),
   }
-  image.addEventListener('load', settleHandler, { signal: settleListeners.signal })
-  image.addEventListener('error', settleHandler, { signal: settleListeners.signal })
+  swapStates.set(image, swap)
+  const settleHandler = (event: Event) => {
+    // Writing `sizes` on a loaded placeholder fires `load` again, so a `load`
+    // that still shows the placeholder only counts if the preload fetched that URL.
+    if (
+      event.type === 'load'
+      && placeholderSource !== undefined
+      && image.currentSrc === placeholderSource
+      && image.currentSrc !== preloadedSource
+    ) {
+      return
+    }
+    swap.settleListeners.abort()
+    swapStates.set(image, 'settled')
+    swap.reportOutcome?.(event)
+  }
+  image.addEventListener('load', settleHandler, { signal: swap.settleListeners.signal })
+  image.addEventListener('error', settleHandler, { signal: swap.settleListeners.signal })
+}
+
+function listenForSwapOutcome(image: HTMLImageElement, callbacks: TriggerLoadOptions): () => void {
+  const swap = swapStates.get(image)
+  if (typeof swap !== 'object')
+    return noop
+
+  const reportOutcome = (event: Event) => reportImageOutcome(image, event, callbacks)
+  swap.reportOutcome = reportOutcome
+  return () => {
+    if (swap.reportOutcome === reportOutcome)
+      swap.reportOutcome = undefined
+  }
 }
 
 function swapDataAttribute(
