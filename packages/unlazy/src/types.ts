@@ -198,9 +198,6 @@ export interface ResolveImageAttributesOptions extends UnLazyImageProps {
 }
 
 export interface UnLazyImageAttributes {
-  /** Whether the attributes carry the real sources, so the caller skips `lazyLoad` and calls `reportImageOutcome`. */
-  hasRealSources: boolean
-
   /** Attributes of the `<img>`, under their HTML names. */
   image: {
     'src'?: string
@@ -223,12 +220,11 @@ export interface UnLazyImageAttributes {
     'data-sizes'?: string
   }[]
 
-  /**
-   * Content of `sources`, for an effect to compare, since an inline array is a
-   * new array on every render.
-   */
-  sourcesKey: string
+  lazyLoadOptions: Omit<UnLazyLoadOptions, keyof TriggerLoadOptions | 'hash'> & { hash?: string }
 
-  hash?: string
-  hashType: 'blurhash' | 'thumbhash'
+  /**
+   * Content of the attributes and of `lazyLoadOptions`, for an effect to
+   * compare, since an inline `sources` array is a new array on every render.
+   */
+  loadKey: string
 }

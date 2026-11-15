@@ -2,7 +2,7 @@
 import type { ResolveImageAttributesOptions } from 'unlazy'
 import type { ModuleOptions } from '../../module'
 import { UnLazyImage as VueUnLazyImage } from '@unlazy/vue/components'
-import { createPlaceholderFromHash } from 'unlazy'
+import { createPlaceholderFromHash, resolveImageAttributes } from 'unlazy'
 import { computed, toRaw, useAttrs, useId, useRuntimeConfig } from '#imports'
 
 const props = withDefaults(
@@ -34,16 +34,16 @@ const decodedPlaceholder = computed(() => {
   void props.src
   void props.srcSet
   void props.sources
-  const { thumbhash, blurhash, placeholderSize, placeholderRatio, ssr } = toRaw(props)
-  const hash = thumbhash || blurhash
-  if (!(ssr ?? unlazy.ssr) || !hash)
+  const rawProps = toRaw(props)
+  const { hash, hashType } = resolveImageAttributes(rawProps).lazyLoadOptions
+  if (!(rawProps.ssr ?? unlazy.ssr) || !hash)
     return
 
   const placeholder = createPlaceholderFromHash({
     hash,
-    hashType: thumbhash ? 'thumbhash' : 'blurhash',
-    size: placeholderSize ?? unlazy.placeholderSize,
-    ratio: placeholderRatio ?? getAttributeRatio(attrs.width, attrs.height),
+    hashType,
+    size: rawProps.placeholderSize ?? unlazy.placeholderSize,
+    ratio: rawProps.placeholderRatio ?? getAttributeRatio(attrs.width, attrs.height),
   })
   // `lazyLoad` adds a unique fragment only to placeholders it generates. An
   // identical placeholder URL that has already loaded elsewhere on the page

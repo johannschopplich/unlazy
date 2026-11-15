@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ResolveImageAttributesOptions } from 'unlazy'
 import { createPlaceholderFromHash, lazyLoad as lazyLoadImage, resolveImageAttributes } from 'unlazy'
-import { computed, ref, watchPostEffect } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -22,46 +22,29 @@ const outcomeCallbacks = {
   onImageError: (image: HTMLImageElement, error: Event) => emit('imageError', image, error),
 }
 const attributes = computed(() => resolveImageAttributes(props))
-// The effect reads single fields, since `attributes` changes with every new
-// `sources` array.
-const hasRealSources = computed(() => attributes.value.hasRealSources)
-const sourcesKey = computed(() => attributes.value.sourcesKey)
-const hash = computed(() => attributes.value.hash)
-const hashType = computed(() => attributes.value.hashType)
+// `attributes` changes with every new `sources` array, `loadKey` only with its content.
+const loadKey = computed(() => attributes.value.loadKey)
 
 // Runs after the patch, so it reads the `data-*` attributes of the new props.
-watchPostEffect((onCleanup) => {
-  const image = target.value
+watch([target, loadKey], ([image], _, onCleanup) => {
   if (!image)
     return
 
-  // Track changes to image sources to trigger reactivity.
-  void hasRealSources.value
-  void props.src
-  void props.srcSet
-  void sourcesKey.value
-
+  const { lazyLoadOptions } = attributes.value
   if (!props.lazyLoad && !props.preload) {
     const placeholder = createPlaceholderFromHash({
       image,
-      hash: hash.value,
-      hashType: hashType.value,
-      size: props.placeholderSize,
+      hash: lazyLoadOptions.hash,
+      hashType: lazyLoadOptions.hashType,
+      size: lazyLoadOptions.placeholderSize,
     })
     if (placeholder)
       image.src = placeholder
     return
   }
 
-  onCleanup(lazyLoadImage(image, {
-    hash: hash.value,
-    hashType: hashType.value,
-    placeholderSize: props.placeholderSize,
-    updateSizesOnResize: props.autoSizes,
-    preload: props.preload,
-    ...outcomeCallbacks,
-  }))
-})
+  onCleanup(lazyLoadImage(image, { ...lazyLoadOptions, ...outcomeCallbacks }))
+}, { flush: 'post', immediate: true })
 </script>
 
 <template>

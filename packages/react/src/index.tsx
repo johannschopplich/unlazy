@@ -34,7 +34,7 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
   } = props
   const targetRef = useRef<HTMLImageElement | null>(null)
   const callbacksRef = useRef({ onImageLoad, onImageError })
-  const { hasRealSources, image, sources: sourceAttributes, sourcesKey, hash, hashType } = resolveImageAttributes(props)
+  const { image, sources: sourceAttributes, lazyLoadOptions, loadKey } = resolveImageAttributes(props)
 
   useIsomorphicLayoutEffect(() => {
     callbacksRef.current = { onImageLoad, onImageError }
@@ -45,25 +45,12 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
       return
 
     return lazyLoad(targetRef.current, {
-      hash,
-      hashType,
-      placeholderSize,
-      updateSizesOnResize: autoSizes,
-      preload,
+      ...lazyLoadOptions,
       onImageLoad: image => callbacksRef.current.onImageLoad?.(image),
       onImageError: (image, error) => callbacksRef.current.onImageError?.(image, error),
     })
-  }, [
-    src,
-    srcSet,
-    sourcesKey,
-    autoSizes,
-    hash,
-    hashType,
-    placeholderSize,
-    preload,
-    hasRealSources,
-  ])
+  // eslint-disable-next-line react/exhaustive-deps -- `loadKey` changes with `lazyLoadOptions`, which is a new object on every render.
+  }, [loadKey])
 
   const setRefs = useCallback((image: HTMLImageElement | null) => {
     targetRef.current = image

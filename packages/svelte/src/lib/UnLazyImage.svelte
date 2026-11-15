@@ -1,6 +1,7 @@
 <script lang='ts'>
   import type { HTMLImgAttributes } from 'svelte/elements'
   import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
+  import { untrack } from 'svelte'
   import { lazyLoad, resolveImageAttributes } from 'unlazy'
 
   const {
@@ -41,32 +42,21 @@
     blurhash,
     thumbhash,
     placeholderSrc,
+    placeholderSize,
     preload,
     loading: loading ?? undefined,
   }))
-  // The effect reads single fields, since `attributes` changes with every new
-  // `sources` array.
-  const hasRealSources = $derived(attributes.hasRealSources)
-  const sourcesKey = $derived(attributes.sourcesKey)
-  const hash = $derived(attributes.hash)
-  const hashType = $derived(attributes.hashType)
+  // `attributes` changes with every new `sources` array, `loadKey` only with its content.
+  const loadKey = $derived(attributes.loadKey)
 
   $effect(() => {
     if (!target)
       return
 
-    // Track changes to image sources to trigger reactivity.
-    void hasRealSources
-    void src
-    void srcSet
-    void sourcesKey
-
+    void loadKey
+    const lazyLoadOptions = untrack(() => attributes.lazyLoadOptions)
     return lazyLoad(target, {
-      hash,
-      hashType,
-      placeholderSize,
-      updateSizesOnResize: autoSizes,
-      preload,
+      ...lazyLoadOptions,
       ...outcomeCallbacks,
     })
   })

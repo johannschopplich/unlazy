@@ -1,6 +1,6 @@
 import type { JSX } from 'solid-js'
 import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
-import { createEffect, createMemo, createSignal, Index, onCleanup, Show, splitProps } from 'solid-js'
+import { createEffect, createMemo, createSignal, Index, on, onCleanup, Show, splitProps } from 'solid-js'
 import { lazyLoad, resolveImageAttributes } from 'unlazy'
 
 export type { UnLazySource } from 'unlazy'
@@ -31,39 +31,23 @@ export function UnLazyImage(props: Props) {
 
   const [target, setTarget] = createSignal<HTMLImageElement>()
   const attributes = createMemo(() => resolveImageAttributes(local))
-  // The effect reads single fields, since `attributes` changes with every new
-  // `sources` array.
-  const hasRealSources = createMemo(() => attributes().hasRealSources)
-  const sourcesKey = createMemo(() => attributes().sourcesKey)
-  const hash = createMemo(() => attributes().hash)
-  const hashType = createMemo(() => attributes().hashType)
+  // `attributes` changes with every new `sources` array, `loadKey` only with its content.
+  const loadKey = createMemo(() => attributes().loadKey)
   // Read the callbacks on call, so a new one does not reload the image.
   const outcomeCallbacks = {
     onImageLoad: (image: HTMLImageElement) => local.onImageLoad?.(image),
     onImageError: (image: HTMLImageElement, error: Event) => local.onImageError?.(image, error),
   }
 
-  createEffect(() => {
-    const image = target()
+  createEffect(on([target, loadKey], ([image]) => {
     if (!image)
       return
 
-    // Track changes to image sources to trigger reactivity.
-    void hasRealSources()
-    void local.src
-    void local.srcSet
-    void sourcesKey()
-
-    const cleanup = lazyLoad(image, {
-      hash: hash(),
-      hashType: hashType(),
-      placeholderSize: local.placeholderSize,
-      updateSizesOnResize: local.autoSizes,
-      preload: local.preload,
+    onCleanup(lazyLoad(image, {
+      ...attributes().lazyLoadOptions,
       ...outcomeCallbacks,
-    })
-    onCleanup(cleanup)
-  })
+    }))
+  }))
 
   const renderImage = () => (
     <img

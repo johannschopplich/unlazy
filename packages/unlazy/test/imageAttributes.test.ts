@@ -14,7 +14,6 @@ describe('resolveImageAttributes', () => {
       autoSizes: true,
     })
 
-    expect(attributes.hasRealSources).toBe(false)
     expect(attributes.image).toEqual({
       'src': '/placeholder.jpg',
       'data-src': '/image.jpg',
@@ -43,7 +42,6 @@ describe('resolveImageAttributes', () => {
       loading: 'eager',
     })
 
-    expect(attributes.hasRealSources).toBe(true)
     expect(attributes.image).toEqual({ src: '/image.jpg', srcset: '/image.jpg 1x', loading: 'eager' })
     expect(attributes.sources).toEqual([
       { srcset: '/image.webp', sizes: '50vw' },
@@ -54,7 +52,7 @@ describe('resolveImageAttributes', () => {
     { autoSizes: true },
     { lazyLoad: false },
   ])('defers the sources of an eager image with %o', (options) => {
-    expect(resolveImageAttributes({ src: '/image.jpg', loading: 'eager', ...options }).hasRealSources).toBe(false)
+    expect(resolveImageAttributes({ src: '/image.jpg', loading: 'eager', ...options }).image).toHaveProperty('data-src', '/image.jpg')
   })
 
   it('defaults loading to eager with lazyLoad set to false unless preload is set', () => {
@@ -63,7 +61,40 @@ describe('resolveImageAttributes', () => {
   })
 
   it('prefers a ThumbHash over a BlurHash', () => {
-    expect(resolveImageAttributes({ blurhash: 'blur', thumbhash: 'thumb' })).toMatchObject({ hash: 'thumb', hashType: 'thumbhash' })
-    expect(resolveImageAttributes({ blurhash: 'blur' })).toMatchObject({ hash: 'blur', hashType: 'blurhash' })
+    expect(resolveImageAttributes({ blurhash: 'blur', thumbhash: 'thumb' }).lazyLoadOptions).toMatchObject({ hash: 'thumb', hashType: 'thumbhash' })
+    expect(resolveImageAttributes({ blurhash: 'blur' }).lazyLoadOptions).toMatchObject({ hash: 'blur', hashType: 'blurhash' })
+  })
+
+  it('returns the lazyLoad options of the props', () => {
+    expect(resolveImageAttributes({ placeholderSize: 64, autoSizes: true, preload: true }).lazyLoadOptions).toEqual({
+      hash: undefined,
+      hashType: 'blurhash',
+      placeholderSize: 64,
+      updateSizesOnResize: true,
+      preload: true,
+    })
+  })
+
+  it('keeps the loadKey for an equal sources array and changes it for a new placeholderSize', () => {
+    const { loadKey } = resolveImageAttributes({
+      src: '/image.jpg',
+      sources: [
+        { srcSet: '/image.webp' },
+      ],
+    })
+
+    expect(resolveImageAttributes({
+      src: '/image.jpg',
+      sources: [
+        { srcSet: '/image.webp' },
+      ],
+    }).loadKey).toBe(loadKey)
+    expect(resolveImageAttributes({
+      src: '/image.jpg',
+      sources: [
+        { srcSet: '/image.webp' },
+      ],
+      placeholderSize: 64,
+    }).loadKey).not.toBe(loadKey)
   })
 })

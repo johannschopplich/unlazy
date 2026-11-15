@@ -7,7 +7,7 @@
 | [`triggerLoad`](/api/trigger-load) | `unlazy` | Programmatically load an image immediately |
 | [`createPlaceholderFromHash`](/api/create-placeholder-from-hash) | `unlazy` | Generate PNG data URI from hash (client-side) |
 | [`reportImageOutcome`](/integrations/#creating-custom-integrations) | `unlazy` | Set or clear `data-error` and call `onImageLoad` or `onImageError` for an image that loads its own sources |
-| [`resolveImageAttributes`](/integrations/#creating-custom-integrations) | `unlazy` | Resolve the `<img>` and `<source>` attributes and the hash of an `UnLazyImage` component from its props |
+| [`resolveImageAttributes`](/integrations/#creating-custom-integrations) | `unlazy` | Resolve the `<img>` and `<source>` attributes, the `lazyLoad` options, and a `loadKey` of an `UnLazyImage` component from its props |
 | [`createPngDataUri`](/api/blurhash-create-png-data-uri) | `unlazy/blurhash` | Generate PNG data URI from BlurHash (SSR) |
 | [`createPngDataUri`](/api/thumbhash-create-png-data-uri) | `unlazy/thumbhash` | Generate PNG data URI from ThumbHash (SSR) |
 

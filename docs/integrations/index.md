@@ -49,7 +49,7 @@ import { lazyLoad } from 'unlazy'
 lazyLoad(target)
 ```
 
-4. Call the cleanup function returned by `lazyLoad` when the component unmounts or its sources change, and call `lazyLoad` again for the new sources once the DOM shows them. Take the following example from the [Vue integration](/integrations/vue):
+4. Call the cleanup function returned by `lazyLoad` when the component unmounts or its sources change, and call `lazyLoad` again for the new sources once the DOM shows them. In Vue, for example:
 
 ```vue
 <script setup lang="ts">
@@ -87,7 +87,6 @@ image.addEventListener('error', handleOutcome)
 
 To take the same props as the official components, pass them to `resolveImageAttributes`. `UnLazyImageAttributes` types its result:
 
-- The attributes of the `<img>` and of every `<source>`, under their HTML names.
-- `hash` and `hashType`, to pass to `lazyLoad`.
-- `sourcesKey`, the content of `sources` as a string. Compare it instead of the array in your effect, so an inline `sources` array does not reload the image.
-- `hasRealSources`, which marks an image that renders its real sources.
+- `image` and `sources`, the attributes of the `<img>` and of every `<source>`, under their HTML names.
+- `lazyLoadOptions`, to pass to `lazyLoad` next to your `onImageLoad` and `onImageError`.
+- `loadKey`, a string of everything that decides how the image loads. Run `lazyLoad` again when it changes instead of on every new props object, so an inline `sources` array does not reload the image.
