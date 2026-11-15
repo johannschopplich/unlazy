@@ -75,7 +75,7 @@ watchPostEffect((onCleanup) => {
 </template>
 ```
 
-5. An image with its real `src` or `srcset` in the markup loads without `lazyLoad`. Pass its `load` and `error` events to `reportImageOutcome`, which sets or removes the [`data-error`](/guide/usage#style-a-failed-image) attribute and calls `onImageLoad` or `onImageError`:
+5. Pass an image with its real `src` or `srcset` in the markup to [`lazyLoad`](/api/lazy-load) too, so it reports the outcome. For an image you do not pass to `lazyLoad`, pass its `load` and `error` events to `reportImageOutcome`, which sets or removes the [`data-error`](/guide/usage#style-a-failed-image) attribute and calls `onImageLoad` or `onImageError`:
 
 ```ts
 import { reportImageOutcome } from 'unlazy'
@@ -90,4 +90,4 @@ To take the same props as the official components, pass them to `resolveImageAtt
 - The attributes of the `<img>` and of every `<source>`, under their HTML names.
 - `hash` and `hashType`, to pass to `lazyLoad`.
 - `sourcesKey`, the content of `sources` as a string. Compare it instead of the array in your effect, so an inline `sources` array does not reload the image.
-- `hasRealSources`, which marks an image that renders its real sources and reports its outcome as in step 5.
+- `hasRealSources`, which marks an image that renders its real sources.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ResolveImageAttributesOptions } from 'unlazy'
-import { createPlaceholderFromHash, lazyLoad as lazyLoadImage, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+import { createPlaceholderFromHash, lazyLoad as lazyLoadImage, resolveImageAttributes } from 'unlazy'
 import { computed, ref, watchPostEffect } from 'vue'
 
 defineOptions({
@@ -32,10 +32,11 @@ const hashType = computed(() => attributes.value.hashType)
 // Runs after the patch, so it reads the `data-*` attributes of the new props.
 watchPostEffect((onCleanup) => {
   const image = target.value
-  if (!image || hasRealSources.value)
+  if (!image)
     return
 
   // Track changes to image sources to trigger reactivity.
+  void hasRealSources.value
   void props.src
   void props.srcSet
   void sourcesKey.value
@@ -61,13 +62,6 @@ watchPostEffect((onCleanup) => {
     ...outcomeCallbacks,
   }))
 })
-
-// `lazyLoadImage` reports the outcome of the images it swaps; an image with its
-// real sources in the markup reports its own.
-function handleOutcome(event: Event) {
-  if (hasRealSources.value)
-    reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
-}
 </script>
 
 <template>
@@ -80,15 +74,11 @@ function handleOutcome(event: Event) {
     <img
       ref="target"
       v-bind="{ ...$attrs, ...attributes.image }"
-      @load="handleOutcome"
-      @error="handleOutcome"
     >
   </picture>
   <img
     v-else
     ref="target"
     v-bind="{ ...$attrs, ...attributes.image }"
-    @load="handleOutcome"
-    @error="handleOutcome"
   >
 </template>

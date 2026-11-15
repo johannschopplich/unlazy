@@ -1,7 +1,7 @@
-import type { ImgHTMLAttributes, SyntheticEvent } from 'react'
+import type { ImgHTMLAttributes } from 'react'
 import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
 import { forwardRef, useCallback, useEffect, useLayoutEffect, useRef } from 'react'
-import { lazyLoad, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+import { lazyLoad, resolveImageAttributes } from 'unlazy'
 
 export type { UnLazySource } from 'unlazy'
 
@@ -30,8 +30,6 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
     loading,
     onImageLoad,
     onImageError,
-    onLoad,
-    onError,
     ...rest
   } = props
   const targetRef = useRef<HTMLImageElement | null>(null)
@@ -43,7 +41,7 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
   })
 
   useEffect(() => {
-    if (!targetRef.current || hasRealSources)
+    if (!targetRef.current)
       return
 
     return lazyLoad(targetRef.current, {
@@ -75,24 +73,11 @@ export const UnLazyImage = forwardRef<HTMLImageElement, Props>((props, forwarded
       forwardedRef.current = image
   }, [forwardedRef])
 
-  // `lazyLoad` reports the outcome of the images it swaps; an image with its
-  // real sources in the markup reports its own.
-  const handleOutcome = (event: SyntheticEvent<HTMLImageElement, Event>) => {
-    if (event.type === 'error')
-      onError?.(event)
-    else
-      onLoad?.(event)
-    if (hasRealSources)
-      reportImageOutcome(event.currentTarget, event.nativeEvent, { onImageLoad, onImageError })
-  }
-
   const img = (
     <img
       {...rest}
       ref={setRefs}
       {...toReactAttributes(image)}
-      onLoad={handleOutcome}
-      onError={handleOutcome}
     />
   )
 

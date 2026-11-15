@@ -1,7 +1,7 @@
 import type { JSX } from 'solid-js'
 import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
 import { createEffect, createMemo, createSignal, Index, onCleanup, Show, splitProps } from 'solid-js'
-import { lazyLoad, reportImageOutcome, resolveImageAttributes } from 'unlazy'
+import { lazyLoad, resolveImageAttributes } from 'unlazy'
 
 export type { UnLazySource } from 'unlazy'
 
@@ -45,10 +45,11 @@ export function UnLazyImage(props: Props) {
 
   createEffect(() => {
     const image = target()
-    if (!image || hasRealSources())
+    if (!image)
       return
 
     // Track changes to image sources to trigger reactivity.
+    void hasRealSources()
     void local.src
     void local.srcSet
     void sourcesKey()
@@ -64,19 +65,10 @@ export function UnLazyImage(props: Props) {
     onCleanup(cleanup)
   })
 
-  // `lazyLoad` reports the outcome of the images it swaps; an image with its
-  // real sources in the markup reports its own.
-  const handleOutcome = (event: Event) => {
-    if (hasRealSources())
-      reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
-  }
-
   const renderImage = () => (
     <img
       ref={setTarget}
       {...attributes().image}
-      on:load={handleOutcome}
-      on:error={handleOutcome}
       {...rest}
     />
   )

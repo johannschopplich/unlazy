@@ -1,9 +1,7 @@
 <script lang='ts'>
-  import type { EventHandler, HTMLImgAttributes } from 'svelte/elements'
+  import type { HTMLImgAttributes } from 'svelte/elements'
   import type { TriggerLoadOptions, UnLazyImageProps } from 'unlazy'
-  import { lazyLoad, reportImageOutcome, resolveImageAttributes } from 'unlazy'
-
-  type ImageEvent = Parameters<EventHandler<Event, HTMLImageElement>>[0]
+  import { lazyLoad, resolveImageAttributes } from 'unlazy'
 
   const {
     src,
@@ -18,8 +16,6 @@
     loading,
     onImageLoad,
     onImageError,
-    onload,
-    onerror,
     ...restProps
   }: Omit<UnLazyImageProps, 'src' | 'srcSet' | 'loading'>
     // Svelte's `<img>` attributes accept `null` for these.
@@ -56,10 +52,11 @@
   const hashType = $derived(attributes.hashType)
 
   $effect(() => {
-    if (!target || hasRealSources)
+    if (!target)
       return
 
     // Track changes to image sources to trigger reactivity.
+    void hasRealSources
     void src
     void srcSet
     void sourcesKey
@@ -73,25 +70,12 @@
       ...outcomeCallbacks,
     })
   })
-
-  // `lazyLoad` reports the outcome of the images it swaps; an image with its
-  // real sources in the markup reports its own.
-  function handleOutcome(event: Event) {
-    if (event.type === 'error')
-      onerror?.(event as ImageEvent)
-    else
-      onload?.(event as ImageEvent)
-    if (hasRealSources)
-      reportImageOutcome(event.currentTarget as HTMLImageElement, event, outcomeCallbacks)
-  }
 </script>
 
 {#snippet image()}
   <img
     bind:this={target}
     {...attributes.image}
-    onload={handleOutcome}
-    onerror={handleOutcome}
     {...restProps}
   />
 {/snippet}

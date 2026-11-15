@@ -2,6 +2,8 @@ import type { GlobalComponents } from 'vue'
 import type { UnLazySource } from '../src'
 import { expect, expectTypeOf, it, vi } from 'vitest'
 import { render } from 'vitest-browser-vue'
+import { createSSRApp, h } from 'vue'
+import { renderToString } from 'vue/server-renderer'
 import { BLURHASH, createImageUrl, fetchImageRequests, recordDataSourceWrites } from '../../unlazy/test/fixtures'
 import { UnLazyImage } from '../src/components'
 
@@ -119,6 +121,27 @@ it('marks an eager image with data-error and emits imageError when it fails to l
 
   await expect.poll(() => onImageError.mock.calls.length).toBe(1)
   expect(screen.container.querySelector('img')!.hasAttribute('data-error')).toBe(true)
+})
+
+it('emits imageLoad for an eager image that loaded before hydration', async () => {
+  const onImageLoad = vi.fn()
+  const createApp = () => createSSRApp({
+    render: () => h(UnLazyImage, {
+      src: createImageUrl(),
+      loading: 'eager',
+      onImageLoad,
+    }),
+  })
+  const container = document.body.appendChild(document.createElement('div'))
+  container.innerHTML = await renderToString(createApp())
+  const image = container.querySelector('img')!
+  await new Promise(resolve => image.addEventListener('load', resolve, { once: true }))
+
+  const app = createApp()
+  app.mount(container)
+
+  await expect.poll(() => onImageLoad).toHaveBeenCalledOnce()
+  app.unmount()
 })
 
 it('defers loading behind the blurhash placeholder until lazyLoad is true', async () => {

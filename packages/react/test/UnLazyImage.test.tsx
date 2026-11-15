@@ -1,5 +1,7 @@
 import type { UnLazySource } from '../src'
 import { createRef } from 'react'
+import { hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 import { expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { BLURHASH, createImageUrl, fetchImageRequests, recordDataSourceWrites } from '../../unlazy/test/fixtures'
@@ -118,6 +120,20 @@ it('marks an eager image with data-error and calls onImageError when it fails to
 
   await expect.poll(() => onImageError.mock.calls.length).toBe(1)
   expect(screen.container.querySelector('img')!.hasAttribute('data-error')).toBe(true)
+})
+
+it('calls onImageLoad of an eager image that loaded before hydration', async () => {
+  const onImageLoad = vi.fn()
+  const element = <UnLazyImage src={createImageUrl()} loading="eager" onImageLoad={onImageLoad} />
+  const container = document.body.appendChild(document.createElement('div'))
+  container.innerHTML = renderToString(element)
+  const image = container.querySelector('img')!
+  await new Promise(resolve => image.addEventListener('load', resolve, { once: true }))
+
+  const root = hydrateRoot(container, element)
+
+  await expect.poll(() => onImageLoad).toHaveBeenCalledOnce()
+  root.unmount()
 })
 
 it('forwards a ref to the image and still loads it', async () => {
