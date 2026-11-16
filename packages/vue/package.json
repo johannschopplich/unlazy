@@ -1,7 +1,7 @@
 {
   "name": "@unlazy/vue",
   "type": "module",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Vue component for native image lazy loading with BlurHash and ThumbHash placeholders",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",

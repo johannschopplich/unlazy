@@ -1,7 +1,7 @@
 {
   "name": "@unlazy/svelte",
   "type": "module",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "description": "Svelte component for native image lazy loading with BlurHash and ThumbHash placeholders",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
