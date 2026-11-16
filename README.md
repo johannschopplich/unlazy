@@ -1,4 +1,4 @@
-[![unlazy library](./.github/og.jpg)](https://unlazy.byjohann.dev)
+[![unlazy library](./docs/public/og.jpg)](https://unlazy.byjohann.dev)
 
 # unlazy
 
