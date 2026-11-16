@@ -2,7 +2,7 @@
   "name": "unlazy",
   "type": "module",
   "version": "2.0.1",
-  "description": "Universal lazy loading library for placeholder images leveraging native browser APIs",
+  "description": "Native image lazy loading with BlurHash and ThumbHash placeholders and auto-calculated sizes, without a framework",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",

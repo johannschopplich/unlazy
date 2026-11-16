@@ -3,12 +3,12 @@ layout: home
 sidebar: false
 
 title: unlazy
-titleTemplate: Universal lazy loading library
+titleTemplate: Native image lazy loading
 
 hero:
   name: unlazy
-  text: Universal lazy loading library for placeholder images
-  tagline: Framework-agnostic, using native browser APIs
+  text: Native image lazy loading with hash placeholders
+  tagline: BlurHash and ThumbHash for vanilla JS, Vue, React, Svelte, Solid and Nuxt
   image:
     src: /logo-shadow.svg
     alt: unlazy

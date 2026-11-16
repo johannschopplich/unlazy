@@ -3,7 +3,7 @@
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
 
-Vue component for [unlazy](https://unlazy.byjohann.dev), the universal lazy loading library leveraging native browser APIs.
+Vue component for [unlazy](https://unlazy.byjohann.dev), native image lazy loading with BlurHash and ThumbHash placeholders.
 
 - 🎀 **Native**: Utilizes the `loading="lazy"` attribute
 - 🌊 **BlurHash & ThumbHash support**: Client-side decoding

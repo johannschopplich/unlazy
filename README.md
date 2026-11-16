@@ -5,7 +5,7 @@
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
 
-Universal lazy loading library leveraging native browser APIs. Built around the `loading="lazy"` attribute, with [BlurHash](https://unlazy.byjohann.dev/guide/placeholders#blurhash) / [ThumbHash](https://unlazy.byjohann.dev/guide/placeholders#thumbhash) placeholders, a dedicated above-the-fold priority path, and a dev-mode LCP warning so you never ship a lazy-loaded hero image by accident.
+Native image lazy loading for vanilla JS, Vue, React, Svelte, Solid and Nuxt. Built around the `loading="lazy"` attribute, with [BlurHash](https://unlazy.byjohann.dev/guide/placeholders#blurhash) / [ThumbHash](https://unlazy.byjohann.dev/guide/placeholders#thumbhash) placeholders, a dedicated above-the-fold priority path, and a dev-mode LCP warning so you never ship a lazy-loaded hero image by accident.
 
 ## Features
 

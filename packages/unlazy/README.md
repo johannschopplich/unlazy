@@ -3,7 +3,7 @@
 [![npm version][npm-version-src]][npm-version-href]
 [![bundle][bundle-src]][bundle-href]
 
-Universal lazy loading library leveraging native browser APIs.
+Native image lazy loading with BlurHash and ThumbHash placeholders, without a framework.
 
 - 🎀 **Native**: Utilizes the `loading="lazy"` attribute
 - 🌊 **BlurHash & ThumbHash support**: SSR & client-side decoding

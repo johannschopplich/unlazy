@@ -2,7 +2,7 @@
   "name": "@unlazy/solid",
   "type": "module",
   "version": "2.0.1",
-  "description": "Solid lazy loading library for placeholder images",
+  "description": "Solid component for native image lazy loading with BlurHash and ThumbHash placeholders",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",

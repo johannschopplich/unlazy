@@ -2,7 +2,7 @@
   "name": "@unlazy/nuxt",
   "type": "module",
   "version": "2.0.1",
-  "description": "Nuxt lazy loading module for placeholder images",
+  "description": "Nuxt module for native image lazy loading with BlurHash and ThumbHash placeholders, decoded on the server",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://unlazy.byjohann.dev",
