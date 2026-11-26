@@ -1,7 +1,7 @@
 {
   "name": "@unlazy/react",
   "type": "module",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "React component for native image lazy loading with BlurHash and ThumbHash placeholders",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
