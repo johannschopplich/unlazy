@@ -27,6 +27,16 @@ describe('resolveImageAttributes', () => {
     ])
   })
 
+  it('defers a source sizes of auto to data-sizes', () => {
+    expect(resolveImageAttributes({
+      sources: [
+        { srcSet: '/image.webp', sizes: 'auto' },
+      ],
+    }).sources).toEqual([
+      { 'data-srcset': '/image.webp', 'data-sizes': 'auto' },
+    ])
+  })
+
   it('omits the src of a lazy image without placeholderSrc', () => {
     expect(resolveImageAttributes({ src: '/image.jpg' }).image).not.toHaveProperty('src')
   })

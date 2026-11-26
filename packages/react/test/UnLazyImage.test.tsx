@@ -55,6 +55,20 @@ it('loads the new image after a sources change', async () => {
   expect(screen.container.querySelector('img')!.currentSrc).toBe(nextSourceSrc)
 })
 
+it('loads the 32w candidate of a source with sizes 8px', async () => {
+  const smallSrc = createImageUrl()
+  const screen = await render(
+    <UnLazyImage
+      src={createImageUrl()}
+      sources={[
+        { srcSet: `${smallSrc} 32w, ${createImageUrl()} 4096w`, sizes: '8px' },
+      ]}
+    />,
+  )
+
+  await expect.poll(() => screen.container.querySelector('img')!.currentSrc).toBe(smallSrc)
+})
+
 it('keeps the placeholder when a re-render passes a new onImageLoad and sources', async () => {
   const src = createImageUrl({ delay: '300' })
   const onImageLoad = vi.fn()
