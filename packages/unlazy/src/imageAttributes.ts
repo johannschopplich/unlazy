@@ -42,7 +42,16 @@ export function resolveImageAttributes(
     height: source.height,
     ...(hasRealSources
       ? { srcset: source.srcSet, sizes: source.sizes }
-      : { 'data-srcset': source.srcSet, 'data-sizes': source.sizes || autoSizesValue }),
+      : {
+          'data-srcset': source.srcSet,
+          // `lazyLoad` resolves only `data-sizes="auto"`; without a `srcset`, a
+          // native `sizes` selects nothing yet. A framework that removes an
+          // `undefined` spread attribute would drop the `sizes` that
+          // `autoSizes` resolved.
+          ...(source.sizes && source.sizes !== 'auto'
+            ? { sizes: source.sizes }
+            : { 'data-sizes': source.sizes || autoSizesValue }),
+        }),
   }))
   const lazyLoadOptions: UnLazyImageAttributes['lazyLoadOptions'] = {
     hash: thumbhash || blurhash,

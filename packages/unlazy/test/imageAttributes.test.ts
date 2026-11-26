@@ -23,7 +23,7 @@ describe('resolveImageAttributes', () => {
     })
     expect(attributes.sources).toEqual([
       { 'type': 'image/webp', 'data-srcset': '/image.webp', 'data-sizes': 'auto' },
-      { 'data-srcset': '/image.avif', 'data-sizes': '50vw' },
+      { 'data-srcset': '/image.avif', 'sizes': '50vw' },
     ])
   })
 
