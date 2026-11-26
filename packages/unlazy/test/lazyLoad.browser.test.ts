@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPngDataUri } from '../src/blurhash'
+import { resolveImageAttributes } from '../src/imageAttributes'
 import { autoSizes, lazyLoad } from '../src/lazyLoad'
 import { BLURHASH, createImageUrl, fetchImageRequests, makeLazyImg, makePictureImg, recordSourceValues, TINY_PNG } from './fixtures'
 
@@ -85,6 +86,49 @@ describe('lazyLoad', () => {
 
     expect(img.loading).toBe('lazy')
   }, 2000)
+
+  it.each([false, true])('honors explicit picture source sizes with preload=%s', async (preload) => {
+    const small = createImageUrl()
+    const large = createImageUrl()
+    const fallback = createImageUrl()
+    const attributes = resolveImageAttributes({
+      src: fallback,
+      sources: [
+        { srcSet: `${small} 32w, ${large} 4096w`, sizes: '8px' },
+      ],
+      autoSizes: true,
+      preload,
+    })
+    const [sourceAttributes] = attributes.sources
+    if (!sourceAttributes)
+      throw new Error('Missing picture source attributes')
+    const { picture, img } = makePictureImg()
+    const source = document.createElement('source')
+    for (const [element, values] of [
+      [source, sourceAttributes],
+      [img, attributes.image],
+    ] as const) {
+      for (const [name, value] of Object.entries(values)) {
+        if (value !== undefined)
+          element.setAttribute(name, String(value))
+      }
+    }
+    picture.prepend(source)
+    document.body.append(picture)
+    expect(source.hasAttribute('srcset')).toBe(false)
+
+    const onImageLoad = vi.fn()
+    const cleanup = lazyLoad(img, { ...attributes.lazyLoadOptions, onImageLoad })
+    try {
+      await vi.waitFor(() => expect(onImageLoad).toHaveBeenCalledOnce())
+      expect(source.sizes).toBe('8px')
+      expect(img.currentSrc).toBe(small)
+      expect(await fetchImageRequests(large)).toEqual([])
+    }
+    finally {
+      cleanup()
+    }
+  })
 
   it('cleanup detaches the callbacks of a lazy image before they fire', async () => {
     const img = document.createElement('img')

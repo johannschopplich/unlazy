@@ -42,7 +42,14 @@ export function resolveImageAttributes(
     height: source.height,
     ...(hasRealSources
       ? { srcset: source.srcSet, sizes: source.sizes }
-      : { 'data-srcset': source.srcSet, 'data-sizes': source.sizes || autoSizesValue }),
+      : {
+          'data-srcset': source.srcSet,
+          // A source cannot load before its srcset is set. Keep explicit sizes
+          // available both to the temporary picture and to the visible source.
+          ...(source.sizes && source.sizes !== 'auto'
+            ? { sizes: source.sizes }
+            : { 'data-sizes': source.sizes || autoSizesValue }),
+        }),
   }))
   const lazyLoadOptions: UnLazyImageAttributes['lazyLoadOptions'] = {
     hash: thumbhash || blurhash,

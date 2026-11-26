@@ -23,7 +23,19 @@ describe('resolveImageAttributes', () => {
     })
     expect(attributes.sources).toEqual([
       { 'type': 'image/webp', 'data-srcset': '/image.webp', 'data-sizes': 'auto' },
-      { 'data-srcset': '/image.avif', 'data-sizes': '50vw' },
+      { 'data-srcset': '/image.avif', 'sizes': '50vw' },
+    ])
+  })
+
+  it('keeps an explicit auto source size on the deferred auto-sizing path', () => {
+    const { sources } = resolveImageAttributes({
+      sources: [
+        { srcSet: '/image.webp', sizes: 'auto' },
+      ],
+    })
+
+    expect(sources).toEqual([
+      { 'data-srcset': '/image.webp', 'data-sizes': 'auto' },
     ])
   })
 
